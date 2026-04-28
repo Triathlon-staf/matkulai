@@ -1,0 +1,2537 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>EduPattern AI — Analisis Pola Belajar Mahasiswa</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap"
+      rel="stylesheet" />
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: {
+              display: ["Space Grotesk", "sans-serif"],
+              body: ["DM Sans", "sans-serif"],
+            },
+            colors: {
+              brand: {
+                400: "#fbbf24",
+                500: "#f59e0b",
+                600: "#d97706",
+                700: "#b45309",
+              },
+              surface: {
+                900: "#08080f",
+                800: "#0f0f18",
+                700: "#161622",
+                600: "#1e1e2e",
+                500: "#2a2a3c",
+              },
+            },
+          },
+        },
+      };
+    </script>
+    <style>
+      :root {
+        --brand: #f59e0b;
+        --brand-glow: rgba(245, 158, 11, 0.15);
+        --success: #10b981;
+        --danger: #ef4444;
+        --info: #6366f1;
+      }
+      * {
+        scrollbar-width: thin;
+        scrollbar-color: #2a2a3c transparent;
+      }
+      body {
+        font-family: "DM Sans", sans-serif;
+        background: #08080f;
+        color: #e5e5e5;
+        overflow-x: hidden;
+      }
+      h1,
+      h2,
+      h3,
+      h4,
+      h5 {
+        font-family: "Space Grotesk", sans-serif;
+      }
+
+      /* Background animasi */
+      .bg-glow {
+        position: fixed;
+        inset: 0;
+        z-index: 0;
+        pointer-events: none;
+        overflow: hidden;
+      }
+      .bg-glow::before,
+      .bg-glow::after {
+        content: "";
+        position: absolute;
+        border-radius: 50%;
+        filter: blur(120px);
+        opacity: 0.4;
+        animation: float 12s ease-in-out infinite alternate;
+      }
+      .bg-glow::before {
+        width: 500px;
+        height: 500px;
+        background: rgba(245, 158, 11, 0.08);
+        top: -10%;
+        left: -5%;
+      }
+      .bg-glow::after {
+        width: 400px;
+        height: 400px;
+        background: rgba(99, 102, 241, 0.06);
+        bottom: -10%;
+        right: -5%;
+        animation-delay: -6s;
+      }
+      @keyframes float {
+        0% {
+          transform: translate(0, 0) scale(1);
+        }
+        100% {
+          transform: translate(60px, 40px) scale(1.15);
+        }
+      }
+
+      /* Glass card */
+      .glass {
+        background: rgba(22, 22, 34, 0.7);
+        backdrop-filter: blur(16px);
+        border: 1px solid rgba(255, 255, 255, 0.06);
+      }
+      .glass:hover {
+        border-color: rgba(245, 158, 11, 0.2);
+      }
+      .glass-static {
+        background: rgba(22, 22, 34, 0.7);
+        backdrop-filter: blur(16px);
+        border: 1px solid rgba(255, 255, 255, 0.06);
+      }
+
+      /* Sidebar */
+      .sidebar-link {
+        transition: all 0.2s;
+        border-left: 3px solid transparent;
+      }
+      .sidebar-link:hover,
+      .sidebar-link.active {
+        background: rgba(245, 158, 11, 0.08);
+        border-left-color: var(--brand);
+        color: var(--brand);
+      }
+
+      /* Toast */
+      .toast {
+        animation:
+          slideIn 0.3s ease-out,
+          fadeOut 0.4s 2.6s ease-in forwards;
+      }
+      @keyframes slideIn {
+        from {
+          transform: translateX(100%);
+          opacity: 0;
+        }
+        to {
+          transform: translateX(0);
+          opacity: 1;
+        }
+      }
+      @keyframes fadeOut {
+        to {
+          transform: translateX(100%);
+          opacity: 0;
+        }
+      }
+
+      /* Fade in untuk konten */
+      .fade-in {
+        animation: fadeUp 0.4s ease-out;
+      }
+      @keyframes fadeUp {
+        from {
+          opacity: 0;
+          transform: translateY(12px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      /* Stat card pulse */
+      .stat-icon {
+        animation: pulse-soft 3s ease-in-out infinite;
+      }
+      @keyframes pulse-soft {
+        0%,
+        100% {
+          transform: scale(1);
+        }
+        50% {
+          transform: scale(1.08);
+        }
+      }
+
+      /* Input styling */
+      input,
+      select,
+      textarea {
+        background: rgba(15, 15, 24, 0.8);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        color: #e5e5e5;
+        transition: border-color 0.2s;
+      }
+      input:focus,
+      select:focus,
+      textarea:focus {
+        outline: none;
+        border-color: var(--brand);
+        box-shadow: 0 0 0 3px var(--brand-glow);
+      }
+
+      /* Range slider */
+      input[type="range"] {
+        -webkit-appearance: none;
+        background: transparent;
+        border: none;
+      }
+      input[type="range"]::-webkit-slider-track {
+        height: 6px;
+        background: #2a2a3c;
+        border-radius: 3px;
+      }
+      input[type="range"]::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        width: 18px;
+        height: 18px;
+        border-radius: 50%;
+        background: var(--brand);
+        cursor: pointer;
+        margin-top: -6px;
+      }
+
+      /* Tabel */
+      .tbl-row {
+        transition: background 0.15s;
+      }
+      .tbl-row:hover {
+        background: rgba(245, 158, 11, 0.04);
+      }
+
+      /* Badge */
+      .badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        padding: 2px 10px;
+        border-radius: 999px;
+        font-size: 0.75rem;
+        font-weight: 600;
+      }
+
+      /* Mobile sidebar */
+      @media (max-width: 768px) {
+        .sidebar-desktop {
+          transform: translateX(-100%);
+          position: fixed;
+          z-index: 50;
+        }
+        .sidebar-desktop.open {
+          transform: translateX(0);
+        }
+        .main-content {
+          margin-left: 0 !important;
+        }
+      }
+
+      /* Tab indicator */
+      .tab-btn {
+        position: relative;
+        transition: color 0.2s;
+      }
+      .tab-btn.active::after {
+        content: "";
+        position: absolute;
+        bottom: -2px;
+        left: 0;
+        right: 0;
+        height: 2px;
+        background: var(--brand);
+        border-radius: 1px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="bg-glow"></div>
+    <div
+      id="toastContainer"
+      class="fixed top-4 right-4 z-[100] flex flex-col gap-2"></div>
+
+    <!-- ==================== AUTH PAGE ==================== -->
+    <div
+      id="authPage"
+      class="relative z-10 min-h-screen flex items-center justify-center p-4">
+      <div class="w-full max-w-md">
+        <!-- Logo -->
+        <div class="text-center mb-8 fade-in">
+          <div
+            class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-brand-500/10 border border-brand-500/20 mb-4">
+            <i class="fa-solid fa-brain text-2xl text-brand-500"></i>
+          </div>
+          <h1 class="text-3xl font-bold text-white">
+            EduPattern <span class="text-brand-500">AI</span>
+          </h1>
+          <p class="text-sm text-gray-400 mt-1">
+            Analisis Pola Belajar Mahasiswa Berbasis Kecerdasan Buatan
+          </p>
+        </div>
+
+        <!-- Auth Card -->
+        <div
+          class="glass rounded-2xl p-6 fade-in"
+          style="animation-delay: 0.1s">
+          <!-- Tab Switch -->
+          <div class="flex gap-1 p-1 bg-surface-900 rounded-xl mb-6">
+            <button
+              onclick="switchAuthTab('login')"
+              id="tabLogin"
+              class="flex-1 py-2.5 rounded-lg text-sm font-semibold transition-all bg-brand-500 text-black">
+              Masuk
+            </button>
+            <button
+              onclick="switchAuthTab('register')"
+              id="tabRegister"
+              class="flex-1 py-2.5 rounded-lg text-sm font-semibold transition-all text-gray-400">
+              Daftar
+            </button>
+          </div>
+
+          <!-- Login Form -->
+          <form id="loginForm" onsubmit="handleLogin(event)">
+            <div class="space-y-4">
+              <div>
+                <label class="block text-xs font-medium text-gray-400 mb-1.5"
+                  >Email</label
+                >
+                <input
+                  type="email"
+                  id="loginEmail"
+                  required
+                  class="w-full px-4 py-2.5 rounded-xl text-sm"
+                  placeholder="email@contoh.com" />
+              </div>
+              <div>
+                <label class="block text-xs font-medium text-gray-400 mb-1.5"
+                  >Password</label
+                >
+                <input
+                  type="password"
+                  id="loginPass"
+                  required
+                  class="w-full px-4 py-2.5 rounded-xl text-sm"
+                  placeholder="Minimal 6 karakter" />
+              </div>
+              <button
+                type="submit"
+                class="w-full py-3 rounded-xl bg-brand-500 hover:bg-brand-600 text-black font-semibold text-sm transition-all hover:shadow-lg hover:shadow-brand-500/20">
+                <i class="fa-solid fa-right-to-bracket mr-2"></i>Masuk
+              </button>
+            </div>
+          </form>
+
+          <!-- Register Form -->
+          <form
+            id="registerForm"
+            onsubmit="handleRegister(event)"
+            class="hidden">
+            <div class="space-y-4">
+              <div>
+                <label class="block text-xs font-medium text-gray-400 mb-1.5"
+                  >Nama Lengkap</label
+                >
+                <input
+                  type="text"
+                  id="regName"
+                  required
+                  class="w-full px-4 py-2.5 rounded-xl text-sm"
+                  placeholder="Nama lengkap" />
+              </div>
+              <div>
+                <label class="block text-xs font-medium text-gray-400 mb-1.5"
+                  >Email</label
+                >
+                <input
+                  type="email"
+                  id="regEmail"
+                  required
+                  class="w-full px-4 py-2.5 rounded-xl text-sm"
+                  placeholder="email@contoh.com" />
+              </div>
+              <div>
+                <label class="block text-xs font-medium text-gray-400 mb-1.5"
+                  >Password</label
+                >
+                <input
+                  type="password"
+                  id="regPass"
+                  required
+                  minlength="6"
+                  class="w-full px-4 py-2.5 rounded-xl text-sm"
+                  placeholder="Minimal 6 karakter" />
+              </div>
+              <div>
+                <label class="block text-xs font-medium text-gray-400 mb-1.5"
+                  >Peran</label
+                >
+                <select
+                  id="regRole"
+                  required
+                  class="w-full px-4 py-2.5 rounded-xl text-sm">
+                  <option value="student">Mahasiswa</option>
+                  <option value="lecturer">Dosen</option>
+                </select>
+              </div>
+              <button
+                type="submit"
+                class="w-full py-3 rounded-xl bg-brand-500 hover:bg-brand-600 text-black font-semibold text-sm transition-all hover:shadow-lg hover:shadow-brand-500/20">
+                <i class="fa-solid fa-user-plus mr-2"></i>Daftar Akun
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <!-- Demo Accounts -->
+        <div
+          class="glass rounded-2xl p-4 mt-4 fade-in"
+          style="animation-delay: 0.2s">
+          <p class="text-xs text-gray-400 mb-3 font-medium">
+            <i class="fa-solid fa-flask mr-1.5 text-brand-500"></i>Akun Demo
+            (klik untuk isi otomatis)
+          </p>
+          <div class="flex gap-2">
+            <button
+              onclick="fillDemo('student')"
+              class="flex-1 py-2 px-3 rounded-xl bg-surface-800 hover:bg-surface-600 text-xs text-gray-300 transition-all border border-white/5 hover:border-brand-500/30">
+              <i class="fa-solid fa-graduation-cap mr-1 text-brand-400"></i
+              >Mahasiswa
+            </button>
+            <button
+              onclick="fillDemo('lecturer')"
+              class="flex-1 py-2 px-3 rounded-xl bg-surface-800 hover:bg-surface-600 text-xs text-gray-300 transition-all border border-white/5 hover:border-brand-500/30">
+              <i class="fa-solid fa-chalkboard-user mr-1 text-indigo-400"></i
+              >Dosen
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== STUDENT DASHBOARD ==================== -->
+    <div id="studentDash" class="relative z-10 hidden">
+      <!-- Mobile Header -->
+      <div
+        class="md:hidden fixed top-0 left-0 right-0 z-40 glass-static px-4 py-3 flex items-center justify-between">
+        <button
+          onclick="toggleSidebar()"
+          class="text-gray-400 hover:text-brand-500">
+          <i class="fa-solid fa-bars text-lg"></i>
+        </button>
+        <span class="font-display font-bold text-sm text-white"
+          >EduPattern <span class="text-brand-500">AI</span></span
+        >
+        <button onclick="App.logout()" class="text-gray-400 hover:text-red-400">
+          <i class="fa-solid fa-right-from-bracket"></i>
+        </button>
+      </div>
+
+      <!-- Sidebar -->
+      <aside
+        id="sidebar"
+        class="sidebar-desktop fixed left-0 top-0 bottom-0 w-60 glass-static flex flex-col z-50 transition-transform duration-300">
+        <div class="p-5 border-b border-white/5">
+          <div class="flex items-center gap-3">
+            <div
+              class="w-9 h-9 rounded-xl bg-brand-500/10 flex items-center justify-center">
+              <i class="fa-solid fa-brain text-brand-500 text-sm"></i>
+            </div>
+            <div>
+              <h2 class="font-display font-bold text-sm text-white">
+                EduPattern AI
+              </h2>
+              <p class="text-[10px] text-gray-500">Student Panel</p>
+            </div>
+          </div>
+        </div>
+        <nav class="flex-1 py-4 px-3 space-y-1">
+          <button
+            onclick="StudentView.showTab('overview')"
+            data-tab="overview"
+            class="sidebar-link active w-full text-left px-4 py-2.5 rounded-r-lg text-sm text-gray-300 flex items-center gap-3">
+            <i class="fa-solid fa-house w-4 text-center"></i>Beranda
+          </button>
+          <button
+            onclick="StudentView.showTab('input')"
+            data-tab="input"
+            class="sidebar-link w-full text-left px-4 py-2.5 rounded-r-lg text-sm text-gray-300 flex items-center gap-3">
+            <i class="fa-solid fa-pen-to-square w-4 text-center"></i>Input
+            Aktivitas
+          </button>
+          <button
+            onclick="StudentView.showTab('patterns')"
+            data-tab="patterns"
+            class="sidebar-link w-full text-left px-4 py-2.5 rounded-r-lg text-sm text-gray-300 flex items-center gap-3">
+            <i class="fa-solid fa-chart-line w-4 text-center"></i>Pola Belajar
+          </button>
+          <button
+            onclick="StudentView.showTab('recommendations')"
+            data-tab="recommendations"
+            class="sidebar-link w-full text-left px-4 py-2.5 rounded-r-lg text-sm text-gray-300 flex items-center gap-3">
+            <i class="fa-solid fa-lightbulb w-4 text-center"></i>Rekomendasi
+          </button>
+        </nav>
+        <div class="p-4 border-t border-white/5">
+          <div class="flex items-center gap-3 mb-3">
+            <div
+              id="studentAvatar"
+              class="w-8 h-8 rounded-full bg-brand-500/20 flex items-center justify-center text-brand-500 text-xs font-bold">
+              BS
+            </div>
+            <div class="flex-1 min-w-0">
+              <p
+                id="studentName"
+                class="text-xs font-medium text-white truncate">
+                Budi Santoso
+              </p>
+              <p id="studentRole" class="text-[10px] text-gray-500">
+                Mahasiswa
+              </p>
+            </div>
+          </div>
+          <button
+            onclick="App.logout()"
+            class="w-full py-2 rounded-lg bg-surface-800 hover:bg-red-500/10 text-xs text-gray-400 hover:text-red-400 transition-all">
+            <i class="fa-solid fa-right-from-bracket mr-1.5"></i>Keluar
+          </button>
+        </div>
+      </aside>
+
+      <!-- Overlay mobile -->
+      <div
+        id="sidebarOverlay"
+        onclick="toggleSidebar()"
+        class="fixed inset-0 bg-black/50 z-40 hidden md:hidden"></div>
+
+      <!-- Main Content -->
+      <main
+        class="main-content ml-60 min-h-screen pt-4 pb-8 px-6 md:pt-4"
+        style="margin-left: 240px">
+        <div class="md:hidden h-12"></div>
+        <div id="studentContent" class="max-w-6xl mx-auto"></div>
+      </main>
+    </div>
+
+    <!-- ==================== LECTURER DASHBOARD ==================== -->
+    <div id="lecturerDash" class="relative z-10 hidden">
+      <div
+        class="md:hidden fixed top-0 left-0 right-0 z-40 glass-static px-4 py-3 flex items-center justify-between">
+        <button
+          onclick="toggleSidebar()"
+          class="text-gray-400 hover:text-brand-500">
+          <i class="fa-solid fa-bars text-lg"></i>
+        </button>
+        <span class="font-display font-bold text-sm text-white"
+          >EduPattern <span class="text-brand-500">AI</span></span
+        >
+        <button onclick="App.logout()" class="text-gray-400 hover:text-red-400">
+          <i class="fa-solid fa-right-from-bracket"></i>
+        </button>
+      </div>
+
+      <aside
+        id="sidebarLect"
+        class="sidebar-desktop fixed left-0 top-0 bottom-0 w-60 glass-static flex flex-col z-50 transition-transform duration-300">
+        <div class="p-5 border-b border-white/5">
+          <div class="flex items-center gap-3">
+            <div
+              class="w-9 h-9 rounded-xl bg-indigo-500/10 flex items-center justify-center">
+              <i class="fa-solid fa-brain text-indigo-400 text-sm"></i>
+            </div>
+            <div>
+              <h2 class="font-display font-bold text-sm text-white">
+                EduPattern AI
+              </h2>
+              <p class="text-[10px] text-gray-500">Lecturer Panel</p>
+            </div>
+          </div>
+        </div>
+        <nav class="flex-1 py-4 px-3 space-y-1">
+          <button
+            onclick="LecturerView.showTab('overview')"
+            data-tab="overview"
+            class="sidebar-link active w-full text-left px-4 py-2.5 rounded-r-lg text-sm text-gray-300 flex items-center gap-3">
+            <i class="fa-solid fa-house w-4 text-center"></i>Beranda
+          </button>
+          <button
+            onclick="LecturerView.showTab('monitoring')"
+            data-tab="monitoring"
+            class="sidebar-link w-full text-left px-4 py-2.5 rounded-r-lg text-sm text-gray-300 flex items-center gap-3">
+            <i class="fa-solid fa-users w-4 text-center"></i>Monitoring
+          </button>
+          <button
+            onclick="LecturerView.showTab('performance')"
+            data-tab="performance"
+            class="sidebar-link w-full text-left px-4 py-2.5 rounded-r-lg text-sm text-gray-300 flex items-center gap-3">
+            <i class="fa-solid fa-chart-bar w-4 text-center"></i>Performa Kelas
+          </button>
+          <button
+            onclick="LecturerView.showTab('atrisk')"
+            data-tab="atrisk"
+            class="sidebar-link w-full text-left px-4 py-2.5 rounded-r-lg text-sm text-gray-300 flex items-center gap-3">
+            <i class="fa-solid fa-triangle-exclamation w-4 text-center"></i
+            >Mahasiswa Bermasalah
+          </button>
+        </nav>
+        <div class="p-4 border-t border-white/5">
+          <div class="flex items-center gap-3 mb-3">
+            <div
+              id="lectAvatar"
+              class="w-8 h-8 rounded-full bg-indigo-500/20 flex items-center justify-center text-indigo-400 text-xs font-bold">
+              HW
+            </div>
+            <div class="flex-1 min-w-0">
+              <p id="lectName" class="text-xs font-medium text-white truncate">
+                Dr. Hendra
+              </p>
+              <p id="lectRole" class="text-[10px] text-gray-500">Dosen</p>
+            </div>
+          </div>
+          <button
+            onclick="App.logout()"
+            class="w-full py-2 rounded-lg bg-surface-800 hover:bg-red-500/10 text-xs text-gray-400 hover:text-red-400 transition-all">
+            <i class="fa-solid fa-right-from-bracket mr-1.5"></i>Keluar
+          </button>
+        </div>
+      </aside>
+      <div
+        id="sidebarOverlayLect"
+        onclick="toggleSidebarLect()"
+        class="fixed inset-0 bg-black/50 z-40 hidden md:hidden"></div>
+      <main
+        class="main-content min-h-screen pt-4 pb-8 px-6 md:pt-4"
+        style="margin-left: 240px">
+        <div class="md:hidden h-12"></div>
+        <div id="lecturerContent" class="max-w-6xl mx-auto"></div>
+      </main>
+    </div>
+
+    <script>
+      /* ================================================================
+   FIREBASE SIMULATION LAYER
+   Struktur ini meniru Firebase SDK. Tinggal ganti dengan import
+   dari CDN Firebase untuk production.
+   ================================================================ */
+      const DB = {users: {}, aktivitas: [], analisis: {}};
+
+      const FireAuth = {
+        async signIn(email, password) {
+          await delay(400);
+          const user = Object.values(DB.users).find((u) => u.email === email);
+          if (!user) throw new Error("Akun tidak ditemukan");
+          if (user.password !== password) throw new Error("Password salah");
+          return {
+            uid: user.id,
+            email: user.email,
+            displayName: user.name,
+            role: user.role,
+          };
+        },
+        async signUp(name, email, password, role) {
+          await delay(500);
+          if (Object.values(DB.users).find((u) => u.email === email))
+            throw new Error("Email sudah terdaftar");
+          const id = "u_" + Date.now();
+          DB.users[id] = {id, name, email, password, role};
+          return {uid: id, email, displayName: name, role};
+        },
+        signOut() {},
+      };
+
+      const FireStore = {
+        async getActivities(userId) {
+          await delay(100);
+          return DB.aktivitas
+            .filter((a) => a.userId === userId)
+            .sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+        },
+        async addActivity(data) {
+          await delay(200);
+          const id = "act_" + Date.now();
+          const doc = {id, ...data};
+          DB.aktivitas.push(doc);
+          // Trigger Cloud Function
+          CloudFunctions.onActivityCreated(doc);
+          return doc;
+        },
+        async getAnalysis(userId) {
+          await delay(100);
+          return DB.analisis[userId] || null;
+        },
+        async getAllStudents() {
+          await delay(100);
+          return Object.values(DB.users).filter((u) => u.role === "student");
+        },
+      };
+
+      /* ================================================================
+   CLOUD FUNCTIONS SIMULATION
+   Trigger otomatis saat ada data baru — mirip Firestore trigger
+   ================================================================ */
+      const CloudFunctions = {
+        onActivityCreated(activity) {
+          const userId = activity.userId;
+          const allActs = DB.aktivitas.filter((a) => a.userId === userId);
+          const analysis = AIEngine.analyzePatterns(allActs);
+          const recommendations = AIEngine.generateRecommendations(analysis);
+          DB.analisis[userId] = {
+            polaBelajar: analysis,
+            rekomendasi: recommendations,
+            updatedAt: new Date().toISOString(),
+          };
+        },
+      };
+
+      /* ================================================================
+   AI ENGINE — Rule-Based Analysis
+   ================================================================ */
+      const AIEngine = {
+        analyzePatterns(activities) {
+          if (!activities.length) return this.emptyAnalysis();
+
+          const now = new Date();
+          const weekMs = 7 * 86400000;
+
+          // Distribusi waktu belajar
+          const timeSlots = {pagi: 0, siang: 0, sore: 0, malam: 0, larut: 0};
+          let totalDurasi = 0,
+            durations = [];
+          const materiCount = {};
+          const dailyHours = {}; // key: YYYY-MM-DD, value: total minutes
+
+          activities.forEach((a) => {
+            const d = new Date(a.timestamp);
+            const h = d.getHours();
+            totalDurasi += a.durasi;
+            durations.push(a.durasi);
+            materiCount[a.materi] = (materiCount[a.materi] || 0) + 1;
+
+            const dayKey = d.toISOString().slice(0, 10);
+            dailyHours[dayKey] = (dailyHours[dayKey] || 0) + a.durasi;
+
+            if (h >= 6 && h < 12) timeSlots.pagi++;
+            else if (h >= 12 && h < 15) timeSlots.siang++;
+            else if (h >= 15 && h < 18) timeSlots.sore++;
+            else if (h >= 18 && h < 22) timeSlots.malam++;
+            else timeSlots.larut++;
+          });
+
+          // Tipe belajar dominan
+          const maxSlot = Object.entries(timeSlots).sort(
+            (a, b) => b[1] - a[1],
+          )[0];
+          const typeMap = {
+            pagi: "Pagi Hari (06-12)",
+            siang: "Siang Hari (12-15)",
+            sore: "Sore Hari (15-18)",
+            malam: "Malam Hari (18-22)",
+            larut: "Larut Malam (22-06)",
+          };
+          const tipeBelajar = typeMap[maxSlot[0]];
+
+          // Statistik durasi
+          const avgDurasi = totalDurasi / activities.length;
+          const minDurasi = Math.min(...durations);
+          const maxDurasi = Math.max(...durations);
+          const stdDurasi = Math.sqrt(
+            durations.reduce((s, d) => s + Math.pow(d - avgDurasi, 2), 0) /
+              durations.length,
+          );
+          const kategoriDurasi =
+            avgDurasi < 30
+              ? "Kurang Fokus"
+              : avgDurasi < 60
+                ? "Sedang"
+                : avgDurasi < 120
+                  ? "Fokus"
+                  : "Intensif";
+
+          // Konsistensi
+          const dayValues = Object.values(dailyHours);
+          const avgPerDay =
+            dayValues.reduce((s, v) => s + v, 0) / dayValues.length;
+          const stdDay = Math.sqrt(
+            dayValues.reduce((s, v) => s + Math.pow(v - avgPerDay, 2), 0) /
+              dayValues.length,
+          );
+          const consistencyScore = Math.max(
+            0,
+            Math.min(
+              100,
+              Math.round(100 - (stdDay / Math.max(1, avgPerDay)) * 100),
+            ),
+          );
+          const konsistensi =
+            consistencyScore >= 70
+              ? "Konsisten"
+              : consistencyScore >= 40
+                ? "Cukup Konsisten"
+                : "Tidak Konsisten";
+
+          // Frekuensi
+          const totalSessions = activities.length;
+          const activeDays = Object.keys(dailyHours).length;
+          const daysSpan = Math.max(
+            1,
+            Math.ceil(
+              (now - new Date(activities[activities.length - 1].timestamp)) /
+                86400000,
+            ),
+          );
+          const freqPerWeek = (totalSessions / daysSpan) * 7;
+
+          // Materi favorit
+          const topMateri = Object.entries(materiCount)
+            .sort((a, b) => b[1] - a[1])
+            .slice(0, 3);
+
+          // Trend (bandingkan minggu lalu vs minggu ini)
+          const week1 = activities.filter(
+            (a) => now - new Date(a.timestamp) < weekMs,
+          );
+          const week2 = activities.filter((a) => {
+            const diff = now - new Date(a.timestamp);
+            return diff >= weekMs && diff < 2 * weekMs;
+          });
+          const avgW1 = week1.length
+            ? week1.reduce((s, a) => s + a.durasi, 0) / week1.length
+            : 0;
+          const avgW2 = week2.length
+            ? week2.reduce((s, a) => s + a.durasi, 0) / week2.length
+            : 0;
+          const trendPct =
+            avgW2 > 0
+              ? Math.round(((avgW1 - avgW2) / avgW2) * 100)
+              : week1.length > 0
+                ? 50
+                : 0;
+          const tren =
+            trendPct > 10 ? "Meningkat" : trendPct < -10 ? "Menurun" : "Stabil";
+
+          // Skor keseluruhan (0-100)
+          const skor = Math.round(
+            consistencyScore * 0.35 +
+              Math.min(100, (avgDurasi / 90) * 100) * 0.3 +
+              Math.min(100, (freqPerWeek / 7) * 100) * 0.2 +
+              (trendPct > 0 ? 20 : trendPct > -10 ? 10 : 0),
+          );
+
+          // Distribusi per hari dalam seminggu
+          const dayNames = [
+            "Minggu",
+            "Senin",
+            "Selasa",
+            "Rabu",
+            "Kamis",
+            "Jumat",
+            "Sabtu",
+          ];
+          const dayOfWeekDist = [0, 0, 0, 0, 0, 0, 0];
+          const dayOfWeekMinutes = [0, 0, 0, 0, 0, 0, 0];
+          activities.forEach((a) => {
+            const dow = new Date(a.timestamp).getDay();
+            dayOfWeekDist[dow]++;
+            dayOfWeekMinutes[dow] += a.durasi;
+          });
+
+          return {
+            totalSessions,
+            totalDurasi,
+            totalJam: (totalDurasi / 60).toFixed(1),
+            avgDurasi: Math.round(avgDurasi),
+            minDurasi,
+            maxDurasi,
+            stdDurasi: Math.round(stdDurasi),
+            kategoriDurasi,
+            tipeBelajar,
+            konsistensi,
+            consistencyScore,
+            activeDays,
+            daysSpan,
+            freqPerWeek: Math.round(freqPerWeek * 10) / 10,
+            topMateri,
+            tren,
+            trendPct,
+            skor,
+            timeSlots,
+            dayOfWeekDist,
+            dayOfWeekMinutes,
+          };
+        },
+
+        emptyAnalysis() {
+          return {
+            totalSessions: 0,
+            totalDurasi: 0,
+            totalJam: "0",
+            avgDurasi: 0,
+            skor: 0,
+            tren: "Belum ada data",
+            konsistensi: "-",
+            tipeBelajar: "-",
+            kategoriDurasi: "-",
+            topMateri: [],
+            timeSlots: {pagi: 0, siang: 0, sore: 0, malam: 0, larut: 0},
+            dayOfWeekDist: [0, 0, 0, 0, 0, 0, 0],
+            dayOfWeekMinutes: [0, 0, 0, 0, 0, 0, 0],
+          };
+        },
+
+        generateRecommendations(analysis) {
+          if (analysis.totalSessions === 0)
+            return [
+              {
+                icon: "fa-circle-info",
+                color: "text-blue-400",
+                bg: "bg-blue-500/10",
+                title: "Mulai Catat Aktivitas",
+                desc: "Belum ada data belajar. Mulai input aktivitas belajar untuk mendapatkan analisis dan rekomendasi personal.",
+              },
+            ];
+
+          const recs = [];
+
+          // Durasi
+          if (analysis.avgDurasi < 30) {
+            recs.push({
+              icon: "fa-clock",
+              color: "text-amber-400",
+              bg: "bg-amber-500/10",
+              title: "Tingkatkan Durasi Belajar",
+              desc: `Rata-rata belajar Anda hanya ${analysis.avgDurasi} menit per sesi. Disarankan minimal 45-60 menit per sesi agar materi terserap optimal. Gunakan teknik Pomodoro (25 menit fokus + 5 menit istirahat).`,
+            });
+          } else if (analysis.avgDurasi > 120) {
+            recs.push({
+              icon: "fa-hourglass-half",
+              color: "text-orange-400",
+              bg: "bg-orange-500/10",
+              title: "Hindari Belajar Terlalu Lama",
+              desc: `Rata-rata ${analysis.avgDurasi} menit per sesi bisa menyebabkan kelelahan kognitif. Bagi sesi menjadi 2-3 blok dengan istirahat 15-30 menit di antaranya.`,
+            });
+          } else {
+            recs.push({
+              icon: "fa-check-circle",
+              color: "text-emerald-400",
+              bg: "bg-emerald-500/10",
+              title: "Durasi Belajar Baik",
+              desc: `Rata-rata ${analysis.avgDurasi} menit per sesi sudah dalam rentang optimal. Pertahankan konsistensi ini.`,
+            });
+          }
+
+          // Konsistensi
+          if (analysis.consistencyScore < 40) {
+            recs.push({
+              icon: "fa-calendar-xmark",
+              color: "text-red-400",
+              bg: "bg-red-500/10",
+              title: "Tingkatkan Konsistensi",
+              desc: `Pola belajar Anda sangat tidak konsisten. Buat jadwal belajar tetap setiap hari, misalnya jam yang sama. Konsistensi lebih penting daripada durasi panjang.`,
+            });
+          }
+
+          // Waktu
+          if (analysis.tipeBelajar.includes("Larut")) {
+            recs.push({
+              icon: "fa-moon",
+              color: "text-indigo-400",
+              bg: "bg-indigo-500/10",
+              title: "Pertimbangkan Shift Waktu",
+              desc: "Belajar larut malam (>22:00) bisa mengganggu kualitas tidur dan konsentrasi keesokan harinya. Coba mulai belajar lebih awal jika memungkinkan.",
+            });
+          }
+
+          // Frekuensi
+          if (analysis.freqPerWeek < 4) {
+            recs.push({
+              icon: "fa-repeat",
+              color: "text-cyan-400",
+              bg: "bg-cyan-500/10",
+              title: "Tingkatkan Frekuensi",
+              desc: `Anda hanya belajar sekitar ${analysis.freqPerWeek} kali per minggu. Idealnya 5-7 sesi per minggu dengan durasi sedang, daripada 1-2 sesi sangat panjang.`,
+            });
+          }
+
+          // Trend
+          if (analysis.tren === "Menurun") {
+            recs.push({
+              icon: "fa-arrow-trend-down",
+              color: "text-red-400",
+              bg: "bg-red-500/10",
+              title: "Tren Menurun Terdeteksi",
+              desc: `Aktivitas belajar Anda menurun ${Math.abs(analysis.trendPct)}% dibanding minggu sebelumnya. Identifikasi hambatan dan cari motivasi. Diskusi dengan teman atau dosen bisa membantu.`,
+            });
+          } else if (analysis.tren === "Meningkat") {
+            recs.push({
+              icon: "fa-arrow-trend-up",
+              color: "text-emerald-400",
+              bg: "bg-emerald-500/10",
+              title: "Tren Positif",
+              desc: `Aktivitas belajar Anda meningkat ${analysis.trendPct}%. Pertahankan momentum ini dan tetap disiplin dengan jadwal.`,
+            });
+          }
+
+          // Materi
+          if (analysis.topMateri.length >= 1) {
+            const least = analysis.topMateri[analysis.topMateri.length - 1];
+            recs.push({
+              icon: "fa-book-open",
+              color: "text-violet-400",
+              bg: "bg-violet-500/10",
+              title: "Perhatikan Keseimbangan Materi",
+              desc: `Materi yang paling sering dipelajari: ${analysis.topMateri[0][0]}. Pastikan semua materi mendapat porsi yang seimbang, termasuk ${least[0]} yang jarang disentuh.`,
+            });
+          }
+
+          return recs;
+        },
+
+        isAtRisk(analysis) {
+          if (!analysis || analysis.totalSessions === 0) return true;
+          let riskScore = 0;
+          if (analysis.freqPerWeek < 3) riskScore += 3;
+          else if (analysis.freqPerWeek < 5) riskScore += 1;
+          if (analysis.avgDurasi < 25) riskScore += 3;
+          else if (analysis.avgDurasi < 40) riskScore += 1;
+          if (analysis.consistencyScore < 30) riskScore += 3;
+          else if (analysis.consistencyScore < 50) riskScore += 1;
+          if (analysis.tren === "Menurun") riskScore += 2;
+          if (analysis.skor < 30) riskScore += 2;
+          else if (analysis.skor < 50) riskScore += 1;
+          return riskScore >= 5;
+        },
+      };
+
+      /* ================================================================
+   SEED DATA — Data simulasi 6 mahasiswa selama 3 minggu
+   ================================================================ */
+      function seedData() {
+        const materiList = [
+          "Matematika",
+          "Fisika",
+          "Pemrograman",
+          "Basis Data",
+          "Jaringan Komputer",
+          "Algoritma",
+          "Statistika",
+          "Bahasa Inggris",
+        ];
+
+        DB.users = {
+          s1: {
+            id: "s1",
+            name: "Budi Santoso",
+            email: "student@demo.com",
+            password: "password123",
+            role: "student",
+          },
+          s2: {
+            id: "s2",
+            name: "Siti Aminah",
+            email: "siti@demo.com",
+            password: "password123",
+            role: "student",
+          },
+          s3: {
+            id: "s3",
+            name: "Ahmad Rizki",
+            email: "ahmad@demo.com",
+            password: "password123",
+            role: "student",
+          },
+          s4: {
+            id: "s4",
+            name: "Dewi Lestari",
+            email: "dewi@demo.com",
+            password: "password123",
+            role: "student",
+          },
+          s5: {
+            id: "s5",
+            name: "Fajar Pratama",
+            email: "fajar@demo.com",
+            password: "password123",
+            role: "student",
+          },
+          s6: {
+            id: "s6",
+            name: "Rina Wulandari",
+            email: "rina@demo.com",
+            password: "password123",
+            role: "student",
+          },
+          l1: {
+            id: "l1",
+            name: "Dr. Hendra Wijaya",
+            email: "dosen@demo.com",
+            password: "password123",
+            role: "lecturer",
+          },
+        };
+
+        // Generator aktivitas per profil mahasiswa
+        const profiles = {
+          s1: {
+            freq: 0.75,
+            hourRange: [7, 10],
+            durRange: [50, 90],
+            materis: [0, 1, 2],
+          }, // Pagi, konsisten, fokus
+          s2: {
+            freq: 0.45,
+            hourRange: [21, 24],
+            durRange: [10, 30],
+            materis: [0, 2, 3, 4, 5, 6, 7],
+          }, // Malam, tidak konsisten, kurang fokus
+          s3: {
+            freq: 0.6,
+            hourRange: [13, 16],
+            durRange: [35, 65],
+            materis: [2, 3, 5],
+          }, // Siang, cukup
+          s4: {
+            freq: 0.85,
+            hourRange: [8, 21],
+            durRange: [45, 100],
+            materis: [0, 1, 2, 3, 4, 5, 6, 7],
+          }, // All-rounder, tinggi
+          s5: {
+            freq: 0.2,
+            hourRange: [20, 23],
+            durRange: [10, 25],
+            materis: [2, 7],
+          }, // Risk: jarang, singkat
+          s6: {
+            freq: 0.55,
+            hourRange: [10, 20],
+            durRange: [20, 80],
+            materis: [1, 4, 6],
+          }, // Variabel
+        };
+
+        DB.aktivitas = [];
+        for (const [sid, p] of Object.entries(profiles)) {
+          for (let day = 20; day >= 0; day--) {
+            if (Math.random() < p.freq) {
+              const hour =
+                p.hourRange[0] +
+                Math.floor(Math.random() * (p.hourRange[1] - p.hourRange[0]));
+              const min = Math.floor(Math.random() * 60);
+              const dur =
+                p.durRange[0] +
+                Math.floor(Math.random() * (p.durRange[1] - p.durRange[0]));
+              const matIdx =
+                p.materis[Math.floor(Math.random() * p.materis.length)];
+              const ts = new Date(
+                Date.now() - day * 86400000 + hour * 3600000 + min * 60000,
+              );
+              DB.aktivitas.push({
+                id: `act_${sid}_${day}`,
+                userId: sid,
+                materi: materiList[matIdx],
+                durasi: dur,
+                timestamp: ts.toISOString(),
+                catatan: "",
+              });
+            }
+          }
+        }
+
+        // Hitung analisis untuk semua mahasiswa
+        for (const sid of Object.keys(profiles)) {
+          const acts = DB.aktivitas.filter((a) => a.userId === sid);
+          const analysis = AIEngine.analyzePatterns(acts);
+          const recs = AIEngine.generateRecommendations(analysis);
+          DB.analisis[sid] = {
+            polaBelajar: analysis,
+            rekomendasi: recs,
+            updatedAt: new Date().toISOString(),
+          };
+        }
+      }
+
+      /* ================================================================
+   UTILITY FUNCTIONS
+   ================================================================ */
+      function delay(ms) {
+        return new Promise((r) => setTimeout(r, ms));
+      }
+
+      function toast(msg, type = "success") {
+        const el = document.createElement("div");
+        const colors = {
+          success: "border-emerald-500 bg-emerald-500/10",
+          error: "border-red-500 bg-red-500/10",
+          info: "border-blue-500 bg-blue-500/10",
+        };
+        const icons = {
+          success: "fa-check-circle text-emerald-400",
+          error: "fa-times-circle text-red-400",
+          info: "fa-info-circle text-blue-400",
+        };
+        el.className = `toast flex items-center gap-3 px-4 py-3 rounded-xl border ${colors[type]} backdrop-blur-lg text-sm text-gray-200 min-w-[280px]`;
+        el.innerHTML = `<i class="fa-solid ${icons[type]}"></i><span>${msg}</span>`;
+        document.getElementById("toastContainer").appendChild(el);
+        setTimeout(() => el.remove(), 3200);
+      }
+
+      function formatTime(iso) {
+        const d = new Date(iso);
+        return (
+          d.toLocaleDateString("id-ID", {
+            day: "numeric",
+            month: "short",
+            year: "numeric",
+          }) +
+          " " +
+          d.toLocaleTimeString("id-ID", {hour: "2-digit", minute: "2-digit"})
+        );
+      }
+
+      function getInitials(name) {
+        return name
+          .split(" ")
+          .map((w) => w[0])
+          .join("")
+          .slice(0, 2)
+          .toUpperCase();
+      }
+
+      let chartInstances = {};
+      function destroyCharts(prefix) {
+        Object.keys(chartInstances).forEach((k) => {
+          if (k.startsWith(prefix)) {
+            chartInstances[k].destroy();
+            delete chartInstances[k];
+          }
+        });
+      }
+
+      function toggleSidebar() {
+        document.getElementById("sidebar").classList.toggle("open");
+        document.getElementById("sidebarOverlay").classList.toggle("hidden");
+      }
+      function toggleSidebarLect() {
+        document.getElementById("sidebarLect").classList.toggle("open");
+        document
+          .getElementById("sidebarOverlayLect")
+          .classList.toggle("hidden");
+      }
+
+      /* ================================================================
+   APP CONTROLLER
+   ================================================================ */
+      const App = {
+        currentUser: null,
+
+        init() {
+          seedData();
+          // Cek session tersimpan
+          const saved = localStorage.getItem("edupattern_session");
+          if (saved) {
+            this.currentUser = JSON.parse(saved);
+            this.showDashboard();
+          }
+        },
+
+        async login(email, password) {
+          const user = await FireAuth.signIn(email, password);
+          this.currentUser = user;
+          localStorage.setItem("edupattern_session", JSON.stringify(user));
+          this.showDashboard();
+          toast(`Selamat datang, ${user.displayName}!`);
+        },
+
+        async register(name, email, password, role) {
+          const user = await FireAuth.signUp(name, email, password, role);
+          this.currentUser = user;
+          localStorage.setItem("edupattern_session", JSON.stringify(user));
+          this.showDashboard();
+          toast("Akun berhasil dibuat!");
+        },
+
+        logout() {
+          FireAuth.signOut();
+          this.currentUser = null;
+          localStorage.removeItem("edupattern_session");
+          document.getElementById("authPage").classList.remove("hidden");
+          document.getElementById("studentDash").classList.add("hidden");
+          document.getElementById("lecturerDash").classList.add("hidden");
+          destroyCharts("all");
+          toast("Berhasil keluar", "info");
+        },
+
+        showDashboard() {
+          document.getElementById("authPage").classList.add("hidden");
+          if (this.currentUser.role === "student") {
+            document.getElementById("studentDash").classList.remove("hidden");
+            document.getElementById("lecturerDash").classList.add("hidden");
+            document.getElementById("studentName").textContent =
+              this.currentUser.displayName;
+            document.getElementById("studentAvatar").textContent = getInitials(
+              this.currentUser.displayName,
+            );
+            StudentView.showTab("overview");
+          } else {
+            document.getElementById("lecturerDash").classList.remove("hidden");
+            document.getElementById("studentDash").classList.add("hidden");
+            document.getElementById("lectName").textContent =
+              this.currentUser.displayName;
+            document.getElementById("lectAvatar").textContent = getInitials(
+              this.currentUser.displayName,
+            );
+            LecturerView.showTab("overview");
+          }
+        },
+      };
+
+      /* ================================================================
+   STUDENT VIEW
+   ================================================================ */
+      const StudentView = {
+        currentTab: "overview",
+
+        async showTab(tab) {
+          this.currentTab = tab;
+          // Update sidebar active
+          document
+            .querySelectorAll("#studentDash .sidebar-link")
+            .forEach((el) => {
+              el.classList.toggle("active", el.dataset.tab === tab);
+            });
+          // Close mobile sidebar
+          document.getElementById("sidebar").classList.remove("open");
+          document.getElementById("sidebarOverlay").classList.add("hidden");
+
+          const container = document.getElementById("studentContent");
+          destroyCharts("stud_");
+
+          if (tab === "overview") await this.renderOverview(container);
+          else if (tab === "input") this.renderInput(container);
+          else if (tab === "patterns") await this.renderPatterns(container);
+          else if (tab === "recommendations")
+            await this.renderRecommendations(container);
+        },
+
+        async renderOverview(el) {
+          const analysis = await FireStore.getAnalysis(App.currentUser.uid);
+          const a = analysis?.polaBelajar || AIEngine.emptyAnalysis();
+          const recentActs = await FireStore.getActivities(App.currentUser.uid);
+          const recent = recentActs.slice(0, 5);
+
+          el.innerHTML = `
+        <div class="fade-in">
+            <div class="mb-6">
+                <h2 class="text-xl font-bold text-white">Selamat Datang, ${App.currentUser.displayName}</h2>
+                <p class="text-sm text-gray-400 mt-1">Ringkasan pola belajar Anda berdasarkan ${a.totalSessions} sesi tercatat</p>
+            </div>
+
+            <!-- Stat Cards -->
+            <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-6">
+                ${this.statCard("fa-book-open", "Total Sesi", a.totalSessions + " sesi", "text-brand-400", "bg-brand-500/10")}
+                ${this.statCard("fa-clock", "Total Jam", a.totalJam + " jam", "text-emerald-400", "bg-emerald-500/10")}
+                ${this.statCard("fa-gauge-high", "Skor Belajar", a.skor + "/100", a.skor >= 70 ? "text-emerald-400" : a.skor >= 40 ? "text-amber-400" : "text-red-400", a.skor >= 70 ? "bg-emerald-500/10" : a.skor >= 40 ? "bg-amber-500/10" : "bg-red-500/10")}
+                ${this.statCard("fa-arrow-trend-up", "Tren", a.tren + (a.trendPct ? ` (${a.trendPct > 0 ? "+" : ""}${a.trendPct}%)` : ""), a.tren === "Meningkat" ? "text-emerald-400" : a.tren === "Menurun" ? "text-red-400" : "text-gray-400", a.tren === "Meningkat" ? "bg-emerald-500/10" : a.tren === "Menurun" ? "bg-red-500/10" : "bg-surface-600")}
+            </div>
+
+            <!-- Insight Cards -->
+            <div class="grid md:grid-cols-3 gap-3 mb-6">
+                <div class="glass rounded-xl p-4">
+                    <p class="text-[11px] text-gray-500 uppercase tracking-wider mb-1">Tipe Belajar</p>
+                    <p class="text-sm font-semibold text-white"><i class="fa-solid fa-sun text-brand-400 mr-2"></i>${a.tipeBelajar}</p>
+                </div>
+                <div class="glass rounded-xl p-4">
+                    <p class="text-[11px] text-gray-500 uppercase tracking-wider mb-1">Konsistensi</p>
+                    <p class="text-sm font-semibold text-white"><i class="fa-solid fa-repeat ${a.consistencyScore >= 70 ? "text-emerald-400" : a.consistencyScore >= 40 ? "text-amber-400" : "text-red-400"} mr-2"></i>${a.konsistensi} <span class="text-gray-500">(${a.consistencyScore}/100)</span></p>
+                </div>
+                <div class="glass rounded-xl p-4">
+                    <p class="text-[11px] text-gray-500 uppercase tracking-wider mb-1">Kategori Durasi</p>
+                    <p class="text-sm font-semibold text-white"><i class="fa-solid fa-hourglass-half text-violet-400 mr-2"></i>${a.kategoriDurasi} <span class="text-gray-500">(~${a.avgDurasi} min)</span></p>
+                </div>
+            </div>
+
+            <!-- Mini Chart + Recent -->
+            <div class="grid lg:grid-cols-5 gap-4">
+                <div class="lg:col-span-3 glass rounded-xl p-5">
+                    <h3 class="text-sm font-semibold text-white mb-4">Distribusi Belajar per Hari</h3>
+                    <canvas id="stud_overview_chart" height="180"></canvas>
+                </div>
+                <div class="lg:col-span-2 glass rounded-xl p-5">
+                    <h3 class="text-sm font-semibold text-white mb-4">Aktivitas Terakhir</h3>
+                    <div class="space-y-2.5 max-h-[220px] overflow-y-auto pr-1">
+                        ${
+                          recent.length
+                            ? recent
+                                .map(
+                                  (act) => `
+                            <div class="flex items-center gap-3 py-2 border-b border-white/5 last:border-0">
+                                <div class="w-8 h-8 rounded-lg bg-brand-500/10 flex items-center justify-center flex-shrink-0"><i class="fa-solid fa-book text-brand-400 text-xs"></i></div>
+                                <div class="flex-1 min-w-0">
+                                    <p class="text-xs font-medium text-gray-200 truncate">${act.materi}</p>
+                                    <p class="text-[10px] text-gray-500">${formatTime(act.timestamp)}</p>
+                                </div>
+                                <span class="text-xs font-semibold text-brand-400">${act.durasi}m</span>
+                            </div>
+                        `,
+                                )
+                                .join("")
+                            : '<p class="text-xs text-gray-500 py-4 text-center">Belum ada aktivitas</p>'
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>`;
+
+          // Render mini chart
+          const ctx = document.getElementById("stud_overview_chart");
+          if (ctx) {
+            chartInstances["stud_overview"] = new Chart(ctx, {
+              type: "bar",
+              data: {
+                labels: ["Min", "Sen", "Sel", "Rab", "Kam", "Jum", "Sab"],
+                datasets: [
+                  {
+                    label: "Menit",
+                    data: a.dayOfWeekMinutes,
+                    backgroundColor: "rgba(245,158,11,0.5)",
+                    borderColor: "#f59e0b",
+                    borderWidth: 1,
+                    borderRadius: 6,
+                  },
+                ],
+              },
+              options: {
+                responsive: true,
+                plugins: {legend: {display: false}},
+                scales: {
+                  y: {
+                    beginAtZero: true,
+                    grid: {color: "rgba(255,255,255,0.03)"},
+                    ticks: {color: "#6b7280", font: {size: 11}},
+                  },
+                  x: {
+                    grid: {display: false},
+                    ticks: {color: "#6b7280", font: {size: 11}},
+                  },
+                },
+              },
+            });
+          }
+        },
+
+        statCard(icon, label, value, colorClass, bgClass) {
+          return `<div class="glass rounded-xl p-4 flex items-start gap-3">
+            <div class="stat-icon w-10 h-10 rounded-xl ${bgClass} flex items-center justify-center flex-shrink-0"><i class="fa-solid ${icon} ${colorClass}"></i></div>
+            <div><p class="text-[11px] text-gray-500">${label}</p><p class="text-sm font-bold text-white mt-0.5">${value}</p></div>
+        </div>`;
+        },
+
+        renderInput(el) {
+          const materiList = [
+            "Matematika",
+            "Fisika",
+            "Pemrograman",
+            "Basis Data",
+            "Jaringan Komputer",
+            "Algoritma",
+            "Statistika",
+            "Bahasa Inggris",
+          ];
+          const now = new Date();
+          const dateStr = now.toISOString().slice(0, 10);
+          const timeStr = now.toTimeString().slice(0, 5);
+
+          el.innerHTML = `
+        <div class="fade-in">
+            <div class="mb-6">
+                <h2 class="text-xl font-bold text-white">Input Aktivitas Belajar</h2>
+                <p class="text-sm text-gray-400 mt-1">Catat setiap sesi belajar untuk analisis yang akurat</p>
+            </div>
+            <div class="glass rounded-xl p-6 max-w-xl">
+                <form id="activityForm" onsubmit="StudentView.submitActivity(event)" class="space-y-5">
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-medium text-gray-400 mb-1.5">Tanggal</label>
+                            <input type="date" id="actDate" value="${dateStr}" required class="w-full px-4 py-2.5 rounded-xl text-sm">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-medium text-gray-400 mb-1.5">Jam Mulai</label>
+                            <input type="time" id="actTime" value="${timeStr}" required class="w-full px-4 py-2.5 rounded-xl text-sm">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-gray-400 mb-1.5">Materi</label>
+                        <select id="actMateri" required class="w-full px-4 py-2.5 rounded-xl text-sm">
+                            <option value="">Pilih materi...</option>
+                            ${materiList.map((m) => `<option value="${m}">${m}</option>`).join("")}
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-gray-400 mb-1.5">Durasi: <span id="durVal" class="text-brand-400 font-bold">45</span> menit</label>
+                        <input type="range" id="actDurasi" min="5" max="180" value="45" step="5" oninput="document.getElementById('durVal').textContent=this.value" class="w-full">
+                        <div class="flex justify-between text-[10px] text-gray-600 mt-1"><span>5 min</span><span>90 min</span><span>180 min</span></div>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-gray-400 mb-1.5">Catatan (opsional)</label>
+                        <textarea id="actCatatan" rows="2" class="w-full px-4 py-2.5 rounded-xl text-sm resize-none" placeholder="Contoh: Membahas bab 3, latihan soal..."></textarea>
+                    </div>
+                    <button type="submit" class="w-full py-3 rounded-xl bg-brand-500 hover:bg-brand-600 text-black font-semibold text-sm transition-all hover:shadow-lg hover:shadow-brand-500/20">
+                        <i class="fa-solid fa-paper-plane mr-2"></i>Simpan Aktivitas
+                    </button>
+                </form>
+            </div>
+
+            <!-- Riwayat singkat -->
+            <div class="glass rounded-xl p-5 mt-4 max-w-xl">
+                <h3 class="text-sm font-semibold text-white mb-3">Riwayat Terakhir</h3>
+                <div id="recentList" class="space-y-2"></div>
+            </div>
+        </div>`;
+
+          this.loadRecentList();
+        },
+
+        async loadRecentList() {
+          const acts = await FireStore.getActivities(App.currentUser.uid);
+          const list = document.getElementById("recentList");
+          if (!list) return;
+          const recent = acts.slice(0, 8);
+          list.innerHTML = recent.length
+            ? recent
+                .map(
+                  (a) => `
+            <div class="flex items-center gap-3 py-2 border-b border-white/5 last:border-0">
+                <div class="w-7 h-7 rounded-lg bg-surface-600 flex items-center justify-center"><i class="fa-solid fa-book text-gray-400 text-[10px]"></i></div>
+                <div class="flex-1 min-w-0">
+                    <p class="text-xs text-gray-300">${a.materi} <span class="text-gray-600">·</span> <span class="text-brand-400 font-medium">${a.durasi}m</span></p>
+                    <p class="text-[10px] text-gray-600">${formatTime(a.timestamp)}</p>
+                </div>
+            </div>
+        `,
+                )
+                .join("")
+            : '<p class="text-xs text-gray-600 py-3 text-center">Belum ada data</p>';
+        },
+
+        async submitActivity(e) {
+          e.preventDefault();
+          const date = document.getElementById("actDate").value;
+          const time = document.getElementById("actTime").value;
+          const timestamp = new Date(date + "T" + time).toISOString();
+          const data = {
+            userId: App.currentUser.uid,
+            materi: document.getElementById("actMateri").value,
+            durasi: parseInt(document.getElementById("actDurasi").value),
+            timestamp,
+            catatan: document.getElementById("actCatatan").value,
+          };
+          await FireStore.addActivity(data);
+          toast("Aktivitas berhasil disimpan! Analisis diperbarui.");
+          document.getElementById("activityForm").reset();
+          document.getElementById("durVal").textContent = "45";
+          this.loadRecentList();
+        },
+
+        async renderPatterns(el) {
+          const analysis = await FireStore.getAnalysis(App.currentUser.uid);
+          const a = analysis?.polaBelajar || AIEngine.emptyAnalysis();
+
+          el.innerHTML = `
+        <div class="fade-in">
+            <div class="mb-6">
+                <h2 class="text-xl font-bold text-white">Pola Belajar</h2>
+                <p class="text-sm text-gray-400 mt-1">Visualisasi mendalam dari kebiasaan belajar Anda</p>
+            </div>
+
+            <div class="grid lg:grid-cols-2 gap-4 mb-4">
+                <div class="glass rounded-xl p-5">
+                    <h3 class="text-sm font-semibold text-white mb-4">Distribusi Waktu Belajar</h3>
+                    <canvas id="stud_time_pie" height="220"></canvas>
+                </div>
+                <div class="glass rounded-xl p-5">
+                    <h3 class="text-sm font-semibold text-white mb-4">Durasi per Hari (Menit)</h3>
+                    <canvas id="stud_day_bar" height="220"></canvas>
+                </div>
+            </div>
+            <div class="glass rounded-xl p-5">
+                <h3 class="text-sm font-semibold text-white mb-4">Materi yang Dipelajari</h3>
+                <canvas id="stud_materi_bar" height="160"></canvas>
+            </div>
+
+            <!-- Detail Stats -->
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mt-4">
+                <div class="glass rounded-xl p-3 text-center">
+                    <p class="text-[10px] text-gray-500 uppercase">Rata-rata</p>
+                    <p class="text-lg font-bold text-white">${a.avgDurasi}<span class="text-xs text-gray-500 ml-1">min</span></p>
+                </div>
+                <div class="glass rounded-xl p-3 text-center">
+                    <p class="text-[10px] text-gray-500 uppercase">Terpendek</p>
+                    <p class="text-lg font-bold text-white">${a.minDurasi}<span class="text-xs text-gray-500 ml-1">min</span></p>
+                </div>
+                <div class="glass rounded-xl p-3 text-center">
+                    <p class="text-[10px] text-gray-500 uppercase">Terpanjang</p>
+                    <p class="text-lg font-bold text-white">${a.maxDurasi}<span class="text-xs text-gray-500 ml-1">min</span></p>
+                </div>
+                <div class="glass rounded-xl p-3 text-center">
+                    <p class="text-[10px] text-gray-500 uppercase">Frekuensi/Minggu</p>
+                    <p class="text-lg font-bold text-white">${a.freqPerWeek}<span class="text-xs text-gray-500 ml-1">x</span></p>
+                </div>
+            </div>
+        </div>`;
+
+          // Pie chart — distribusi waktu
+          const slotLabels = [
+            "Pagi (06-12)",
+            "Siang (12-15)",
+            "Sore (15-18)",
+            "Malam (18-22)",
+            "Larut (22-06)",
+          ];
+          const slotColors = [
+            "#fbbf24",
+            "#10b981",
+            "#f97316",
+            "#6366f1",
+            "#8b5cf6",
+          ];
+          const slotData = [
+            a.timeSlots.pagi,
+            a.timeSlots.siang,
+            a.timeSlots.sore,
+            a.timeSlots.malam,
+            a.timeSlots.larut,
+          ];
+
+          chartInstances["stud_time_pie"] = new Chart(
+            document.getElementById("stud_time_pie"),
+            {
+              type: "doughnut",
+              data: {
+                labels: slotLabels,
+                datasets: [
+                  {data: slotData, backgroundColor: slotColors, borderWidth: 0},
+                ],
+              },
+              options: {
+                responsive: true,
+                cutout: "60%",
+                plugins: {
+                  legend: {
+                    position: "bottom",
+                    labels: {color: "#9ca3af", padding: 12, font: {size: 11}},
+                  },
+                },
+              },
+            },
+          );
+
+          // Bar chart — per hari
+          chartInstances["stud_day_bar"] = new Chart(
+            document.getElementById("stud_day_bar"),
+            {
+              type: "bar",
+              data: {
+                labels: ["Min", "Sen", "Sel", "Rab", "Kam", "Jum", "Sab"],
+                datasets: [
+                  {
+                    label: "Menit",
+                    data: a.dayOfWeekMinutes,
+                    backgroundColor: "rgba(245,158,11,0.6)",
+                    borderColor: "#f59e0b",
+                    borderWidth: 1,
+                    borderRadius: 8,
+                  },
+                ],
+              },
+              options: {
+                responsive: true,
+                plugins: {legend: {display: false}},
+                scales: {
+                  y: {
+                    beginAtZero: true,
+                    grid: {color: "rgba(255,255,255,0.03)"},
+                    ticks: {color: "#6b7280"},
+                  },
+                  x: {grid: {display: false}, ticks: {color: "#6b7280"}},
+                },
+              },
+            },
+          );
+
+          // Materi bar
+          if (a.topMateri.length) {
+            chartInstances["stud_materi_bar"] = new Chart(
+              document.getElementById("stud_materi_bar"),
+              {
+                type: "bar",
+                data: {
+                  labels: a.topMateri.map((m) => m[0]),
+                  datasets: [
+                    {
+                      label: "Sesi",
+                      data: a.topMateri.map((m) => m[1]),
+                      backgroundColor: [
+                        "#f59e0b",
+                        "#6366f1",
+                        "#10b981",
+                        "#ef4444",
+                        "#8b5cf6",
+                        "#f97316",
+                        "#06b6d4",
+                        "#ec4899",
+                      ],
+                      borderWidth: 0,
+                      borderRadius: 8,
+                    },
+                  ],
+                },
+                options: {
+                  responsive: true,
+                  indexAxis: "y",
+                  plugins: {legend: {display: false}},
+                  scales: {
+                    x: {
+                      beginAtZero: true,
+                      grid: {color: "rgba(255,255,255,0.03)"},
+                      ticks: {color: "#6b7280", stepSize: 1},
+                    },
+                    y: {
+                      grid: {display: false},
+                      ticks: {color: "#e5e5e5", font: {size: 12}},
+                    },
+                  },
+                },
+              },
+            );
+          }
+        },
+
+        async renderRecommendations(el) {
+          const analysis = await FireStore.getAnalysis(App.currentUser.uid);
+          const recs =
+            analysis?.rekomendasi ||
+            AIEngine.generateRecommendations(AIEngine.emptyAnalysis());
+          const a = analysis?.polaBelajar || AIEngine.emptyAnalysis();
+
+          el.innerHTML = `
+        <div class="fade-in">
+            <div class="mb-6">
+                <h2 class="text-xl font-bold text-white">Rekomendasi AI</h2>
+                <p class="text-sm text-gray-400 mt-1">Saran personal berdasarkan analisis pola belajar Anda</p>
+            </div>
+
+            <!-- Skor Ring -->
+            <div class="glass rounded-xl p-6 mb-6 flex flex-col md:flex-row items-center gap-6">
+                <div class="relative w-32 h-32 flex-shrink-0">
+                    <svg viewBox="0 0 120 120" class="w-full h-full -rotate-90">
+                        <circle cx="60" cy="60" r="52" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="8"/>
+                        <circle cx="60" cy="60" r="52" fill="none" stroke="${a.skor >= 70 ? "#10b981" : a.skor >= 40 ? "#f59e0b" : "#ef4444"}" stroke-width="8" stroke-linecap="round"
+                            stroke-dasharray="${2 * Math.PI * 52}" stroke-dashoffset="${2 * Math.PI * 52 * (1 - a.skor / 100)}" style="transition:stroke-dashoffset 1s ease"/>
+                    </svg>
+                    <div class="absolute inset-0 flex flex-col items-center justify-center">
+                        <span class="text-2xl font-bold text-white">${a.skor}</span>
+                        <span class="text-[10px] text-gray-500">dari 100</span>
+                    </div>
+                </div>
+                <div>
+                    <h3 class="text-lg font-bold text-white mb-1">Skor Belajar Anda: ${a.skor >= 70 ? "Baik" : a.skor >= 40 ? "Cukup" : "Perlu Perhatian"}</h3>
+                    <p class="text-sm text-gray-400 leading-relaxed">${a.skor >= 70 ? "Pola belajar Anda termasuk baik dan konsisten. Terus pertahankan kebiasaan ini dan fokus pada materi yang masih tertinggal." : a.skor >= 40 ? "Pola belajar Anda cukup namun masih bisa ditingkatkan. Perhatikan rekomendasi di bawah untuk meningkatkan efektivitas belajar." : "Pola belajar Anda menunjukkan beberapa permasalahan. Segera terapkan rekomendasi di bawah untuk meningkatkan performa."}</p>
+                </div>
+            </div>
+
+            <!-- Recommendation Cards -->
+            <div class="space-y-3">
+                ${recs
+                  .map(
+                    (r) => `
+                    <div class="glass rounded-xl p-5 flex items-start gap-4">
+                        <div class="w-10 h-10 rounded-xl ${r.bg} flex items-center justify-center flex-shrink-0"><i class="fa-solid ${r.icon} ${r.color}"></i></div>
+                        <div>
+                            <h4 class="text-sm font-semibold text-white mb-1">${r.title}</h4>
+                            <p class="text-sm text-gray-400 leading-relaxed">${r.desc}</p>
+                        </div>
+                    </div>
+                `,
+                  )
+                  .join("")}
+            </div>
+        </div>`;
+        },
+      };
+
+      /* ================================================================
+   LECTURER VIEW
+   ================================================================ */
+      const LecturerView = {
+        currentTab: "overview",
+
+        async showTab(tab) {
+          this.currentTab = tab;
+          document
+            .querySelectorAll("#lecturerDash .sidebar-link")
+            .forEach((el) => {
+              el.classList.toggle("active", el.dataset.tab === tab);
+            });
+          document.getElementById("sidebarLect").classList.remove("open");
+          document.getElementById("sidebarOverlayLect").classList.add("hidden");
+
+          const container = document.getElementById("lecturerContent");
+          destroyCharts("lect_");
+
+          if (tab === "overview") await this.renderOverview(container);
+          else if (tab === "monitoring") await this.renderMonitoring(container);
+          else if (tab === "performance")
+            await this.renderPerformance(container);
+          else if (tab === "atrisk") await this.renderAtRisk(container);
+        },
+
+        async renderOverview(el) {
+          const students = await FireStore.getAllStudents();
+          let totalSkor = 0,
+            totalSesi = 0,
+            atRiskCount = 0;
+          const studentStats = [];
+
+          for (const s of students) {
+            const a =
+              DB.analisis[s.id]?.polaBelajar || AIEngine.emptyAnalysis();
+            totalSkor += a.skor;
+            totalSesi += a.totalSessions;
+            if (AIEngine.isAtRisk(a)) atRiskCount++;
+            studentStats.push({...s, analysis: a});
+          }
+
+          const avgSkor = students.length
+            ? Math.round(totalSkor / students.length)
+            : 0;
+
+          el.innerHTML = `
+        <div class="fade-in">
+            <div class="mb-6">
+                <h2 class="text-xl font-bold text-white">Dashboard Dosen</h2>
+                <p class="text-sm text-gray-400 mt-1">Monitoring performa ${students.length} mahasiswa</p>
+            </div>
+
+            <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-6">
+                ${StudentView.statCard("fa-users", "Total Mahasiswa", students.length + " orang", "text-brand-400", "bg-brand-500/10")}
+                ${StudentView.statCard("fa-chart-simple", "Rata-rata Skor", avgSkor + "/100", avgSkor >= 60 ? "text-emerald-400" : "text-amber-400", avgSkor >= 60 ? "bg-emerald-500/10" : "bg-amber-500/10")}
+                ${StudentView.statCard("fa-book-open", "Total Sesi", totalSesi + " sesi", "text-cyan-400", "bg-cyan-500/10")}
+                ${StudentView.statCard("fa-triangle-exclamation", "Berisiko", atRiskCount + " mahasiswa", atRiskCount > 0 ? "text-red-400" : "text-emerald-400", atRiskCount > 0 ? "bg-red-500/10" : "bg-emerald-500/10")}
+            </div>
+
+            <div class="grid lg:grid-cols-2 gap-4">
+                <div class="glass rounded-xl p-5">
+                    <h3 class="text-sm font-semibold text-white mb-4">Skor Per Mahasiswa</h3>
+                    <canvas id="lect_score_chart" height="220"></canvas>
+                </div>
+                <div class="glass rounded-xl p-5">
+                    <h3 class="text-sm font-semibold text-white mb-4">Distribusi Tipe Belajar</h3>
+                    <canvas id="lect_type_chart" height="220"></canvas>
+                </div>
+            </div>
+        </div>`;
+
+          // Skor chart
+          chartInstances["lect_score_chart"] = new Chart(
+            document.getElementById("lect_score_chart"),
+            {
+              type: "bar",
+              data: {
+                labels: studentStats.map((s) => s.name.split(" ")[0]),
+                datasets: [
+                  {
+                    label: "Skor",
+                    data: studentStats.map((s) => s.analysis.skor),
+                    backgroundColor: studentStats.map((s) =>
+                      s.analysis.skor >= 70
+                        ? "rgba(16,185,129,0.6)"
+                        : s.analysis.skor >= 40
+                          ? "rgba(245,158,11,0.6)"
+                          : "rgba(239,68,68,0.6)",
+                    ),
+                    borderColor: studentStats.map((s) =>
+                      s.analysis.skor >= 70
+                        ? "#10b981"
+                        : s.analysis.skor >= 40
+                          ? "#f59e0b"
+                          : "#ef4444",
+                    ),
+                    borderWidth: 1,
+                    borderRadius: 8,
+                  },
+                ],
+              },
+              options: {
+                responsive: true,
+                plugins: {legend: {display: false}},
+                scales: {
+                  y: {
+                    beginAtZero: true,
+                    max: 100,
+                    grid: {color: "rgba(255,255,255,0.03)"},
+                    ticks: {color: "#6b7280"},
+                  },
+                  x: {grid: {display: false}, ticks: {color: "#6b7280"}},
+                },
+              },
+            },
+          );
+
+          // Tipe belajar pie
+          const typeCount = {};
+          studentStats.forEach((s) => {
+            const t = s.analysis.tipeBelajar.split(" ")[0];
+            typeCount[t] = (typeCount[t] || 0) + 1;
+          });
+          const typeColors = [
+            "#fbbf24",
+            "#10b981",
+            "#f97316",
+            "#6366f1",
+            "#8b5cf6",
+            "#ec4899",
+          ];
+          chartInstances["lect_type_chart"] = new Chart(
+            document.getElementById("lect_type_chart"),
+            {
+              type: "doughnut",
+              data: {
+                labels: Object.keys(typeCount),
+                datasets: [
+                  {
+                    data: Object.values(typeCount),
+                    backgroundColor: typeColors.slice(
+                      0,
+                      Object.keys(typeCount).length,
+                    ),
+                    borderWidth: 0,
+                  },
+                ],
+              },
+              options: {
+                responsive: true,
+                cutout: "60%",
+                plugins: {
+                  legend: {
+                    position: "bottom",
+                    labels: {color: "#9ca3af", padding: 12, font: {size: 11}},
+                  },
+                },
+              },
+            },
+          );
+        },
+
+        async renderMonitoring(el) {
+          const students = await FireStore.getAllStudents();
+          const rows = [];
+          for (const s of students) {
+            const a =
+              DB.analisis[s.id]?.polaBelajar || AIEngine.emptyAnalysis();
+            const isRisk = AIEngine.isAtRisk(a);
+            rows.push({...s, analysis: a, isRisk});
+          }
+
+          el.innerHTML = `
+        <div class="fade-in">
+            <div class="mb-6">
+                <h2 class="text-xl font-bold text-white">Monitoring Mahasiswa</h2>
+                <p class="text-sm text-gray-400 mt-1">Detail performa setiap mahasiswa</p>
+            </div>
+            <div class="glass rounded-xl overflow-hidden">
+                <div class="overflow-x-auto">
+                    <table class="w-full text-sm">
+                        <thead>
+                            <tr class="border-b border-white/5">
+                                <th class="text-left px-5 py-3 text-[11px] text-gray-500 uppercase tracking-wider font-medium">Mahasiswa</th>
+                                <th class="text-left px-5 py-3 text-[11px] text-gray-500 uppercase tracking-wider font-medium">Sesi</th>
+                                <th class="text-left px-5 py-3 text-[11px] text-gray-500 uppercase tracking-wider font-medium">Jam</th>
+                                <th class="text-left px-5 py-3 text-[11px] text-gray-500 uppercase tracking-wider font-medium">Rata-rata</th>
+                                <th class="text-left px-5 py-3 text-[11px] text-gray-500 uppercase tracking-wider font-medium">Konsistensi</th>
+                                <th class="text-left px-5 py-3 text-[11px] text-gray-500 uppercase tracking-wider font-medium">Tipe</th>
+                                <th class="text-left px-5 py-3 text-[11px] text-gray-500 uppercase tracking-wider font-medium">Skor</th>
+                                <th class="text-left px-5 py-3 text-[11px] text-gray-500 uppercase tracking-wider font-medium">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${rows
+                              .map(
+                                (r) => `
+                                <tr class="tbl-row border-b border-white/5 last:border-0 cursor-pointer" onclick="LecturerView.showStudentDetail('${r.id}')">
+                                    <td class="px-5 py-3">
+                                        <div class="flex items-center gap-3">
+                                            <div class="w-7 h-7 rounded-full bg-surface-500 flex items-center justify-center text-[10px] font-bold text-gray-300">${getInitials(r.name)}</div>
+                                            <span class="text-gray-200 font-medium">${r.name}</span>
+                                        </div>
+                                    </td>
+                                    <td class="px-5 py-3 text-gray-400">${r.analysis.totalSessions}</td>
+                                    <td class="px-5 py-3 text-gray-400">${r.analysis.totalJam}</td>
+                                    <td class="px-5 py-3 text-gray-400">${r.analysis.avgDurasi}m</td>
+                                    <td class="px-5 py-3">
+                                        <div class="flex items-center gap-2">
+                                            <div class="w-16 h-1.5 rounded-full bg-surface-600"><div class="h-full rounded-full ${r.analysis.consistencyScore >= 70 ? "bg-emerald-500" : r.analysis.consistencyScore >= 40 ? "bg-amber-500" : "bg-red-500"}" style="width:${r.analysis.consistencyScore}%"></div></div>
+                                            <span class="text-[11px] text-gray-500">${r.analysis.consistencyScore}</span>
+                                        </div>
+                                    </td>
+                                    <td class="px-5 py-3 text-gray-400 text-xs">${r.analysis.tipeBelajar.split("(")[0].trim()}</td>
+                                    <td class="px-5 py-3 font-bold ${r.analysis.skor >= 70 ? "text-emerald-400" : r.analysis.skor >= 40 ? "text-amber-400" : "text-red-400"}">${r.analysis.skor}</td>
+                                    <td class="px-5 py-3">
+                                        ${
+                                          r.isRisk
+                                            ? '<span class="badge bg-red-500/15 text-red-400"><i class="fa-solid fa-circle text-[6px]"></i>Bermasalah</span>'
+                                            : '<span class="badge bg-emerald-500/15 text-emerald-400"><i class="fa-solid fa-circle text-[6px]"></i>Aktif</span>'
+                                        }
+                                    </td>
+                                </tr>
+                            `,
+                              )
+                              .join("")}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>`;
+        },
+
+        async showStudentDetail(studentId) {
+          const student = DB.users[studentId];
+          const a =
+            DB.analisis[studentId]?.polaBelajar || AIEngine.emptyAnalysis();
+          const recs = DB.analisis[studentId]?.rekomendasi || [];
+          const acts = DB.aktivitas
+            .filter((act) => act.userId === studentId)
+            .slice(0, 10);
+
+          const container = document.getElementById("lecturerContent");
+          destroyCharts("lect_");
+
+          container.innerHTML = `
+        <div class="fade-in">
+            <button onclick="LecturerView.showTab('monitoring')" class="flex items-center gap-2 text-sm text-gray-400 hover:text-brand-500 mb-4 transition-colors">
+                <i class="fa-solid fa-arrow-left"></i> Kembali ke Monitoring
+            </button>
+
+            <div class="glass rounded-xl p-6 mb-4">
+                <div class="flex items-center gap-4 mb-4">
+                    <div class="w-12 h-12 rounded-xl bg-brand-500/10 flex items-center justify-center text-brand-500 font-bold">${getInitials(student.name)}</div>
+                    <div>
+                        <h2 class="text-lg font-bold text-white">${student.name}</h2>
+                        <p class="text-xs text-gray-500">${student.email}</p>
+                    </div>
+                    <div class="ml-auto">
+                        ${
+                          AIEngine.isAtRisk(a)
+                            ? '<span class="badge bg-red-500/15 text-red-400 text-sm px-4 py-1"><i class="fa-solid fa-triangle-exclamation mr-1"></i>Bermasalah</span>'
+                            : '<span class="badge bg-emerald-500/15 text-emerald-400 text-sm px-4 py-1"><i class="fa-solid fa-check mr-1"></i>Aktif</span>'
+                        }
+                    </div>
+                </div>
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+                    ${StudentView.statCard("fa-gauge-high", "Skor", a.skor + "/100", a.skor >= 70 ? "text-emerald-400" : a.skor >= 40 ? "text-amber-400" : "text-red-400", a.skor >= 70 ? "bg-emerald-500/10" : a.skor >= 40 ? "bg-amber-500/10" : "bg-red-500/10")}
+                    ${StudentView.statCard("fa-clock", "Total Jam", a.totalJam + " jam", "text-brand-400", "bg-brand-500/10")}
+                    ${StudentView.statCard("fa-repeat", "Konsistensi", a.consistencyScore + "/100", a.consistencyScore >= 70 ? "text-emerald-400" : "text-amber-400", a.consistencyScore >= 70 ? "bg-emerald-500/10" : "bg-amber-500/10")}
+                    ${StudentView.statCard("fa-arrow-trend-up", "Tren", a.tren, a.tren === "Meningkat" ? "text-emerald-400" : a.tren === "Menurun" ? "text-red-400" : "text-gray-400", a.tren === "Meningkat" ? "bg-emerald-500/10" : a.tren === "Menurun" ? "bg-red-500/10" : "bg-surface-600")}
+                </div>
+            </div>
+
+            <div class="grid lg:grid-cols-2 gap-4 mb-4">
+                <div class="glass rounded-xl p-5">
+                    <h3 class="text-sm font-semibold text-white mb-4">Distribusi Waktu</h3>
+                    <canvas id="lect_detail_time" height="200"></canvas>
+                </div>
+                <div class="glass rounded-xl p-5">
+                    <h3 class="text-sm font-semibold text-white mb-4">Belajar per Hari</h3>
+                    <canvas id="lect_detail_day" height="200"></canvas>
+                </div>
+            </div>
+
+            ${
+              recs.length
+                ? `
+            <div class="glass rounded-xl p-5 mb-4">
+                <h3 class="text-sm font-semibold text-white mb-3">Rekomendasi untuk ${student.name.split(" ")[0]}</h3>
+                <div class="space-y-2">
+                    ${recs
+                      .slice(0, 3)
+                      .map(
+                        (r) => `
+                        <div class="flex items-start gap-3 p-3 rounded-lg bg-surface-800/50">
+                            <i class="fa-solid ${r.icon} ${r.color} mt-0.5"></i>
+                            <div><p class="text-xs font-medium text-gray-200">${r.title}</p><p class="text-xs text-gray-500 mt-0.5">${r.desc.slice(0, 120)}...</p></div>
+                        </div>
+                    `,
+                      )
+                      .join("")}
+                </div>
+            </div>`
+                : ""
+            }
+
+            <div class="glass rounded-xl p-5">
+                <h3 class="text-sm font-semibold text-white mb-3">Aktivitas Terakhir</h3>
+                <div class="space-y-2 max-h-[200px] overflow-y-auto">
+                    ${acts
+                      .map(
+                        (ac) => `
+                        <div class="flex items-center gap-3 py-2 border-b border-white/5 last:border-0">
+                            <div class="w-7 h-7 rounded-lg bg-surface-600 flex items-center justify-center"><i class="fa-solid fa-book text-gray-500 text-[10px]"></i></div>
+                            <div class="flex-1"><p class="text-xs text-gray-300">${ac.materi}</p><p class="text-[10px] text-gray-600">${formatTime(ac.timestamp)}</p></div>
+                            <span class="text-xs text-brand-400 font-medium">${ac.durasi}m</span>
+                        </div>
+                    `,
+                      )
+                      .join("")}
+                </div>
+            </div>
+        </div>`;
+
+          // Charts
+          const slotLabels = ["Pagi", "Siang", "Sore", "Malam", "Larut"];
+          const slotData = [
+            a.timeSlots.pagi,
+            a.timeSlots.siang,
+            a.timeSlots.sore,
+            a.timeSlots.malam,
+            a.timeSlots.larut,
+          ];
+          chartInstances["lect_detail_time"] = new Chart(
+            document.getElementById("lect_detail_time"),
+            {
+              type: "doughnut",
+              data: {
+                labels: slotLabels,
+                datasets: [
+                  {
+                    data: slotData,
+                    backgroundColor: [
+                      "#fbbf24",
+                      "#10b981",
+                      "#f97316",
+                      "#6366f1",
+                      "#8b5cf6",
+                    ],
+                    borderWidth: 0,
+                  },
+                ],
+              },
+              options: {
+                responsive: true,
+                cutout: "55%",
+                plugins: {
+                  legend: {
+                    position: "bottom",
+                    labels: {color: "#9ca3af", font: {size: 11}},
+                  },
+                },
+              },
+            },
+          );
+          chartInstances["lect_detail_day"] = new Chart(
+            document.getElementById("lect_detail_day"),
+            {
+              type: "bar",
+              data: {
+                labels: ["Min", "Sen", "Sel", "Rab", "Kam", "Jum", "Sab"],
+                datasets: [
+                  {
+                    data: a.dayOfWeekMinutes,
+                    backgroundColor: "rgba(99,102,241,0.5)",
+                    borderColor: "#6366f1",
+                    borderWidth: 1,
+                    borderRadius: 6,
+                  },
+                ],
+              },
+              options: {
+                responsive: true,
+                plugins: {legend: {display: false}},
+                scales: {
+                  y: {
+                    beginAtZero: true,
+                    grid: {color: "rgba(255,255,255,0.03)"},
+                    ticks: {color: "#6b7280"},
+                  },
+                  x: {grid: {display: false}, ticks: {color: "#6b7280"}},
+                },
+              },
+            },
+          );
+        },
+
+        async renderPerformance(el) {
+          const students = await FireStore.getAllStudents();
+          const stats = students.map((s) => ({
+            ...s,
+            a: DB.analisis[s.id]?.polaBelajar || AIEngine.emptyAnalysis(),
+          }));
+
+          el.innerHTML = `
+        <div class="fade-in">
+            <div class="mb-6">
+                <h2 class="text-xl font-bold text-white">Performa Kelas</h2>
+                <p class="text-sm text-gray-400 mt-1">Perbandingan multidimensi antar mahasiswa</p>
+            </div>
+            <div class="glass rounded-xl p-5 mb-4">
+                <h3 class="text-sm font-semibold text-white mb-4">Radar Perbandingan</h3>
+                <canvas id="lect_radar" height="300"></canvas>
+            </div>
+            <div class="glass rounded-xl p-5">
+                <h3 class="text-sm font-semibold text-white mb-4">Total Durasi Belajar (Jam)</h3>
+                <canvas id="lect_hours_chart" height="200"></canvas>
+            </div>
+        </div>`;
+
+          // Radar chart
+          const radarColors = [
+            "#f59e0b",
+            "#10b981",
+            "#6366f1",
+            "#ec4899",
+            "#ef4444",
+            "#8b5cf6",
+          ];
+          chartInstances["lect_radar"] = new Chart(
+            document.getElementById("lect_radar"),
+            {
+              type: "radar",
+              data: {
+                labels: [
+                  "Skor",
+                  "Konsistensi",
+                  "Frekuensi",
+                  "Durasi",
+                  "Variasi Materi",
+                ],
+                datasets: stats.map((s, i) => ({
+                  label: s.name.split(" ")[0],
+                  data: [
+                    s.a.skor,
+                    s.a.consistencyScore,
+                    Math.min(100, Math.round((s.a.freqPerWeek / 7) * 100)),
+                    Math.min(100, Math.round((s.a.avgDurasi / 90) * 100)),
+                    Math.min(100, s.a.topMateri.length * 25),
+                  ],
+                  borderColor: radarColors[i % radarColors.length],
+                  backgroundColor: radarColors[i % radarColors.length] + "15",
+                  borderWidth: 2,
+                  pointRadius: 3,
+                  pointBackgroundColor: radarColors[i % radarColors.length],
+                })),
+              },
+              options: {
+                responsive: true,
+                scales: {
+                  r: {
+                    beginAtZero: true,
+                    max: 100,
+                    grid: {color: "rgba(255,255,255,0.05)"},
+                    angleLines: {color: "rgba(255,255,255,0.05)"},
+                    pointLabels: {color: "#9ca3af", font: {size: 11}},
+                    ticks: {display: false},
+                  },
+                },
+                plugins: {
+                  legend: {
+                    position: "bottom",
+                    labels: {color: "#9ca3af", padding: 12, font: {size: 11}},
+                  },
+                },
+              },
+            },
+          );
+
+          // Hours bar
+          chartInstances["lect_hours_chart"] = new Chart(
+            document.getElementById("lect_hours_chart"),
+            {
+              type: "bar",
+              data: {
+                labels: stats.map((s) => s.name.split(" ")[0]),
+                datasets: [
+                  {
+                    label: "Jam",
+                    data: stats.map((s) => parseFloat(s.a.totalJam)),
+                    backgroundColor: stats.map(
+                      (s, i) => radarColors[i % radarColors.length] + "80",
+                    ),
+                    borderColor: stats.map(
+                      (s, i) => radarColors[i % radarColors.length],
+                    ),
+                    borderWidth: 1,
+                    borderRadius: 8,
+                  },
+                ],
+              },
+              options: {
+                responsive: true,
+                plugins: {legend: {display: false}},
+                scales: {
+                  y: {
+                    beginAtZero: true,
+                    grid: {color: "rgba(255,255,255,0.03)"},
+                    ticks: {color: "#6b7280"},
+                  },
+                  x: {grid: {display: false}, ticks: {color: "#6b7280"}},
+                },
+              },
+            },
+          );
+        },
+
+        async renderAtRisk(el) {
+          const students = await FireStore.getAllStudents();
+          const atRisk = students.filter((s) =>
+            AIEngine.isAtRisk(DB.analisis[s.id]?.polaBelajar),
+          );
+          const safe = students.filter(
+            (s) => !AIEngine.isAtRisk(DB.analisis[s.id]?.polaBelajar),
+          );
+
+          el.innerHTML = `
+        <div class="fade-in">
+            <div class="mb-6">
+                <h2 class="text-xl font-bold text-white">Mahasiswa Bermasalah</h2>
+                <p class="text-sm text-gray-400 mt-1">Identifikasi dini mahasiswa yang membutuhkan perhatian khusus</p>
+            </div>
+
+            ${
+              atRisk.length === 0
+                ? `
+                <div class="glass rounded-xl p-12 text-center">
+                    <div class="w-16 h-16 rounded-full bg-emerald-500/10 flex items-center justify-center mx-auto mb-4"><i class="fa-solid fa-check-circle text-2xl text-emerald-400"></i></div>
+                    <h3 class="text-lg font-bold text-white mb-1">Semua Mahasiswa Dalam Kondisi Baik</h3>
+                    <p class="text-sm text-gray-400">Tidak ada mahasiswa yang terdeteksi bermasalah saat ini.</p>
+                </div>
+            `
+                : `
+                <!-- Alert Banner -->
+                <div class="glass rounded-xl p-4 mb-4 border-l-4 border-red-500 flex items-center gap-3">
+                    <i class="fa-solid fa-triangle-exclamation text-red-400 text-lg"></i>
+                    <div>
+                        <p class="text-sm font-semibold text-white">${atRisk.length} mahasiswa teridentifikasi berisiko</p>
+                        <p class="text-xs text-gray-400">Perlu tindakan follow-up: konsultasi, pembimbingan, atau penyesuaian metode belajar.</p>
+                    </div>
+                </div>
+
+                <!-- Risk Cards -->
+                <div class="space-y-3 mb-6">
+                    ${atRisk
+                      .map((s) => {
+                        const a =
+                          DB.analisis[s.id]?.polaBelajar ||
+                          AIEngine.emptyAnalysis();
+                        const problems = [];
+                        if (a.freqPerWeek < 3)
+                          problems.push("Frekuensi belajar sangat rendah");
+                        if (a.avgDurasi < 25)
+                          problems.push("Durasi belajar terlalu singkat");
+                        if (a.consistencyScore < 30)
+                          problems.push("Pola belajar tidak konsisten");
+                        if (a.tren === "Menurun")
+                          problems.push("Tren belajar menurun");
+                        if (a.skor < 30)
+                          problems.push("Skor keseluruhan rendah");
+
+                        return `
+                        <div class="glass rounded-xl p-5 cursor-pointer hover:border-red-500/30 transition-colors" onclick="LecturerView.showStudentDetail('${s.id}')">
+                            <div class="flex items-center gap-4 mb-3">
+                                <div class="w-10 h-10 rounded-full bg-red-500/10 flex items-center justify-center text-red-400 font-bold text-sm">${getInitials(s.name)}</div>
+                                <div class="flex-1">
+                                    <p class="text-sm font-semibold text-white">${s.name}</p>
+                                    <p class="text-xs text-gray-500">${s.email}</p>
+                                </div>
+                                <div class="text-right">
+                                    <p class="text-lg font-bold text-red-400">${a.skor}</p>
+                                    <p class="text-[10px] text-gray-500">skor</p>
+                                </div>
+                            </div>
+                            <div class="space-y-1.5">
+                                ${problems
+                                  .map(
+                                    (p) => `
+                                    <div class="flex items-center gap-2 text-xs text-gray-400">
+                                        <i class="fa-solid fa-circle-xmark text-red-400/70 text-[10px]"></i>${p}
+                                    </div>
+                                `,
+                                  )
+                                  .join("")}
+                            </div>
+                            <div class="flex items-center gap-4 mt-3 pt-3 border-t border-white/5 text-[11px] text-gray-500">
+                                <span><i class="fa-solid fa-book-open mr-1"></i>${a.totalSessions} sesi</span>
+                                <span><i class="fa-solid fa-clock mr-1"></i>${a.totalJam} jam</span>
+                                <span><i class="fa-solid fa-repeat mr-1"></i>${a.freqPerWeek}x/minggu</span>
+                            </div>
+                        </div>`;
+                      })
+                      .join("")}
+                </div>
+            `
+            }
+
+            <!-- All Students Comparison -->
+            <div class="glass rounded-xl p-5">
+                <h3 class="text-sm font-semibold text-white mb-4">Perbandingan Skor Semua Mahasiswa</h3>
+                <canvas id="lect_risk_bar" height="160"></canvas>
+            </div>
+        </div>`;
+
+          // Comparison bar chart
+          const allStudents = [...atRisk, ...safe];
+          chartInstances["lect_risk_bar"] = new Chart(
+            document.getElementById("lect_risk_bar"),
+            {
+              type: "bar",
+              data: {
+                labels: allStudents.map((s) => s.name.split(" ")[0]),
+                datasets: [
+                  {
+                    label: "Skor",
+                    data: allStudents.map(
+                      (s) =>
+                        (
+                          DB.analisis[s.id]?.polaBelajar ||
+                          AIEngine.emptyAnalysis()
+                        ).skor,
+                    ),
+                    backgroundColor: allStudents.map((s) =>
+                      AIEngine.isAtRisk(DB.analisis[s.id]?.polaBelajar)
+                        ? "rgba(239,68,68,0.6)"
+                        : "rgba(16,185,129,0.5)",
+                    ),
+                    borderColor: allStudents.map((s) =>
+                      AIEngine.isAtRisk(DB.analisis[s.id]?.polaBelajar)
+                        ? "#ef4444"
+                        : "#10b981",
+                    ),
+                    borderWidth: 1,
+                    borderRadius: 8,
+                  },
+                ],
+              },
+              options: {
+                responsive: true,
+                indexAxis: "y",
+                plugins: {legend: {display: false}},
+                scales: {
+                  x: {
+                    beginAtZero: true,
+                    max: 100,
+                    grid: {color: "rgba(255,255,255,0.03)"},
+                    ticks: {color: "#6b7280"},
+                  },
+                  y: {
+                    grid: {display: false},
+                    ticks: {color: "#e5e5e5", font: {size: 12}},
+                  },
+                },
+              },
+            },
+          );
+        },
+      };
+
+      /* ================================================================
+   AUTH HANDLERS
+   ================================================================ */
+      function switchAuthTab(tab) {
+        const isLogin = tab === "login";
+        document.getElementById("tabLogin").className =
+          `flex-1 py-2.5 rounded-lg text-sm font-semibold transition-all ${isLogin ? "bg-brand-500 text-black" : "text-gray-400"}`;
+        document.getElementById("tabRegister").className =
+          `flex-1 py-2.5 rounded-lg text-sm font-semibold transition-all ${!isLogin ? "bg-brand-500 text-black" : "text-gray-400"}`;
+        document
+          .getElementById("loginForm")
+          .classList.toggle("hidden", !isLogin);
+        document
+          .getElementById("registerForm")
+          .classList.toggle("hidden", isLogin);
+      }
+
+      function fillDemo(role) {
+        if (role === "student") {
+          document.getElementById("loginEmail").value = "student@demo.com";
+          document.getElementById("loginPass").value = "password123";
+        } else {
+          document.getElementById("loginEmail").value = "dosen@demo.com";
+          document.getElementById("loginPass").value = "password123";
+        }
+        switchAuthTab("login");
+        toast("Akun demo terisi, klik Masuk", "info");
+      }
+
+      async function handleLogin(e) {
+        e.preventDefault();
+        const btn = e.target.querySelector("button[type=submit]");
+        btn.disabled = true;
+        btn.innerHTML =
+          '<i class="fa-solid fa-spinner fa-spin mr-2"></i>Memproses...';
+        try {
+          await App.login(
+            document.getElementById("loginEmail").value,
+            document.getElementById("loginPass").value,
+          );
+        } catch (err) {
+          toast(err.message, "error");
+        }
+        btn.disabled = false;
+        btn.innerHTML =
+          '<i class="fa-solid fa-right-to-bracket mr-2"></i>Masuk';
+      }
+
+      async function handleRegister(e) {
+        e.preventDefault();
+        const btn = e.target.querySelector("button[type=submit]");
+        btn.disabled = true;
+        btn.innerHTML =
+          '<i class="fa-solid fa-spinner fa-spin mr-2"></i>Mendaftar...';
+        try {
+          await App.register(
+            document.getElementById("regName").value,
+            document.getElementById("regEmail").value,
+            document.getElementById("regPass").value,
+            document.getElementById("regRole").value,
+          );
+        } catch (err) {
+          toast(err.message, "error");
+        }
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fa-solid fa-user-plus mr-2"></i>Daftar Akun';
+      }
+
+      /* ================================================================
+   INIT
+   ================================================================ */
+      document.addEventListener("DOMContentLoaded", () => App.init());
+    </script>
+  </body>
+</html>
