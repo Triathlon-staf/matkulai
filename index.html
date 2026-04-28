@@ -2280,7 +2280,369 @@ const LecturerView={
     await this.renderAnnouncements(document.getElementById('lecturerContent'));
   },
 
-  renderExport(el){
-    const students=Object.values(DB.users).filter(u=>u.role==='student');
+    renderExport(el){
+    const rows=this.buildExportRows();
+    const avgScore=rows.length?Math.round(rows.reduce((sum,row)=>sum+row.skor,0)/rows.length):0;
+    const avgConsistency=rows.length?Math.round(rows.reduce((sum,row)=>sum+row.konsistensi,0)/rows.length):0;
+    const avgStudyHours=rows.length?Math.round((rows.reduce((sum,row)=>sum+row.totalMenitBelajar,0)/60/rows.length)*10)/10:0;
+    const riskCount=rows.filter(row=>row.risiko!=='Rendah').length;
+    const totalPagesRead=rows.reduce((sum,row)=>sum+row.totalHalamanBaca,0);
+    const finishedBooks=rows.reduce((sum,row)=>sum+row.bukuSelesai,0);
+
     el.innerHTML=`<div class="fade-up">
-      <div class="mb-6"><h2 class="text
+      <div class="mb-6">
+        <h2 class="text-xl font-bold text-white">Export Laporan</h2>
+        <p class="text-sm text-[#60607a] mt-1">Unduh rekap performa, aktivitas digital, dan kebiasaan membaca mahasiswa dalam beberapa format.</p>
+      </div>
+
+      <div class="grid grid-cols-2 lg:grid-cols-5 gap-3 mb-5">
+        ${statCard('fa-users','Mahasiswa',rows.length+' orang','#8b5cf6','rgba(139,92,246,.1)')}
+        ${statCard('fa-chart-line','Rata-rata Skor',avgScore+'/100',scoreColor(avgScore),scoreColor(avgScore)+'1a')}
+        ${statCard('fa-repeat','Konsistensi',avgConsistency+'/100',avgConsistency>=70?'#10b981':'#f59e0b',avgConsistency>=70?'rgba(16,185,129,.1)':'rgba(245,158,11,.1)')}
+        ${statCard('fa-book-open-reader','Halaman Dibaca',totalPagesRead+' hal','#0ea5e9','rgba(14,165,233,.1)')}
+        ${statCard('fa-triangle-exclamation','Perlu Perhatian',riskCount+' orang',riskCount?'#f43f5e':'#10b981',riskCount?'rgba(244,63,94,.1)':'rgba(16,185,129,.1)')}
+      </div>
+
+      <div class="card p-5 mb-5">
+        <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+          <div>
+            <h3 class="text-sm font-bold text-white">Siap Diexport</h3>
+            <p class="text-xs text-[#60607a] mt-1">Data mencakup aktivitas belajar, risiko akademik, monitor aktivitas digital, dan progres buku iPusnas.</p>
+          </div>
+          <div class="flex flex-wrap gap-2">
+            <button onclick="LecturerView.exportReport('csv')" class="btn-gold px-4 py-2 text-xs flex items-center gap-1.5"><i class="fa-solid fa-file-csv"></i> Export CSV</button>
+            <button onclick="LecturerView.exportReport('json')" class="btn-violet px-4 py-2 text-xs flex items-center gap-1.5"><i class="fa-solid fa-file-code"></i> Export JSON</button>
+            <button onclick="LecturerView.exportReport('html')" class="btn-ghost px-4 py-2 text-xs flex items-center gap-1.5"><i class="fa-solid fa-file-lines"></i> Export HTML</button>
+          </div>
+        </div>
+
+        <div class="grid md:grid-cols-3 gap-3 mt-4">
+          <div class="p-4 rounded-xl" style="background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.05);">
+            <p class="text-[10px] uppercase tracking-wider text-[#50506a] font-bold mb-1">Rata-rata Jam Belajar</p>
+            <p class="text-xl font-bold text-white">${avgStudyHours} jam</p>
+          </div>
+          <div class="p-4 rounded-xl" style="background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.05);">
+            <p class="text-[10px] uppercase tracking-wider text-[#50506a] font-bold mb-1">Buku Selesai</p>
+            <p class="text-xl font-bold text-white">${finishedBooks} judul</p>
+          </div>
+          <div class="p-4 rounded-xl" style="background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.05);">
+            <p class="text-[10px] uppercase tracking-wider text-[#50506a] font-bold mb-1">Dibuat Pada</p>
+            <p class="text-sm font-semibold text-white">${new Date().toLocaleString('id-ID')}</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="card p-5">
+        <div class="flex items-center justify-between gap-3 mb-4">
+          <div>
+            <h3 class="text-sm font-bold text-white">Preview Data Export</h3>
+            <p class="text-xs text-[#60607a] mt-1">Cuplikan data yang akan dimasukkan ke file export.</p>
+          </div>
+          <span class="badge badge-sky">${rows.length} baris</span>
+        </div>
+
+        ${rows.length?`<div class="overflow-x-auto">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Mahasiswa</th>
+                <th>Skor</th>
+                <th>Sesi</th>
+                <th>Jam</th>
+                <th>Buku</th>
+                <th>Halaman</th>
+                <th>Risiko</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${rows.map(row=>`<tr>
+                <td>
+                  <div class="flex items-center gap-2">
+                    <div class="w-7 h-7 rounded-full flex items-center justify-center text-[10px] font-bold flex-shrink-0" style="background:rgba(255,255,255,.06);">${getInitials(row.nama)}</div>
+                    <div>
+                      <p class="text-sm font-semibold text-white">${row.nama}</p>
+                      <p class="text-[10px] text-[#50506a]">${row.email}</p>
+                    </div>
+                  </div>
+                </td>
+                <td><span style="color:${scoreColor(row.skor)};font-weight:700;">${row.skor}</span></td>
+                <td>${row.totalSesi}</td>
+                <td>${row.totalJam}</td>
+                <td>${row.bukuDibaca}</td>
+                <td>${row.totalHalamanBaca}</td>
+                <td>${row.risiko==='Tinggi'?'<span class="badge badge-red">Tinggi</span>':row.risiko==='Sedang'?'<span class="badge badge-gold">Sedang</span>':'<span class="badge badge-green">Rendah</span>'}</td>
+              </tr>`).join('')}
+            </tbody>
+          </table>
+        </div>`:`<div class="py-10 text-center">
+          <i class="fa-solid fa-file-export text-4xl text-[#30304a] mb-3 block"></i>
+          <p class="text-white font-bold mb-1">Belum Ada Data untuk Diexport</p>
+          <p class="text-[#60607a] text-sm">Tambahkan mahasiswa dan aktivitas belajar terlebih dahulu.</p>
+        </div>`}
+      </div>
+    </div>`;
+  },
+
+  buildExportRows(){
+    return Object.values(DB.users)
+      .filter(user=>user.role==='student')
+      .map(user=>{
+        const analysis=DB.analisis[user.id]?.polaBelajar||AIEngine.emptyAnalysis();
+        const monitorStats=ActivityMonitor.getStats(user.id);
+        const totalPagesRead=IPUSNAS_BOOKS.reduce((sum,book)=>sum+((DB.bookProgress[user.id+'_'+book.id]||{}).pagesRead||0),0);
+        const booksRead=IPUSNAS_BOOKS.filter(book=>((DB.bookProgress[user.id+'_'+book.id]||{}).pagesRead||0)>0).length;
+        const booksFinished=IPUSNAS_BOOKS.filter(book=>((DB.bookProgress[user.id+'_'+book.id]||{}).pagesRead||0)>=book.pages).length;
+        const joinedClasses=Object.entries(DB.classMembers)
+          .filter(([,members])=>members.includes(user.id))
+          .map(([classId])=>DB.classes[classId]?.name)
+          .filter(Boolean);
+
+        return {
+          id:user.id,
+          nama:user.name,
+          email:user.email,
+          kelas:joinedClasses.join(', ')||'-',
+          skor:analysis.skor,
+          totalSesi:analysis.totalSessions,
+          totalJam:analysis.totalJam,
+          avgDurasi:analysis.avgDurasi,
+          konsistensi:analysis.consistencyScore,
+          frekuensiPerMinggu:analysis.freqPerWeek,
+          tipeBelajar:analysis.tipeBelajar,
+          tren:analysis.tren,
+          topMateri:analysis.topMateri.map(item=>item[0]).join(', ')||'-',
+          risiko:AIEngine.getRiskLevel(analysis)==='high'?'Tinggi':AIEngine.getRiskLevel(analysis)==='medium'?'Sedang':'Rendah',
+          bukuDibaca:booksRead,
+          bukuSelesai:booksFinished,
+          totalHalamanBaca:totalPagesRead,
+          menitAkademik:monitorStats.byCategory['Akademik']||0,
+          menitGame:monitorStats.byCategory['Game']||0,
+          menitSosmed:(monitorStats.byCategory['Sosial Media']||0)+(monitorStats.byCategory['Komunikasi']||0),
+          menitStreaming:monitorStats.byCategory['Streaming']||0,
+          totalMenitBelajar:DB.aktivitas.filter(activity=>activity.userId===user.id).reduce((sum,activity)=>sum+activity.durasi,0),
+        };
+      });
+  },
+
+  exportReport(format){
+    const rows=this.buildExportRows();
+    if(!rows.length){
+      toast('Belum ada data mahasiswa untuk diexport','warn');
+      return;
+    }
+
+    const generatedAt=new Date().toLocaleString('id-ID');
+
+    if(format==='csv'){
+      const headers=['Nama','Email','Kelas','Skor','Total Sesi','Total Jam','Avg Durasi','Konsistensi','Frekuensi/Minggu','Tipe Belajar','Tren','Top Materi','Risiko','Buku Dibaca','Buku Selesai','Total Halaman Baca','Menit Akademik','Menit Game','Menit Sosmed','Menit Streaming'];
+      const lines=[
+        headers.map(csvCell).join(','),
+        ...rows.map(row=>[
+          row.nama,
+          row.email,
+          row.kelas,
+          row.skor,
+          row.totalSesi,
+          row.totalJam,
+          row.avgDurasi,
+          row.konsistensi,
+          row.frekuensiPerMinggu,
+          row.tipeBelajar,
+          row.tren,
+          row.topMateri,
+          row.risiko,
+          row.bukuDibaca,
+          row.bukuSelesai,
+          row.totalHalamanBaca,
+          row.menitAkademik,
+          row.menitGame,
+          row.menitSosmed,
+          row.menitStreaming,
+        ].map(csvCell).join(',')),
+      ];
+      downloadTextFile(`laporan-edupattern-${Date.now()}.csv`,lines.join('\n'),'text/csv;charset=utf-8;');
+      toast('Laporan CSV berhasil diunduh');
+      return;
+    }
+
+    if(format==='json'){
+      const payload={
+        generatedAt,
+        lecturer:App.currentUser?.displayName||'Dosen',
+        summary:{
+          totalStudents:rows.length,
+          avgScore:Math.round(rows.reduce((sum,row)=>sum+row.skor,0)/rows.length),
+          riskCount:rows.filter(row=>row.risiko!=='Rendah').length,
+        },
+        rows,
+      };
+      downloadTextFile(`laporan-edupattern-${Date.now()}.json`,JSON.stringify(payload,null,2),'application/json;charset=utf-8;');
+      toast('Laporan JSON berhasil diunduh');
+      return;
+    }
+
+    const html=`<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Laporan EduPattern AI</title>
+  <style>
+    body{font-family:Arial,sans-serif;background:#ffffff;color:#111827;margin:24px;}
+    h1,h2{margin:0 0 8px;}
+    p{margin:0 0 12px;color:#4b5563;}
+    .meta{margin-bottom:20px;padding:16px;border:1px solid #e5e7eb;border-radius:12px;background:#f9fafb;}
+    .stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin:20px 0;}
+    .stat{border:1px solid #e5e7eb;border-radius:12px;padding:14px;background:#fff;}
+    .stat strong{display:block;font-size:22px;margin-top:6px;color:#111827;}
+    table{width:100%;border-collapse:collapse;margin-top:16px;}
+    th,td{border:1px solid #e5e7eb;padding:10px 12px;text-align:left;font-size:12px;vertical-align:top;}
+    th{background:#f3f4f6;text-transform:uppercase;letter-spacing:.04em;font-size:11px;}
+    .risk-high{color:#b91c1c;font-weight:700;}
+    .risk-medium{color:#b45309;font-weight:700;}
+    .risk-low{color:#047857;font-weight:700;}
+  </style>
+</head>
+<body>
+  <h1>Laporan EduPattern AI</h1>
+  <p>Rekap performa mahasiswa, aktivitas digital, dan kebiasaan membaca iPusnas.</p>
+
+  <div class="meta">
+    <p><strong>Dibuat:</strong> ${escapeHtml(generatedAt)}</p>
+    <p><strong>Dosen:</strong> ${escapeHtml(App.currentUser?.displayName||'Dosen')}</p>
+    <p><strong>Total Mahasiswa:</strong> ${rows.length}</p>
+  </div>
+
+  <div class="stats">
+    <div class="stat">Rata-rata Skor<strong>${Math.round(rows.reduce((sum,row)=>sum+row.skor,0)/rows.length)}</strong></div>
+    <div class="stat">Rata-rata Konsistensi<strong>${Math.round(rows.reduce((sum,row)=>sum+row.konsistensi,0)/rows.length)}</strong></div>
+    <div class="stat">Perlu Perhatian<strong>${rows.filter(row=>row.risiko!=='Rendah').length}</strong></div>
+    <div class="stat">Total Halaman Dibaca<strong>${rows.reduce((sum,row)=>sum+row.totalHalamanBaca,0)}</strong></div>
+  </div>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Mahasiswa</th>
+        <th>Kelas</th>
+        <th>Skor</th>
+        <th>Sesi</th>
+        <th>Jam</th>
+        <th>Konsistensi</th>
+        <th>Tren</th>
+        <th>Buku</th>
+        <th>Halaman</th>
+        <th>Risiko</th>
+      </tr>
+    </thead>
+    <tbody>
+      ${rows.map(row=>`<tr>
+        <td>${escapeHtml(row.nama)}<br><span style="color:#6b7280;">${escapeHtml(row.email)}</span></td>
+        <td>${escapeHtml(row.kelas)}</td>
+        <td>${row.skor}</td>
+        <td>${row.totalSesi}</td>
+        <td>${row.totalJam}</td>
+        <td>${row.konsistensi}</td>
+        <td>${escapeHtml(row.tren)}</td>
+        <td>${row.bukuDibaca}</td>
+        <td>${row.totalHalamanBaca}</td>
+        <td class="${row.risiko==='Tinggi'?'risk-high':row.risiko==='Sedang'?'risk-medium':'risk-low'}">${row.risiko}</td>
+      </tr>`).join('')}
+    </tbody>
+  </table>
+</body>
+</html>`;
+
+    downloadTextFile(`laporan-edupattern-${Date.now()}.html`,html,'text/html;charset=utf-8;');
+    toast('Laporan HTML berhasil diunduh');
+  }
+};
+
+function downloadTextFile(filename,content,mimeType='text/plain;charset=utf-8;'){
+  const blob=new Blob([content],{type:mimeType});
+  const url=URL.createObjectURL(blob);
+  const link=document.createElement('a');
+  link.href=url;
+  link.download=filename;
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+  setTimeout(()=>URL.revokeObjectURL(url),1000);
+}
+
+function csvCell(value){
+  const text=String(value??'');
+  return `"${text.replace(/"/g,'""')}"`;
+}
+
+function escapeHtml(value){
+  return String(value??'')
+    .replace(/&/g,'&amp;')
+    .replace(/</g,'&lt;')
+    .replace(/>/g,'&gt;')
+    .replace(/"/g,'&quot;')
+    .replace(/'/g,'&#39;');
+}
+
+function switchAuthTab(tab){
+  const isLogin=tab==='login';
+  document.getElementById('tabLogin').classList.toggle('active',isLogin);
+  document.getElementById('tabRegister').classList.toggle('active',!isLogin);
+  document.getElementById('loginForm').classList.toggle('hidden',!isLogin);
+  document.getElementById('registerForm').classList.toggle('hidden',isLogin);
+}
+
+function fillDemo(role){
+  if(role==='student'){
+    document.getElementById('loginEmail').value='student@demo.com';
+    document.getElementById('loginPass').value='password123';
+  }else{
+    document.getElementById('loginEmail').value='dosen@demo.com';
+    document.getElementById('loginPass').value='password123';
+  }
+  switchAuthTab('login');
+  toast('Akun demo terisi otomatis','info');
+}
+
+async function handleLogin(e){
+  e.preventDefault();
+  const btn=e.target.querySelector('button[type=submit]');
+  btn.disabled=true;
+  btn.innerHTML='<span class="spinner"></span> Memproses...';
+  try{
+    await App.login(
+      document.getElementById('loginEmail').value,
+      document.getElementById('loginPass').value,
+    );
+  }catch(err){
+    toast(err.message,'error');
+  }finally{
+    btn.disabled=false;
+    btn.innerHTML='<i class="fa-solid fa-right-to-bracket"></i> Masuk ke Dashboard';
+  }
+}
+
+async function handleRegister(e){
+  e.preventDefault();
+  const btn=e.target.querySelector('button[type=submit]');
+  btn.disabled=true;
+  btn.innerHTML='<span class="spinner"></span> Mendaftar...';
+  try{
+    await App.register(
+      document.getElementById('regName').value,
+      document.getElementById('regEmail').value,
+      document.getElementById('regPass').value,
+      document.getElementById('regRole').value,
+    );
+  }catch(err){
+    toast(err.message,'error');
+  }finally{
+    btn.disabled=false;
+    btn.innerHTML='<i class="fa-solid fa-user-plus"></i> Buat Akun';
+  }
+}
+
+document.addEventListener('DOMContentLoaded',()=>App.init());
+</script>
+</body>
+</html>
