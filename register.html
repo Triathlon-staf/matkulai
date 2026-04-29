@@ -1,0 +1,1830 @@
+<!doctype html>
+<html lang="id" data-theme="dark" data-accent="purple">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>EduPattern AI — Daftar Akun</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap"
+      rel="stylesheet" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <style>
+      /* ─── TOKENS ─────────────────────────────────────────── */
+      :root {
+        --purple-h: 262;
+        --purple-s: 80%;
+        --blue-h: 217;
+        --blue-s: 85%;
+        --yellow-h: 42;
+        --yellow-s: 92%;
+
+        --accent-h: var(--purple-h);
+        --accent-s: var(--purple-s);
+
+        --acc: hsl(var(--accent-h), var(--accent-s), 62%);
+        --acc2: hsl(var(--accent-h), var(--accent-s), 50%);
+        --acc-glow: hsl(var(--accent-h), var(--accent-s), 62%, 0.28);
+        --acc-soft: hsl(var(--accent-h), var(--accent-s), 62%, 0.12);
+        --acc-border: hsl(var(--accent-h), var(--accent-s), 62%, 0.35);
+
+        --radius: 16px;
+        --radius-sm: 10px;
+        --font-head: "Syne", sans-serif;
+        --font-body: "DM Sans", sans-serif;
+        --trans: 0.22s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+
+      /* DARK MODE (default) */
+      [data-theme="dark"] {
+        --bg: #0c0c14;
+        --bg2: #13131f;
+        --bg3: #1a1a2b;
+        --surface: rgba(255, 255, 255, 0.04);
+        --border: rgba(255, 255, 255, 0.08);
+        --border-hi: rgba(255, 255, 255, 0.15);
+        --text: #f0f0f8;
+        --text2: #9090b0;
+        --text3: #50506a;
+        --invert: 0;
+        --shadow: 0 24px 64px rgba(0, 0, 0, 0.55);
+      }
+
+      /* LIGHT MODE */
+      [data-theme="light"] {
+        --bg: #f4f4fb;
+        --bg2: #ffffff;
+        --bg3: #eeeff8;
+        --surface: rgba(0, 0, 0, 0.03);
+        --border: rgba(0, 0, 0, 0.08);
+        --border-hi: rgba(0, 0, 0, 0.18);
+        --text: #111124;
+        --text2: #55556a;
+        --text3: #a0a0b8;
+        --invert: 1;
+        --shadow: 0 24px 64px rgba(80, 80, 160, 0.12);
+      }
+
+      /* ACCENT VARIANTS */
+      [data-accent="purple"] {
+        --accent-h: var(--purple-h);
+        --accent-s: var(--purple-s);
+      }
+      [data-accent="blue"] {
+        --accent-h: var(--blue-h);
+        --accent-s: var(--blue-s);
+      }
+      [data-accent="yellow"] {
+        --accent-h: var(--yellow-h);
+        --accent-s: var(--yellow-s);
+        --acc: hsl(42, 92%, 54%);
+        --acc2: hsl(42, 92%, 42%);
+        --acc-glow: hsl(42, 92%, 54%, 0.28);
+        --acc-soft: hsl(42, 92%, 54%, 0.12);
+        --acc-border: hsl(42, 92%, 54%, 0.35);
+      }
+
+      /* ─── RESET ──────────────────────────────────────────── */
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      html {
+        height: 100%;
+      }
+
+      body {
+        min-height: 100vh;
+        background: var(--bg);
+        color: var(--text);
+        font-family: var(--font-body);
+        font-size: 15px;
+        transition:
+          background var(--trans),
+          color var(--trans);
+        overflow-x: hidden;
+        display: flex;
+        align-items: stretch;
+      }
+
+      /* ─── BG BLOBS ───────────────────────────────────────── */
+      .bg-blob {
+        position: fixed;
+        pointer-events: none;
+        border-radius: 50%;
+        filter: blur(80px);
+        transition: background var(--trans);
+        z-index: 0;
+      }
+      .blob-1 {
+        width: 520px;
+        height: 520px;
+        background: var(--acc-glow);
+        top: -120px;
+        left: -80px;
+      }
+      .blob-2 {
+        width: 380px;
+        height: 380px;
+        background: hsl(var(--accent-h), 60%, 50%, 0.12);
+        bottom: 40px;
+        right: -60px;
+      }
+      .blob-3 {
+        width: 200px;
+        height: 200px;
+        background: var(--acc-soft);
+        top: 50%;
+        left: 40%;
+      }
+
+      /* ─── LAYOUT ─────────────────────────────────────────── */
+      .page {
+        display: flex;
+        width: 100%;
+        min-height: 100vh;
+        position: relative;
+        z-index: 1;
+      }
+
+      /* LEFT PANEL */
+      .panel-left {
+        flex: 1;
+        display: none;
+        flex-direction: column;
+        justify-content: space-between;
+        padding: 48px 52px;
+        background: linear-gradient(145deg, var(--bg2) 0%, var(--bg3) 100%);
+        border-right: 1px solid var(--border);
+        position: relative;
+        overflow: hidden;
+      }
+      @media (min-width: 900px) {
+        .panel-left {
+          display: flex;
+        }
+      }
+
+      .panel-left::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(
+          135deg,
+          var(--acc-soft) 0%,
+          transparent 60%
+        );
+        pointer-events: none;
+      }
+
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+      .brand-icon {
+        width: 42px;
+        height: 42px;
+        background: var(--acc);
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 18px;
+        color: #fff;
+        box-shadow: 0 0 20px var(--acc-glow);
+      }
+      .brand-name {
+        font-family: var(--font-head);
+        font-size: 20px;
+        font-weight: 800;
+        letter-spacing: -0.5px;
+      }
+      .brand-sub {
+        font-size: 11px;
+        color: var(--acc);
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        font-weight: 600;
+      }
+
+      .panel-hero {
+        position: relative;
+        z-index: 1;
+      }
+      .panel-tagline {
+        font-family: var(--font-head);
+        font-size: 2.8rem;
+        font-weight: 800;
+        line-height: 1.1;
+        letter-spacing: -1.5px;
+        margin-bottom: 18px;
+      }
+      .panel-tagline em {
+        font-style: normal;
+        color: var(--acc);
+      }
+      .panel-desc {
+        font-size: 14px;
+        color: var(--text2);
+        line-height: 1.7;
+        max-width: 320px;
+      }
+
+      .feature-list {
+        list-style: none;
+        margin-top: 32px;
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+      }
+      .feature-list li {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        font-size: 13.5px;
+        color: var(--text2);
+      }
+      .feature-list li i {
+        width: 32px;
+        height: 32px;
+        background: var(--acc-soft);
+        border: 1px solid var(--acc-border);
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--acc);
+        font-size: 13px;
+        flex-shrink: 0;
+      }
+
+      .panel-steps {
+        position: relative;
+        z-index: 1;
+      }
+      .step-label {
+        font-size: 11px;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: var(--text3);
+        font-weight: 600;
+        margin-bottom: 10px;
+      }
+      .steps {
+        display: flex;
+        gap: 8px;
+      }
+      .step {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 12px;
+        color: var(--text3);
+      }
+      .step.active {
+        color: var(--acc);
+      }
+      .step.done {
+        color: var(--text2);
+      }
+      .step-num {
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        border: 1.5px solid var(--border);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 11px;
+        font-weight: 700;
+      }
+      .step.active .step-num {
+        background: var(--acc);
+        border-color: var(--acc);
+        color: #fff;
+        box-shadow: 0 0 12px var(--acc-glow);
+      }
+      .step.done .step-num {
+        background: var(--border);
+        border-color: transparent;
+      }
+      .step-sep {
+        color: var(--text3);
+        font-size: 10px;
+      }
+
+      /* RIGHT PANEL — FORM */
+      .panel-right {
+        width: 100%;
+        max-width: 520px;
+        margin: 0 auto;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        padding: 40px 32px;
+        position: relative;
+      }
+      @media (min-width: 900px) {
+        .panel-right {
+          padding: 48px 52px;
+        }
+      }
+
+      /* ─── TOOLBAR ────────────────────────────────────────── */
+      .toolbar {
+        display: flex;
+        justify-content: flex-end;
+        gap: 8px;
+        margin-bottom: 36px;
+      }
+      .tb-group {
+        display: flex;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        padding: 3px;
+        gap: 2px;
+      }
+      .tb-btn {
+        width: 32px;
+        height: 32px;
+        border-radius: 7px;
+        border: none;
+        background: transparent;
+        color: var(--text2);
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 14px;
+        transition:
+          background var(--trans),
+          color var(--trans),
+          box-shadow var(--trans);
+      }
+      .tb-btn:hover {
+        background: var(--border);
+        color: var(--text);
+      }
+      .tb-btn:focus-visible {
+        outline: 2px solid var(--acc);
+        outline-offset: 2px;
+      }
+      .tb-btn.active {
+        background: var(--acc);
+        color: #fff;
+        box-shadow: 0 0 10px var(--acc-glow);
+      }
+      .accent-dot {
+        width: 14px;
+        height: 14px;
+        border-radius: 50%;
+        border: 2px solid transparent;
+        cursor: pointer;
+        transition:
+          transform 0.15s,
+          box-shadow 0.15s;
+      }
+      .accent-dot:hover {
+        transform: scale(1.2);
+      }
+      .accent-dot:focus-visible {
+        outline: 2px solid var(--acc);
+        outline-offset: 2px;
+      }
+      .accent-dot.active {
+        border-color: var(--text);
+        box-shadow: 0 0 0 3px var(--acc-soft);
+      }
+      .dot-purple {
+        background: hsl(262, 80%, 62%);
+      }
+      .dot-blue {
+        background: hsl(217, 85%, 62%);
+      }
+      .dot-yellow {
+        background: hsl(42, 92%, 54%);
+      }
+
+      /* ─── HEADING ────────────────────────────────────────── */
+      .form-head {
+        margin-bottom: 28px;
+      }
+      .form-head h1 {
+        font-family: var(--font-head);
+        font-size: 2rem;
+        font-weight: 800;
+        letter-spacing: -1px;
+        line-height: 1.1;
+        margin-bottom: 6px;
+      }
+      .form-head h1 span {
+        color: var(--acc);
+      }
+      .form-head p {
+        font-size: 13.5px;
+        color: var(--text2);
+        line-height: 1.6;
+      }
+
+      /* ─── ROLE SELECTOR ──────────────────────────────────── */
+      .role-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+        margin-bottom: 22px;
+      }
+      .role-card {
+        position: relative;
+        border: 1.5px solid var(--border);
+        border-radius: var(--radius-sm);
+        padding: 14px 14px 14px 44px;
+        cursor: pointer;
+        transition:
+          border-color var(--trans),
+          background var(--trans),
+          box-shadow var(--trans);
+        background: var(--surface);
+        user-select: none;
+      }
+      .role-card input[type="radio"] {
+        position: absolute;
+        opacity: 0;
+        pointer-events: none;
+      }
+      .role-card-icon {
+        position: absolute;
+        left: 14px;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 22px;
+        height: 22px;
+        background: var(--acc-soft);
+        border-radius: 6px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 11px;
+        color: var(--acc);
+        transition: background var(--trans);
+      }
+      .role-card-title {
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--text);
+        margin-bottom: 2px;
+      }
+      .role-card-sub {
+        font-size: 11px;
+        color: var(--text3);
+      }
+      .role-card:hover {
+        border-color: var(--acc-border);
+        background: var(--acc-soft);
+      }
+      .role-card:focus-within {
+        outline: 2px solid var(--acc);
+        outline-offset: 2px;
+      }
+      .role-card.selected {
+        border-color: var(--acc);
+        background: var(--acc-soft);
+        box-shadow:
+          0 0 0 3px var(--acc-glow),
+          inset 0 0 0 1px var(--acc-border);
+      }
+      .role-card.selected .role-card-icon {
+        background: var(--acc);
+        color: #fff;
+      }
+
+      /* ─── FORM FIELDS ────────────────────────────────────── */
+      .field-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+      }
+      @media (max-width: 460px) {
+        .field-row {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      .field {
+        margin-bottom: 14px;
+      }
+      .field label {
+        display: block;
+        font-size: 12px;
+        font-weight: 600;
+        color: var(--text2);
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        margin-bottom: 6px;
+      }
+      .field-wrap {
+        position: relative;
+      }
+      .field-wrap i {
+        position: absolute;
+        left: 14px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: var(--text3);
+        font-size: 13px;
+        pointer-events: none;
+        transition: color var(--trans);
+      }
+      .field-wrap input,
+      .field-wrap select {
+        width: 100%;
+        background: var(--surface);
+        border: 1.5px solid var(--border);
+        border-radius: var(--radius-sm);
+        padding: 11px 14px 11px 40px;
+        font-family: var(--font-body);
+        font-size: 14px;
+        color: var(--text);
+        outline: none;
+        transition:
+          border-color var(--trans),
+          box-shadow var(--trans),
+          background var(--trans);
+        -webkit-appearance: none;
+        appearance: none;
+      }
+      .field-wrap select {
+        cursor: pointer;
+        padding-right: 40px;
+      }
+      .field-wrap.has-select::after {
+        content: "\f107";
+        font-family: "Font Awesome 6 Free";
+        font-weight: 900;
+        position: absolute;
+        right: 14px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: var(--text3);
+        pointer-events: none;
+        font-size: 12px;
+        transition: color var(--trans);
+      }
+      .field-wrap.has-select:focus-within::after {
+        color: var(--acc);
+      }
+      .field-wrap input::placeholder {
+        color: var(--text3);
+      }
+      .field-wrap input:focus,
+      .field-wrap select:focus {
+        border-color: var(--acc);
+        background: var(--acc-soft);
+        box-shadow: 0 0 0 3px var(--acc-glow);
+      }
+      .field-wrap input:focus-visible,
+      .field-wrap select:focus-visible {
+        outline: none;
+      }
+      .field-wrap input:focus + i,
+      .field-wrap:focus-within i {
+        color: var(--acc);
+      }
+      .field-wrap i.field-icon-right {
+        left: auto;
+        right: 14px;
+        cursor: pointer;
+        pointer-events: auto;
+      }
+      .field-wrap input.has-right {
+        padding-right: 40px;
+      }
+
+      .password-strength {
+        display: flex;
+        gap: 4px;
+        margin-top: 6px;
+      }
+      .ps-bar {
+        flex: 1;
+        height: 3px;
+        border-radius: 99px;
+        background: var(--border);
+        transition: background 0.3s;
+      }
+      .ps-bar.fill-weak {
+        background: #f43f5e;
+      }
+      .ps-bar.fill-medium {
+        background: #f59e0b;
+      }
+      .ps-bar.fill-strong {
+        background: #10b981;
+      }
+      .ps-label {
+        font-size: 11px;
+        color: var(--text3);
+        margin-top: 4px;
+        transition: color 0.3s;
+      }
+
+      /* ─── TERMS ──────────────────────────────────────────── */
+      .terms-row {
+        display: flex;
+        align-items: flex-start;
+        gap: 10px;
+        margin: 16px 0 20px;
+      }
+      .custom-check {
+        width: 18px;
+        height: 18px;
+        border: 1.5px solid var(--border);
+        border-radius: 5px;
+        flex-shrink: 0;
+        margin-top: 1px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition:
+          border-color var(--trans),
+          background var(--trans);
+        position: relative;
+      }
+      .custom-check input {
+        position: absolute;
+        opacity: 0;
+        width: 100%;
+        height: 100%;
+        cursor: pointer;
+      }
+      .custom-check:focus-within {
+        outline: 2px solid var(--acc);
+        outline-offset: 2px;
+      }
+      .custom-check.checked {
+        background: var(--acc);
+        border-color: var(--acc);
+      }
+      .custom-check.checked::after {
+        content: "";
+        width: 10px;
+        height: 6px;
+        border-left: 2px solid #fff;
+        border-bottom: 2px solid #fff;
+        transform: rotate(-45deg) translateY(-1px);
+        display: block;
+      }
+      .terms-text {
+        font-size: 13px;
+        color: var(--text2);
+        line-height: 1.5;
+      }
+      .terms-text a {
+        color: var(--acc);
+        text-decoration: none;
+      }
+      .terms-text a:hover {
+        text-decoration: underline;
+      }
+
+      /* ─── BUTTON ─────────────────────────────────────────── */
+      .btn-primary {
+        width: 100%;
+        padding: 13px 24px;
+        background: var(--acc);
+        color: #fff;
+        border: none;
+        border-radius: var(--radius-sm);
+        font-family: var(--font-head);
+        font-size: 15px;
+        font-weight: 700;
+        letter-spacing: 0.02em;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        transition:
+          background var(--trans),
+          box-shadow var(--trans),
+          transform 0.15s,
+          opacity var(--trans);
+        box-shadow: 0 4px 20px var(--acc-glow);
+      }
+      .btn-primary:hover:not(:disabled) {
+        background: var(--acc2);
+        box-shadow: 0 8px 28px var(--acc-glow);
+        transform: translateY(-1px);
+      }
+      .btn-primary:active:not(:disabled) {
+        transform: translateY(0);
+      }
+      .btn-primary:focus-visible {
+        outline: 2px solid var(--acc);
+        outline-offset: 2px;
+      }
+      .btn-primary:disabled {
+        opacity: 0.55;
+        cursor: not-allowed;
+        transform: none;
+      }
+
+      /* ─── DIVIDER ────────────────────────────────────────── */
+      .divider {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin: 20px 0;
+        color: var(--text3);
+        font-size: 12px;
+      }
+      .divider::before,
+      .divider::after {
+        content: "";
+        flex: 1;
+        height: 1px;
+        background: var(--border);
+      }
+
+      /* ─── SOCIAL BTN ─────────────────────────────────────── */
+      .btn-social {
+        width: 100%;
+        padding: 11px 20px;
+        background: var(--surface);
+        border: 1.5px solid var(--border);
+        border-radius: var(--radius-sm);
+        color: var(--text);
+        font-family: var(--font-body);
+        font-size: 14px;
+        font-weight: 500;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        transition:
+          border-color var(--trans),
+          background var(--trans);
+      }
+      .btn-social:hover {
+        border-color: var(--acc-border);
+        background: var(--acc-soft);
+      }
+      .btn-social:focus-visible {
+        outline: 2px solid var(--acc);
+        outline-offset: 2px;
+      }
+      .btn-social img {
+        width: 18px;
+        height: 18px;
+      }
+
+      /* ─── FOOTER LINK ────────────────────────────────────── */
+      .form-footer {
+        text-align: center;
+        margin-top: 24px;
+        font-size: 13.5px;
+        color: var(--text2);
+      }
+      .form-footer a {
+        color: var(--acc);
+        text-decoration: none;
+        font-weight: 600;
+      }
+      .form-footer a:hover {
+        text-decoration: underline;
+      }
+      .form-footer a:focus-visible {
+        outline: 2px solid var(--acc);
+        outline-offset: 2px;
+        border-radius: 3px;
+      }
+
+      /* ─── TOAST ──────────────────────────────────────────── */
+      #toast-container {
+        position: fixed;
+        bottom: 24px;
+        right: 24px;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        z-index: 9999;
+      }
+      .toast {
+        background: var(--bg2);
+        border: 1px solid var(--border);
+        border-left: 3px solid var(--acc);
+        color: var(--text);
+        padding: 12px 18px;
+        border-radius: 10px;
+        font-size: 13.5px;
+        box-shadow: var(--shadow);
+        animation: toastIn 0.3s ease;
+        max-width: 300px;
+      }
+      .toast.error {
+        border-left-color: #f43f5e;
+      }
+      .toast.warn {
+        border-left-color: #f59e0b;
+      }
+      .toast.ok {
+        border-left-color: #10b981;
+      }
+      .toast.removing {
+        animation: toastOut 0.3s ease forwards;
+      }
+      @keyframes toastIn {
+        from {
+          transform: translateX(20px);
+          opacity: 0;
+        }
+        to {
+          transform: translateX(0);
+          opacity: 1;
+        }
+      }
+      @keyframes toastOut {
+        from {
+          transform: translateX(0);
+          opacity: 1;
+        }
+        to {
+          transform: translateX(20px);
+          opacity: 0;
+        }
+      }
+
+      /* ─── SPINNER ────────────────────────────────────────── */
+      .spinner {
+        width: 16px;
+        height: 16px;
+        border: 2.5px solid rgba(255, 255, 255, 0.3);
+        border-top-color: #fff;
+        border-radius: 50%;
+        animation: spin 0.7s linear infinite;
+        display: inline-block;
+      }
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+
+      /* ─── FADE ANIM ──────────────────────────────────────── */
+      .fade-up {
+        animation: fadeUp 0.45s ease both;
+      }
+      @keyframes fadeUp {
+        from {
+          transform: translateY(18px);
+          opacity: 0;
+        }
+        to {
+          transform: translateY(0);
+          opacity: 1;
+        }
+      }
+
+      /* ─── PROGRESS INDICATOR ─────────────────────────────── */
+      .progress-bar {
+        height: 3px;
+        background: var(--border);
+        border-radius: 99px;
+        margin-bottom: 28px;
+        overflow: hidden;
+      }
+      .progress-fill {
+        height: 100%;
+        background: var(--acc);
+        border-radius: 99px;
+        transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        box-shadow: 0 0 8px var(--acc-glow);
+      }
+
+      /* ─── STEP PAGES ─────────────────────────────────────── */
+      .step-page {
+        display: none;
+      }
+      .step-page.active {
+        display: block;
+        animation: fadeUp 0.35s ease both;
+      }
+
+      /* ─── AVATAR PICKER ──────────────────────────────────── */
+      .avatar-grid {
+        display: grid;
+        grid-template-columns: repeat(5, 1fr);
+        gap: 8px;
+        margin-top: 8px;
+      }
+      .avatar-opt {
+        width: 100%;
+        aspect-ratio: 1;
+        border-radius: 12px;
+        border: 2px solid var(--border);
+        background: var(--surface);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 22px;
+        cursor: pointer;
+        transition:
+          border-color var(--trans),
+          transform 0.15s,
+          box-shadow var(--trans);
+      }
+      .avatar-opt:hover {
+        transform: scale(1.08);
+        border-color: var(--acc-border);
+      }
+      .avatar-opt:focus-visible {
+        outline: 2px solid var(--acc);
+        outline-offset: 2px;
+      }
+      .avatar-opt.selected {
+        border-color: var(--acc);
+        background: var(--acc-soft);
+        box-shadow: 0 0 0 3px var(--acc-glow);
+      }
+
+      /* ─── SUMMARY BOX (Step 3) ───────────────────────────── */
+      .summary-box {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 20px;
+        margin: 24px 0;
+        text-align: left;
+      }
+      .summary-title {
+        font-size: 11px;
+        color: var(--text3);
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        font-weight: 700;
+        margin-bottom: 12px;
+      }
+      .summary-row {
+        display: flex;
+        justify-content: space-between;
+        font-size: 13.5px;
+        padding: 6px 0;
+      }
+      .summary-row + .summary-row {
+        border-top: 1px solid var(--border);
+      }
+      .summary-label {
+        color: var(--text2);
+      }
+      .summary-value {
+        font-weight: 600;
+      }
+
+      /* ─── SUCCESS SECTION ────────────────────────────────── */
+      .success-icon {
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        background: var(--acc-soft);
+        border: 2px solid var(--acc);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 20px;
+        font-size: 36px;
+        box-shadow: 0 0 32px var(--acc-glow);
+      }
+      .success-title {
+        font-family: var(--font-head);
+        font-size: 1.8rem;
+        font-weight: 800;
+        margin-bottom: 8px;
+      }
+      .success-title span {
+        color: var(--acc);
+      }
+      .success-desc {
+        color: var(--text2);
+        font-size: 14px;
+        line-height: 1.6;
+        max-width: 320px;
+        margin: 0 auto;
+      }
+
+      /* ─── SCROLLBAR ──────────────────────────────────────── */
+      ::-webkit-scrollbar {
+        width: 6px;
+      }
+      ::-webkit-scrollbar-track {
+        background: transparent;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: var(--border);
+        border-radius: 3px;
+      }
+      ::-webkit-scrollbar-thumb:hover {
+        background: var(--border-hi);
+      }
+    </style>
+  </head>
+  <body>
+    <!-- BG -->
+    <div class="bg-blob blob-1" aria-hidden="true"></div>
+    <div class="bg-blob blob-2" aria-hidden="true"></div>
+    <div class="bg-blob blob-3" aria-hidden="true"></div>
+
+    <!-- LAYOUT -->
+    <div class="page">
+      <!-- LEFT PANEL -->
+      <aside class="panel-left" aria-label="Informasi platform">
+        <div class="brand">
+          <div class="brand-icon" aria-hidden="true">
+            <i class="fa-solid fa-brain"></i>
+          </div>
+          <div>
+            <div class="brand-name">EduPattern</div>
+            <div class="brand-sub">AI Learning Platform</div>
+          </div>
+        </div>
+
+        <div class="panel-hero">
+          <h2 class="panel-tagline">
+            Analisis pola<br />belajar yang <em>cerdas.</em>
+          </h2>
+          <p class="panel-desc">
+            Platform berbasis AI untuk memantau performa mahasiswa, kebiasaan
+            membaca, dan aktivitas digital secara real-time.
+          </p>
+
+          <ul class="feature-list">
+            <li>
+              <i class="fa-solid fa-chart-line" aria-hidden="true"></i>
+              <span>Analisis pola belajar dengan AI engine</span>
+            </li>
+            <li>
+              <i class="fa-solid fa-shield-halved" aria-hidden="true"></i>
+              <span>Monitor aktivitas digital mahasiswa</span>
+            </li>
+            <li>
+              <i class="fa-solid fa-book-open-reader" aria-hidden="true"></i>
+              <span>Integrasi progres buku iPusnas</span>
+            </li>
+            <li>
+              <i
+                class="fa-solid fa-triangle-exclamation"
+                aria-hidden="true"></i>
+              <span>Deteksi risiko akademik otomatis</span>
+            </li>
+          </ul>
+        </div>
+
+        <div class="panel-steps">
+          <div class="step-label">Langkah Pendaftaran</div>
+          <nav class="steps" id="leftSteps" aria-label="Progress pendaftaran">
+            <div class="step active" data-step="1">
+              <div class="step-num" aria-current="step">1</div>
+              <span>Akun</span>
+            </div>
+            <div class="step-sep" aria-hidden="true">—</div>
+            <div class="step" data-step="2">
+              <div class="step-num">2</div>
+              <span>Profil</span>
+            </div>
+            <div class="step-sep" aria-hidden="true">—</div>
+            <div class="step" data-step="3">
+              <div class="step-num">3</div>
+              <span>Selesai</span>
+            </div>
+          </nav>
+        </div>
+      </aside>
+
+      <!-- RIGHT PANEL -->
+      <main class="panel-right fade-up">
+        <!-- TOOLBAR -->
+        <div class="toolbar" role="toolbar" aria-label="Pengaturan tampilan">
+          <div class="tb-group" role="radiogroup" aria-label="Tema">
+            <button
+              class="tb-btn active"
+              id="btnDark"
+              title="Mode Gelap"
+              aria-pressed="true"
+              onclick="setTheme('dark')">
+              <i class="fa-solid fa-moon" aria-hidden="true"></i>
+            </button>
+            <button
+              class="tb-btn"
+              id="btnLight"
+              title="Mode Terang"
+              aria-pressed="false"
+              onclick="setTheme('light')">
+              <i class="fa-solid fa-sun" aria-hidden="true"></i>
+            </button>
+          </div>
+          <div
+            class="tb-group"
+            style="padding: 6px 8px; gap: 6px; align-items: center"
+            role="radiogroup"
+            aria-label="Warna aksen">
+            <div
+              class="accent-dot dot-purple active"
+              id="dotPurple"
+              title="Ungu"
+              role="radio"
+              aria-checked="true"
+              aria-label="Warna ungu"
+              tabindex="0"
+              onclick="setAccent('purple')"
+              onkeydown="if (event.key === 'Enter') setAccent('purple');"></div>
+            <div
+              class="accent-dot dot-blue"
+              id="dotBlue"
+              title="Biru"
+              role="radio"
+              aria-checked="false"
+              aria-label="Warna biru"
+              tabindex="0"
+              onclick="setAccent('blue')"
+              onkeydown="if (event.key === 'Enter') setAccent('blue');"></div>
+            <div
+              class="accent-dot dot-yellow"
+              id="dotYellow"
+              title="Kuning"
+              role="radio"
+              aria-checked="false"
+              aria-label="Warna kuning"
+              tabindex="0"
+              onclick="setAccent('yellow')"
+              onkeydown="if (event.key === 'Enter') setAccent('yellow');"></div>
+          </div>
+        </div>
+
+        <!-- PROGRESS -->
+        <div
+          class="progress-bar"
+          role="progressbar"
+          aria-valuenow="33"
+          aria-valuemin="0"
+          aria-valuemax="100">
+          <div class="progress-fill" id="progressFill" style="width: 33%"></div>
+        </div>
+
+        <!-- ═══ STEP 1: AKUN ═══ -->
+        <section
+          class="step-page active"
+          id="page1"
+          aria-label="Langkah 1: Buat Akun">
+          <div class="form-head">
+            <h1>Buat <span>Akun</span> Baru</h1>
+            <p>Daftar gratis dan mulai pantau performa belajar dengan AI.</p>
+          </div>
+
+          <!-- ROLE -->
+          <div class="role-grid" role="radiogroup" aria-label="Pilih peran">
+            <label class="role-card selected" id="roleStudent">
+              <input
+                type="radio"
+                name="role"
+                value="student"
+                checked
+                onchange="selectRole(this)" />
+              <div class="role-card-icon" aria-hidden="true">
+                <i class="fa-solid fa-graduation-cap"></i>
+              </div>
+              <div class="role-card-title">Mahasiswa</div>
+              <div class="role-card-sub">Lacak pola belajarmu</div>
+            </label>
+            <label class="role-card" id="roleLecturer">
+              <input
+                type="radio"
+                name="role"
+                value="lecturer"
+                onchange="selectRole(this)" />
+              <div class="role-card-icon" aria-hidden="true">
+                <i class="fa-solid fa-chalkboard-user"></i>
+              </div>
+              <div class="role-card-title">Dosen</div>
+              <div class="role-card-sub">Monitor mahasiswamu</div>
+            </label>
+          </div>
+
+          <!-- NAME -->
+          <div class="field">
+            <label for="regName">Nama Lengkap</label>
+            <div class="field-wrap">
+              <i class="fa-solid fa-user" aria-hidden="true"></i>
+              <input
+                type="text"
+                id="regName"
+                placeholder="Contoh: Budi Santoso"
+                autocomplete="name"
+                required />
+            </div>
+          </div>
+
+          <!-- EMAIL -->
+          <div class="field">
+            <label for="regEmail">Email</label>
+            <div class="field-wrap">
+              <i class="fa-solid fa-envelope" aria-hidden="true"></i>
+              <input
+                type="email"
+                id="regEmail"
+                placeholder="email@domain.com"
+                autocomplete="email"
+                required />
+            </div>
+          </div>
+
+          <!-- PASSWORD -->
+          <div class="field">
+            <label for="regPass">Password</label>
+            <div class="field-wrap">
+              <i class="fa-solid fa-lock" aria-hidden="true"></i>
+              <input
+                type="password"
+                id="regPass"
+                placeholder="Min. 8 karakter"
+                autocomplete="new-password"
+                class="has-right"
+                oninput="checkStrength(this.value)"
+                required />
+              <i
+                class="fa-solid fa-eye field-icon-right"
+                id="eyeIcon"
+                role="button"
+                aria-label="Tampilkan password"
+                tabindex="0"
+                onclick="togglePass()"
+                onkeydown="if (event.key === 'Enter') togglePass();"></i>
+            </div>
+            <div class="password-strength" aria-hidden="true">
+              <div class="ps-bar" id="psBar1"></div>
+              <div class="ps-bar" id="psBar2"></div>
+              <div class="ps-bar" id="psBar3"></div>
+              <div class="ps-bar" id="psBar4"></div>
+            </div>
+            <div class="ps-label" id="psLabel" aria-live="polite">—</div>
+          </div>
+
+          <!-- CONFIRM PASS -->
+          <div class="field">
+            <label for="regPass2">Konfirmasi Password</label>
+            <div class="field-wrap">
+              <i class="fa-solid fa-key" aria-hidden="true"></i>
+              <input
+                type="password"
+                id="regPass2"
+                placeholder="Ulangi password"
+                autocomplete="new-password"
+                required />
+            </div>
+          </div>
+
+          <!-- TERMS -->
+          <div class="terms-row">
+            <div class="custom-check" id="termsCheck" onclick="toggleTerms()">
+              <input
+                type="checkbox"
+                id="termsInput"
+                aria-label="Setujui syarat dan ketentuan" />
+            </div>
+            <p class="terms-text">
+              Saya menyetujui <a href="#">Syarat & Ketentuan</a> dan
+              <a href="#">Kebijakan Privasi</a> EduPattern AI.
+            </p>
+          </div>
+
+          <button class="btn-primary" id="btnNext1" onclick="nextStep(1)">
+            <span>Lanjut ke Profil</span>
+            <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
+          </button>
+
+          <div class="divider">atau daftar dengan</div>
+
+          <button
+            class="btn-social"
+            onclick="toast('Google SSO belum tersedia', 'warn')">
+            <img src="https://www.google.com/favicon.ico" alt="" />
+            Lanjutkan dengan Google
+          </button>
+
+          <div class="form-footer">
+            Sudah punya akun? <a href="index.html">Masuk di sini</a>
+          </div>
+        </section>
+
+        <!-- ═══ STEP 2: PROFIL ═══ -->
+        <section
+          class="step-page"
+          id="page2"
+          aria-label="Langkah 2: Lengkapi Profil">
+          <div class="form-head">
+            <h1>Lengkapi <span>Profil</span></h1>
+            <p>
+              Informasi ini membantu AI menganalisis dan merekomendasikan pola
+              belajar yang tepat.
+            </p>
+          </div>
+
+          <!-- Avatar -->
+          <div class="field">
+            <label>Pilih Avatar</label>
+            <div
+              class="avatar-grid"
+              id="avatarGrid"
+              role="radiogroup"
+              aria-label="Pilih avatar">
+              <div
+                class="avatar-opt selected"
+                data-val="🧑‍💻"
+                role="radio"
+                aria-checked="true"
+                aria-label="Avatar programmer"
+                tabindex="0"
+                onclick="selectAvatar(this)"
+                onkeydown="if (event.key === 'Enter') selectAvatar(this);">
+                🧑‍💻
+              </div>
+              <div
+                class="avatar-opt"
+                data-val="👩‍🎓"
+                role="radio"
+                aria-checked="false"
+                aria-label="Avatar mahasiswi"
+                tabindex="0"
+                onclick="selectAvatar(this)"
+                onkeydown="if (event.key === 'Enter') selectAvatar(this);">
+                👩‍🎓
+              </div>
+              <div
+                class="avatar-opt"
+                data-val="🧑‍🏫"
+                role="radio"
+                aria-checked="false"
+                aria-label="Avatar pengajar"
+                tabindex="0"
+                onclick="selectAvatar(this)"
+                onkeydown="if (event.key === 'Enter') selectAvatar(this);">
+                🧑‍🏫
+              </div>
+              <div
+                class="avatar-opt"
+                data-val="🦸"
+                role="radio"
+                aria-checked="false"
+                aria-label="Avatar pahlawan"
+                tabindex="0"
+                onclick="selectAvatar(this)"
+                onkeydown="if (event.key === 'Enter') selectAvatar(this);">
+                🦸
+              </div>
+              <div
+                class="avatar-opt"
+                data-val="🧑‍🔬"
+                role="radio"
+                aria-checked="false"
+                aria-label="Avatar ilmuwan"
+                tabindex="0"
+                onclick="selectAvatar(this)"
+                onkeydown="if (event.key === 'Enter') selectAvatar(this);">
+                🧑‍🔬
+              </div>
+            </div>
+          </div>
+
+          <!-- NIM/NIP + Angkatan -->
+          <div class="field-row">
+            <div class="field">
+              <label for="regNim" id="nimLabel">NIM</label>
+              <div class="field-wrap">
+                <i class="fa-solid fa-id-badge" aria-hidden="true"></i>
+                <input type="text" id="regNim" placeholder="2021060001" />
+              </div>
+            </div>
+            <div class="field">
+              <label for="regYear">Angkatan</label>
+              <div class="field-wrap">
+                <i class="fa-solid fa-calendar" aria-hidden="true"></i>
+                <input
+                  type="number"
+                  id="regYear"
+                  placeholder="2021"
+                  min="2010"
+                  max="2030" />
+              </div>
+            </div>
+          </div>
+
+          <!-- Jurusan -->
+          <div class="field">
+            <label for="regProdi">Jurusan / Program Studi</label>
+            <div class="field-wrap has-select">
+              <i class="fa-solid fa-building-columns" aria-hidden="true"></i>
+              <select id="regProdi" required>
+                <option value="">— Pilih Prodi —</option>
+                <option>Teknik Informatika</option>
+                <option>Sistem Informasi</option>
+                <option>Ilmu Komputer</option>
+                <option>Teknik Elektro</option>
+                <option>Manajemen</option>
+                <option>Akuntansi</option>
+                <option>Psikologi</option>
+                <option>Lainnya</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Kampus -->
+          <div class="field">
+            <label for="regKampus">Nama Universitas / Institusi</label>
+            <div class="field-wrap">
+              <i class="fa-solid fa-building" aria-hidden="true"></i>
+              <input
+                type="text"
+                id="regKampus"
+                placeholder="Universitas Balikpapan"
+                required />
+            </div>
+          </div>
+
+          <!-- Target belajar -->
+          <div class="field">
+            <label for="regTarget">Target Jam Belajar / Minggu</label>
+            <div class="field-wrap has-select">
+              <i class="fa-solid fa-clock" aria-hidden="true"></i>
+              <select id="regTarget">
+                <option value="5">5 jam / minggu</option>
+                <option value="10" selected>10 jam / minggu</option>
+                <option value="15">15 jam / minggu</option>
+                <option value="20">20 jam / minggu</option>
+                <option value="30">30+ jam / minggu</option>
+              </select>
+            </div>
+          </div>
+
+          <div style="display: flex; gap: 10px; margin-top: 4px">
+            <button
+              class="btn-social"
+              onclick="prevStep(2)"
+              style="flex: 0 0 auto; width: auto; padding: 13px 20px">
+              <i class="fa-solid fa-arrow-left" aria-hidden="true"></i>
+              <span>Kembali</span>
+            </button>
+            <button
+              class="btn-primary"
+              id="btnNext2"
+              onclick="nextStep(2)"
+              style="flex: 1">
+              <span>Buat Akun</span>
+              <i class="fa-solid fa-check" aria-hidden="true"></i>
+            </button>
+          </div>
+        </section>
+
+        <!-- ═══ STEP 3: SELESAI ═══ -->
+        <section
+          class="step-page"
+          id="page3"
+          aria-label="Langkah 3: Pendaftaran Selesai"
+          style="text-align: center">
+          <div style="margin-bottom: 24px">
+            <div class="success-icon" id="successAvatar">🎉</div>
+            <h1 class="success-title">Akun <span>Berhasil</span> Dibuat!</h1>
+            <p class="success-desc">
+              Selamat datang di EduPattern AI,
+              <strong id="successName">Pengguna</strong>! Akunmu telah siap.
+              Silakan masuk untuk memulai perjalanan belajarmu.
+            </p>
+          </div>
+
+          <div class="summary-box">
+            <div class="summary-title">Ringkasan Akun</div>
+            <div class="summary-row">
+              <span class="summary-label">Nama</span>
+              <span class="summary-value" id="summName">—</span>
+            </div>
+            <div class="summary-row">
+              <span class="summary-label">Email</span>
+              <span class="summary-value" id="summEmail">—</span>
+            </div>
+            <div class="summary-row">
+              <span class="summary-label">Role</span>
+              <span class="summary-value" id="summRole">—</span>
+            </div>
+            <div class="summary-row">
+              <span class="summary-label">Prodi</span>
+              <span class="summary-value" id="summProdi">—</span>
+            </div>
+          </div>
+
+          <a href="index.html" style="text-decoration: none">
+            <button class="btn-primary" type="button">
+              <span>Masuk ke Dashboard</span>
+              <i class="fa-solid fa-right-to-bracket" aria-hidden="true"></i>
+            </button>
+          </a>
+
+          <div class="form-footer" style="margin-top: 16px">
+            Butuh bantuan? <a href="#">Hubungi support</a>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <!-- TOAST -->
+    <div id="toast-container" aria-live="polite"></div>
+
+    <script>
+      /* ─── THEME & ACCENT ─── */
+      function setTheme(t) {
+        document.documentElement.setAttribute("data-theme", t);
+        const btnDark = document.getElementById("btnDark");
+        const btnLight = document.getElementById("btnLight");
+        btnDark.classList.toggle("active", t === "dark");
+        btnLight.classList.toggle("active", t === "light");
+        btnDark.setAttribute("aria-pressed", t === "dark");
+        btnLight.setAttribute("aria-pressed", t === "light");
+        localStorage.setItem("ep-theme", t);
+      }
+
+      function setAccent(a) {
+        document.documentElement.setAttribute("data-accent", a);
+        ["Purple", "Blue", "Yellow"].forEach((x) => {
+          const dot = document.getElementById("dot" + x);
+          const isActive = x.toLowerCase() === a;
+          dot.classList.toggle("active", isActive);
+          dot.setAttribute("aria-checked", isActive);
+        });
+        localStorage.setItem("ep-accent", a);
+      }
+
+      (function () {
+        const t = localStorage.getItem("ep-theme") || "dark";
+        const a = localStorage.getItem("ep-accent") || "purple";
+        setTheme(t);
+        setAccent(a);
+      })();
+
+      /* ─── TOAST ─── */
+      function toast(msg, type = "ok") {
+        const el = document.createElement("div");
+        el.className = `toast ${type}`;
+        el.setAttribute("role", "alert");
+        el.textContent = msg;
+        document.getElementById("toast-container").appendChild(el);
+        setTimeout(() => {
+          el.classList.add("removing");
+          setTimeout(() => el.remove(), 300);
+        }, 3200);
+      }
+
+      /* ─── ROLE SELECT ─── */
+      function selectRole(input) {
+        document
+          .getElementById("roleStudent")
+          .classList.toggle("selected", input.value === "student");
+        document
+          .getElementById("roleLecturer")
+          .classList.toggle("selected", input.value === "lecturer");
+        document.getElementById("nimLabel").textContent =
+          input.value === "student" ? "NIM" : "NIP/NIDN";
+        document.getElementById("regNim").placeholder =
+          input.value === "student" ? "2021060001" : "0012345678";
+      }
+
+      /* ─── AVATAR ─── */
+      function selectAvatar(el) {
+        document.querySelectorAll(".avatar-opt").forEach((a) => {
+          a.classList.remove("selected");
+          a.setAttribute("aria-checked", "false");
+        });
+        el.classList.add("selected");
+        el.setAttribute("aria-checked", "true");
+      }
+
+      function getAvatar() {
+        const sel = document.querySelector(".avatar-opt.selected");
+        return sel ? sel.dataset.val : "🎓";
+      }
+
+      /* ─── TERMS ─── */
+      let termsChecked = false;
+      function toggleTerms() {
+        termsChecked = !termsChecked;
+        const el = document.getElementById("termsCheck");
+        const input = document.getElementById("termsInput");
+        el.classList.toggle("checked", termsChecked);
+        input.checked = termsChecked;
+      }
+
+      /* ─── PASSWORD ─── */
+      function togglePass() {
+        const inp = document.getElementById("regPass");
+        const ico = document.getElementById("eyeIcon");
+        const isPassword = inp.type === "password";
+        inp.type = isPassword ? "text" : "password";
+        ico.className = isPassword
+          ? "fa-solid fa-eye-slash field-icon-right"
+          : "fa-solid fa-eye field-icon-right";
+        ico.setAttribute(
+          "aria-label",
+          isPassword ? "Sembunyikan password" : "Tampilkan password",
+        );
+      }
+
+      function checkStrength(val) {
+        const bars = [1, 2, 3, 4].map((i) =>
+          document.getElementById("psBar" + i),
+        );
+        const label = document.getElementById("psLabel");
+
+        bars.forEach((b) => (b.className = "ps-bar"));
+
+        if (!val) {
+          label.textContent = "—";
+          label.style.color = "var(--text3)";
+          return;
+        }
+
+        let score = 0;
+        if (val.length >= 8) score++;
+        if (/[A-Z]/.test(val)) score++;
+        if (/[0-9]/.test(val)) score++;
+        if (/[^A-Za-z0-9]/.test(val)) score++;
+
+        if (score === 0) {
+          label.textContent = "Kekuatan: Sangat Lemah";
+          label.style.color = "#f43f5e";
+          bars[0].className = "ps-bar fill-weak";
+          return;
+        }
+
+        const strengthMap = {
+          1: {class: "fill-weak", label: "Lemah", color: "#f43f5e"},
+          2: {class: "fill-medium", label: "Sedang", color: "#f59e0b"},
+          3: {class: "fill-strong", label: "Kuat", color: "#10b981"},
+          4: {class: "fill-strong", label: "Sangat Kuat", color: "#10b981"},
+        };
+
+        const strength = strengthMap[score];
+        for (let i = 0; i < score; i++) {
+          bars[i].className = "ps-bar " + strength.class;
+        }
+        label.textContent = "Kekuatan: " + strength.label;
+        label.style.color = strength.color;
+      }
+
+      /* ─── STEPS ─── */
+      let currentStep = 1;
+
+      function updateProgress(step) {
+        const pct = {1: 33, 2: 66, 3: 100};
+        const progressFill = document.getElementById("progressFill");
+        progressFill.style.width = pct[step] + "%";
+        progressFill.parentElement.setAttribute("aria-valuenow", pct[step]);
+
+        document.querySelectorAll("#leftSteps .step").forEach((el) => {
+          const s = parseInt(el.dataset.step);
+          el.classList.remove("active", "done");
+          const stepNum = el.querySelector(".step-num");
+          stepNum.removeAttribute("aria-current");
+
+          if (s === step) {
+            el.classList.add("active");
+            stepNum.setAttribute("aria-current", "step");
+          }
+          if (s < step) {
+            el.classList.add("done");
+            stepNum.innerHTML =
+              '<i class="fa-solid fa-check" style="font-size:10px"></i>';
+          } else {
+            stepNum.textContent = s;
+          }
+        });
+      }
+
+      function showPage(n) {
+        document
+          .querySelectorAll(".step-page")
+          .forEach((p) => p.classList.remove("active"));
+        document.getElementById("page" + n).classList.add("active");
+        currentStep = n;
+        updateProgress(n);
+
+        document
+          .querySelector(".panel-right")
+          .scrollIntoView({behavior: "smooth", block: "start"});
+      }
+
+      function nextStep(from) {
+        if (from === 1) {
+          const name = document.getElementById("regName").value.trim();
+          const email = document.getElementById("regEmail").value.trim();
+          const pass = document.getElementById("regPass").value;
+          const pass2 = document.getElementById("regPass2").value;
+
+          if (!name) {
+            toast("Nama tidak boleh kosong", "error");
+            document.getElementById("regName").focus();
+            return;
+          }
+          if (!email) {
+            toast("Email tidak boleh kosong", "error");
+            document.getElementById("regEmail").focus();
+            return;
+          }
+          if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+            toast("Format email tidak valid", "error");
+            document.getElementById("regEmail").focus();
+            return;
+          }
+          if (pass.length < 8) {
+            toast("Password minimal 8 karakter", "error");
+            document.getElementById("regPass").focus();
+            return;
+          }
+          if (pass !== pass2) {
+            toast("Konfirmasi password tidak cocok", "error");
+            document.getElementById("regPass2").focus();
+            return;
+          }
+          if (!termsChecked) {
+            toast("Setujui Syarat & Ketentuan terlebih dahulu", "warn");
+            return;
+          }
+
+          showPage(2);
+          return;
+        }
+
+        if (from === 2) {
+          const prodi = document.getElementById("regProdi").value;
+          const kampus = document.getElementById("regKampus").value.trim();
+
+          if (!prodi) {
+            toast("Pilih program studi", "error");
+            document.getElementById("regProdi").focus();
+            return;
+          }
+          if (!kampus) {
+            toast("Nama universitas tidak boleh kosong", "error");
+            document.getElementById("regKampus").focus();
+            return;
+          }
+
+          const btn = document.getElementById("btnNext2");
+          btn.disabled = true;
+          btn.innerHTML =
+            '<span class="spinner"></span> <span>Memproses...</span>';
+
+          setTimeout(() => {
+            const name = document.getElementById("regName").value.trim();
+            const email = document.getElementById("regEmail").value.trim();
+            const role = document.querySelector(
+              "input[name=role]:checked",
+            ).value;
+
+            document.getElementById("successName").textContent = name;
+            document.getElementById("successAvatar").textContent = getAvatar();
+            document.getElementById("summName").textContent = name;
+            document.getElementById("summEmail").textContent = email;
+            document.getElementById("summRole").textContent =
+              role === "student" ? "Mahasiswa" : "Dosen";
+            document.getElementById("summProdi").textContent = prodi;
+
+            showPage(3);
+            toast("Akun berhasil dibuat!", "ok");
+
+            btn.disabled = false;
+            btn.innerHTML =
+              '<span>Buat Akun</span> <i class="fa-solid fa-check" aria-hidden="true"></i>';
+          }, 1400);
+        }
+      }
+
+      function prevStep(from) {
+        if (from === 2) showPage(1);
+      }
+
+      /* ─── KEYBOARD NAVIGATION ─── */
+      document.addEventListener("keydown", function (e) {
+        if (e.target.classList.contains("role-card") && e.key === "Enter") {
+          const radio = e.target.querySelector('input[type="radio"]');
+          if (radio) {
+            radio.checked = true;
+            selectRole(radio);
+          }
+        }
+      });
+    </script>
+  </body>
+</html>
