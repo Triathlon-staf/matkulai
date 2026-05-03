@@ -12,7 +12,6 @@
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
     <style>
-      /* ─── TOKENS ─────────────────────────────────────────── */
       :root {
         --purple-h: 262;
         --purple-s: 80%;
@@ -20,24 +19,19 @@
         --blue-s: 85%;
         --yellow-h: 42;
         --yellow-s: 92%;
-
         --accent-h: var(--purple-h);
         --accent-s: var(--purple-s);
-
         --acc: hsl(var(--accent-h), var(--accent-s), 62%);
         --acc2: hsl(var(--accent-h), var(--accent-s), 50%);
         --acc-glow: hsl(var(--accent-h), var(--accent-s), 62%, 0.28);
         --acc-soft: hsl(var(--accent-h), var(--accent-s), 62%, 0.12);
         --acc-border: hsl(var(--accent-h), var(--accent-s), 62%, 0.35);
-
         --radius: 16px;
         --radius-sm: 10px;
         --font-head: "Syne", sans-serif;
         --font-body: "DM Sans", sans-serif;
         --trans: 0.22s cubic-bezier(0.4, 0, 0.2, 1);
       }
-
-      /* DARK MODE (default) */
       [data-theme="dark"] {
         --bg: #0c0c14;
         --bg2: #13131f;
@@ -48,11 +42,8 @@
         --text: #f0f0f8;
         --text2: #9090b0;
         --text3: #50506a;
-        --invert: 0;
         --shadow: 0 24px 64px rgba(0, 0, 0, 0.55);
       }
-
-      /* LIGHT MODE */
       [data-theme="light"] {
         --bg: #f4f4fb;
         --bg2: #ffffff;
@@ -63,11 +54,8 @@
         --text: #111124;
         --text2: #55556a;
         --text3: #a0a0b8;
-        --invert: 1;
         --shadow: 0 24px 64px rgba(80, 80, 160, 0.12);
       }
-
-      /* ACCENT VARIANTS */
       [data-accent="purple"] {
         --accent-h: var(--purple-h);
         --accent-s: var(--purple-s);
@@ -85,8 +73,6 @@
         --acc-soft: hsl(42, 92%, 54%, 0.12);
         --acc-border: hsl(42, 92%, 54%, 0.35);
       }
-
-      /* ─── RESET ──────────────────────────────────────────── */
       *,
       *::before,
       *::after {
@@ -97,7 +83,6 @@
       html {
         height: 100%;
       }
-
       body {
         min-height: 100vh;
         background: var(--bg);
@@ -111,8 +96,6 @@
         display: flex;
         align-items: stretch;
       }
-
-      /* ─── BG BLOBS ───────────────────────────────────────── */
       .bg-blob {
         position: fixed;
         pointer-events: none;
@@ -142,8 +125,6 @@
         top: 50%;
         left: 40%;
       }
-
-      /* ─── LAYOUT ─────────────────────────────────────────── */
       .page {
         display: flex;
         width: 100%;
@@ -152,7 +133,7 @@
         z-index: 1;
       }
 
-      /* LEFT PANEL */
+      /* ── PANEL LEFT ── */
       .panel-left {
         flex: 1;
         display: none;
@@ -169,7 +150,6 @@
           display: flex;
         }
       }
-
       .panel-left::before {
         content: "";
         position: absolute;
@@ -181,7 +161,6 @@
         );
         pointer-events: none;
       }
-
       .brand {
         display: flex;
         align-items: center;
@@ -212,7 +191,6 @@
         text-transform: uppercase;
         font-weight: 600;
       }
-
       .panel-hero {
         position: relative;
         z-index: 1;
@@ -235,7 +213,6 @@
         line-height: 1.7;
         max-width: 320px;
       }
-
       .feature-list {
         list-style: none;
         margin-top: 32px;
@@ -263,7 +240,6 @@
         font-size: 13px;
         flex-shrink: 0;
       }
-
       .panel-steps {
         position: relative;
         z-index: 1;
@@ -319,7 +295,7 @@
         font-size: 10px;
       }
 
-      /* RIGHT PANEL — FORM */
+      /* ── PANEL RIGHT ── */
       .panel-right {
         width: 100%;
         max-width: 520px;
@@ -336,7 +312,6 @@
         }
       }
 
-      /* ─── TOOLBAR ────────────────────────────────────────── */
       .toolbar {
         display: flex;
         justify-content: flex-end;
@@ -412,7 +387,21 @@
         background: hsl(42, 92%, 54%);
       }
 
-      /* ─── HEADING ────────────────────────────────────────── */
+      .progress-bar {
+        height: 3px;
+        background: var(--border);
+        border-radius: 99px;
+        margin-bottom: 28px;
+        overflow: hidden;
+      }
+      .progress-fill {
+        height: 100%;
+        background: var(--acc);
+        border-radius: 99px;
+        transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        box-shadow: 0 0 8px var(--acc-glow);
+      }
+
       .form-head {
         margin-bottom: 28px;
       }
@@ -433,7 +422,25 @@
         line-height: 1.6;
       }
 
-      /* ─── ROLE SELECTOR ──────────────────────────────────── */
+      .step-page {
+        display: none;
+      }
+      .step-page.active {
+        display: block;
+        animation: fadeUp 0.35s ease both;
+      }
+      @keyframes fadeUp {
+        from {
+          transform: translateY(18px);
+          opacity: 0;
+        }
+        to {
+          transform: translateY(0);
+          opacity: 1;
+        }
+      }
+
+      /* ── ROLE CARDS ── */
       .role-grid {
         display: grid;
         grid-template-columns: 1fr 1fr;
@@ -451,6 +458,7 @@
           background var(--trans),
           box-shadow var(--trans);
         background: var(--surface);
+        -webkit-user-select: none;
         user-select: none;
       }
       .role-card input[type="radio"] {
@@ -504,7 +512,7 @@
         color: #fff;
       }
 
-      /* ─── FORM FIELDS ────────────────────────────────────── */
+      /* ── FIELDS ── */
       .field-row {
         display: grid;
         grid-template-columns: 1fr 1fr;
@@ -515,7 +523,6 @@
           grid-template-columns: 1fr;
         }
       }
-
       .field {
         margin-bottom: 14px;
       }
@@ -574,7 +581,6 @@
         color: var(--text3);
         pointer-events: none;
         font-size: 12px;
-        transition: color var(--trans);
       }
       .field-wrap.has-select:focus-within::after {
         color: var(--acc);
@@ -588,11 +594,6 @@
         background: var(--acc-soft);
         box-shadow: 0 0 0 3px var(--acc-glow);
       }
-      .field-wrap input:focus-visible,
-      .field-wrap select:focus-visible {
-        outline: none;
-      }
-      .field-wrap input:focus + i,
       .field-wrap:focus-within i {
         color: var(--acc);
       }
@@ -605,7 +606,38 @@
       .field-wrap input.has-right {
         padding-right: 40px;
       }
+      /* FIX: field error state */
+      .field.error .field-wrap input,
+      .field.error .field-wrap select {
+        border-color: #f43f5e;
+        background: rgba(244, 63, 94, 0.06);
+      }
+      .field.error .field-wrap i {
+        color: #f43f5e;
+      }
+      .field-error {
+        font-size: 12px;
+        color: #f43f5e;
+        margin-top: 5px;
+        display: none;
+        align-items: center;
+        gap: 5px;
+      }
+      .field.error .field-error {
+        display: flex;
+      }
 
+      /* FIX: "Lainnya" prodi input tambahan */
+      .prodi-other-wrap {
+        display: none;
+        margin-top: 8px;
+      }
+      .prodi-other-wrap.visible {
+        display: block;
+        animation: fadeUp 0.2s ease;
+      }
+
+      /* ── PASSWORD STRENGTH ── */
       .password-strength {
         display: flex;
         gap: 4px;
@@ -634,7 +666,7 @@
         transition: color 0.3s;
       }
 
-      /* ─── TERMS ──────────────────────────────────────────── */
+      /* ── TERMS ── */
       .terms-row {
         display: flex;
         align-items: flex-start;
@@ -694,7 +726,7 @@
         text-decoration: underline;
       }
 
-      /* ─── BUTTON ─────────────────────────────────────────── */
+      /* ── BUTTONS ── */
       .btn-primary {
         width: 100%;
         padding: 13px 24px;
@@ -735,8 +767,6 @@
         cursor: not-allowed;
         transform: none;
       }
-
-      /* ─── DIVIDER ────────────────────────────────────────── */
       .divider {
         display: flex;
         align-items: center;
@@ -752,8 +782,6 @@
         height: 1px;
         background: var(--border);
       }
-
-      /* ─── SOCIAL BTN ─────────────────────────────────────── */
       .btn-social {
         width: 100%;
         padding: 11px 20px;
@@ -771,7 +799,8 @@
         gap: 10px;
         transition:
           border-color var(--trans),
-          background var(--trans);
+          background var(--trans),
+          opacity var(--trans);
       }
       .btn-social:hover {
         border-color: var(--acc-border);
@@ -781,12 +810,14 @@
         outline: 2px solid var(--acc);
         outline-offset: 2px;
       }
+      .btn-social:disabled {
+        opacity: 0.55;
+        cursor: not-allowed;
+      }
       .btn-social img {
         width: 18px;
         height: 18px;
       }
-
-      /* ─── FOOTER LINK ────────────────────────────────────── */
       .form-footer {
         text-align: center;
         margin-top: 24px;
@@ -801,124 +832,8 @@
       .form-footer a:hover {
         text-decoration: underline;
       }
-      .form-footer a:focus-visible {
-        outline: 2px solid var(--acc);
-        outline-offset: 2px;
-        border-radius: 3px;
-      }
 
-      /* ─── TOAST ──────────────────────────────────────────── */
-      #toast-container {
-        position: fixed;
-        bottom: 24px;
-        right: 24px;
-        display: flex;
-        flex-direction: column;
-        gap: 8px;
-        z-index: 9999;
-      }
-      .toast {
-        background: var(--bg2);
-        border: 1px solid var(--border);
-        border-left: 3px solid var(--acc);
-        color: var(--text);
-        padding: 12px 18px;
-        border-radius: 10px;
-        font-size: 13.5px;
-        box-shadow: var(--shadow);
-        animation: toastIn 0.3s ease;
-        max-width: 300px;
-      }
-      .toast.error {
-        border-left-color: #f43f5e;
-      }
-      .toast.warn {
-        border-left-color: #f59e0b;
-      }
-      .toast.ok {
-        border-left-color: #10b981;
-      }
-      .toast.removing {
-        animation: toastOut 0.3s ease forwards;
-      }
-      @keyframes toastIn {
-        from {
-          transform: translateX(20px);
-          opacity: 0;
-        }
-        to {
-          transform: translateX(0);
-          opacity: 1;
-        }
-      }
-      @keyframes toastOut {
-        from {
-          transform: translateX(0);
-          opacity: 1;
-        }
-        to {
-          transform: translateX(20px);
-          opacity: 0;
-        }
-      }
-
-      /* ─── SPINNER ────────────────────────────────────────── */
-      .spinner {
-        width: 16px;
-        height: 16px;
-        border: 2.5px solid rgba(255, 255, 255, 0.3);
-        border-top-color: #fff;
-        border-radius: 50%;
-        animation: spin 0.7s linear infinite;
-        display: inline-block;
-      }
-      @keyframes spin {
-        to {
-          transform: rotate(360deg);
-        }
-      }
-
-      /* ─── FADE ANIM ──────────────────────────────────────── */
-      .fade-up {
-        animation: fadeUp 0.45s ease both;
-      }
-      @keyframes fadeUp {
-        from {
-          transform: translateY(18px);
-          opacity: 0;
-        }
-        to {
-          transform: translateY(0);
-          opacity: 1;
-        }
-      }
-
-      /* ─── PROGRESS INDICATOR ─────────────────────────────── */
-      .progress-bar {
-        height: 3px;
-        background: var(--border);
-        border-radius: 99px;
-        margin-bottom: 28px;
-        overflow: hidden;
-      }
-      .progress-fill {
-        height: 100%;
-        background: var(--acc);
-        border-radius: 99px;
-        transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-        box-shadow: 0 0 8px var(--acc-glow);
-      }
-
-      /* ─── STEP PAGES ─────────────────────────────────────── */
-      .step-page {
-        display: none;
-      }
-      .step-page.active {
-        display: block;
-        animation: fadeUp 0.35s ease both;
-      }
-
-      /* ─── AVATAR PICKER ──────────────────────────────────── */
+      /* ── AVATAR GRID ── */
       .avatar-grid {
         display: grid;
         grid-template-columns: repeat(5, 1fr);
@@ -955,7 +870,7 @@
         box-shadow: 0 0 0 3px var(--acc-glow);
       }
 
-      /* ─── SUMMARY BOX (Step 3) ───────────────────────────── */
+      /* ── SUMMARY / SUCCESS ── */
       .summary-box {
         background: var(--surface);
         border: 1px solid var(--border);
@@ -987,8 +902,6 @@
       .summary-value {
         font-weight: 600;
       }
-
-      /* ─── SUCCESS SECTION ────────────────────────────────── */
       .success-icon {
         width: 80px;
         height: 80px;
@@ -1019,7 +932,78 @@
         margin: 0 auto;
       }
 
-      /* ─── SCROLLBAR ──────────────────────────────────────── */
+      /* ── TOAST ── */
+      #toast-container {
+        position: fixed;
+        bottom: 24px;
+        right: 24px;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        z-index: 9999;
+      }
+      .toast {
+        background: var(--bg2);
+        border: 1px solid var(--border);
+        border-left: 3px solid var(--acc);
+        color: var(--text);
+        padding: 12px 18px;
+        border-radius: 10px;
+        font-size: 13.5px;
+        box-shadow: var(--shadow);
+        animation: toastIn 0.3s ease;
+        max-width: 360px;
+      }
+      .toast.error {
+        border-left-color: #f43f5e;
+      }
+      .toast.warn {
+        border-left-color: #f59e0b;
+      }
+      .toast.ok {
+        border-left-color: #10b981;
+      }
+      .toast.removing {
+        animation: toastOut 0.3s ease forwards;
+      }
+      @keyframes toastIn {
+        from {
+          transform: translateX(20px);
+          opacity: 0;
+        }
+        to {
+          transform: translateX(0);
+          opacity: 1;
+        }
+      }
+      @keyframes toastOut {
+        from {
+          transform: translateX(0);
+          opacity: 1;
+        }
+        to {
+          transform: translateX(20px);
+          opacity: 0;
+        }
+      }
+      .spinner {
+        width: 16px;
+        height: 16px;
+        border: 2.5px solid rgba(255, 255, 255, 0.3);
+        border-top-color: #fff;
+        border-radius: 50%;
+        animation: spin 0.7s linear infinite;
+        display: inline-block;
+      }
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+      .fade-up {
+        animation: fadeUp 0.45s ease both;
+      }
+
       ::-webkit-scrollbar {
         width: 6px;
       }
@@ -1036,14 +1020,12 @@
     </style>
   </head>
   <body>
-    <!-- BG -->
     <div class="bg-blob blob-1" aria-hidden="true"></div>
     <div class="bg-blob blob-2" aria-hidden="true"></div>
     <div class="bg-blob blob-3" aria-hidden="true"></div>
 
-    <!-- LAYOUT -->
     <div class="page">
-      <!-- LEFT PANEL -->
+      <!-- ── PANEL LEFT ── -->
       <aside class="panel-left" aria-label="Informasi platform">
         <div class="brand">
           <div class="brand-icon" aria-hidden="true">
@@ -1054,7 +1036,6 @@
             <div class="brand-sub">AI Learning Platform</div>
           </div>
         </div>
-
         <div class="panel-hero">
           <h2 class="panel-tagline">
             Analisis pola<br />belajar yang <em>cerdas.</em>
@@ -1063,29 +1044,25 @@
             Platform berbasis AI untuk memantau performa mahasiswa, kebiasaan
             membaca, dan aktivitas digital secara real-time.
           </p>
-
           <ul class="feature-list">
             <li>
-              <i class="fa-solid fa-chart-line" aria-hidden="true"></i>
-              <span>Analisis pola belajar dengan AI engine</span>
+              <i class="fa-solid fa-chart-line" aria-hidden="true"></i
+              ><span>Analisis pola belajar dengan AI engine</span>
             </li>
             <li>
-              <i class="fa-solid fa-shield-halved" aria-hidden="true"></i>
-              <span>Monitor aktivitas digital mahasiswa</span>
+              <i class="fa-solid fa-shield-halved" aria-hidden="true"></i
+              ><span>Monitor aktivitas digital mahasiswa</span>
             </li>
             <li>
-              <i class="fa-solid fa-book-open-reader" aria-hidden="true"></i>
-              <span>Integrasi progres buku iPusnas</span>
+              <i class="fa-solid fa-book-open-reader" aria-hidden="true"></i
+              ><span>Integrasi progres buku iPusnas</span>
             </li>
             <li>
-              <i
-                class="fa-solid fa-triangle-exclamation"
-                aria-hidden="true"></i>
-              <span>Deteksi risiko akademik otomatis</span>
+              <i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i
+              ><span>Deteksi risiko akademik otomatis</span>
             </li>
           </ul>
         </div>
-
         <div class="panel-steps">
           <div class="step-label">Langkah Pendaftaran</div>
           <nav class="steps" id="leftSteps" aria-label="Progress pendaftaran">
@@ -1107,9 +1084,8 @@
         </div>
       </aside>
 
-      <!-- RIGHT PANEL -->
+      <!-- ── PANEL RIGHT ── -->
       <main class="panel-right fade-up">
-        <!-- TOOLBAR -->
         <div class="toolbar" role="toolbar" aria-label="Pengaturan tampilan">
           <div class="tb-group" role="radiogroup" aria-label="Tema">
             <button
@@ -1167,7 +1143,6 @@
           </div>
         </div>
 
-        <!-- PROGRESS -->
         <div
           class="progress-bar"
           role="progressbar"
@@ -1187,7 +1162,6 @@
             <p>Daftar gratis dan mulai pantau performa belajar dengan AI.</p>
           </div>
 
-          <!-- ROLE -->
           <div class="role-grid" role="radiogroup" aria-label="Pilih peran">
             <label class="role-card selected" id="roleStudent">
               <input
@@ -1216,8 +1190,7 @@
             </label>
           </div>
 
-          <!-- NAME -->
-          <div class="field">
+          <div class="field" id="f1Name">
             <label for="regName">Nama Lengkap</label>
             <div class="field-wrap">
               <i class="fa-solid fa-user" aria-hidden="true"></i>
@@ -1228,10 +1201,12 @@
                 autocomplete="name"
                 required />
             </div>
+            <div class="field-error" id="err1Name">
+              <i class="fa-solid fa-circle-exclamation" aria-hidden="true"></i
+              ><span></span>
+            </div>
           </div>
-
-          <!-- EMAIL -->
-          <div class="field">
+          <div class="field" id="f1Email">
             <label for="regEmail">Email</label>
             <div class="field-wrap">
               <i class="fa-solid fa-envelope" aria-hidden="true"></i>
@@ -1242,10 +1217,12 @@
                 autocomplete="email"
                 required />
             </div>
+            <div class="field-error" id="err1Email">
+              <i class="fa-solid fa-circle-exclamation" aria-hidden="true"></i
+              ><span></span>
+            </div>
           </div>
-
-          <!-- PASSWORD -->
-          <div class="field">
+          <div class="field" id="f1Pass">
             <label for="regPass">Password</label>
             <div class="field-wrap">
               <i class="fa-solid fa-lock" aria-hidden="true"></i>
@@ -1273,10 +1250,12 @@
               <div class="ps-bar" id="psBar4"></div>
             </div>
             <div class="ps-label" id="psLabel" aria-live="polite">—</div>
+            <div class="field-error" id="err1Pass">
+              <i class="fa-solid fa-circle-exclamation" aria-hidden="true"></i
+              ><span></span>
+            </div>
           </div>
-
-          <!-- CONFIRM PASS -->
-          <div class="field">
+          <div class="field" id="f1Pass2">
             <label for="regPass2">Konfirmasi Password</label>
             <div class="field-wrap">
               <i class="fa-solid fa-key" aria-hidden="true"></i>
@@ -1287,9 +1266,12 @@
                 autocomplete="new-password"
                 required />
             </div>
+            <div class="field-error" id="err1Pass2">
+              <i class="fa-solid fa-circle-exclamation" aria-hidden="true"></i
+              ><span></span>
+            </div>
           </div>
 
-          <!-- TERMS -->
           <div class="terms-row">
             <div class="custom-check" id="termsCheck" onclick="toggleTerms()">
               <input
@@ -1298,7 +1280,7 @@
                 aria-label="Setujui syarat dan ketentuan" />
             </div>
             <p class="terms-text">
-              Saya menyetujui <a href="#">Syarat & Ketentuan</a> dan
+              Saya menyetujui <a href="#">Syarat &amp; Ketentuan</a> dan
               <a href="#">Kebijakan Privasi</a> EduPattern AI.
             </p>
           </div>
@@ -1307,16 +1289,14 @@
             <span>Lanjut ke Profil</span>
             <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
           </button>
-
           <div class="divider">atau daftar dengan</div>
-
           <button
             class="btn-social"
-            onclick="toast('Google SSO belum tersedia', 'warn')">
+            id="btnGoogle"
+            onclick="handleGoogleRegister()">
             <img src="https://www.google.com/favicon.ico" alt="" />
             Lanjutkan dengan Google
           </button>
-
           <div class="form-footer">
             Sudah punya akun? <a href="index.html">Masuk di sini</a>
           </div>
@@ -1335,7 +1315,6 @@
             </p>
           </div>
 
-          <!-- Avatar -->
           <div class="field">
             <label>Pilih Avatar</label>
             <div
@@ -1348,7 +1327,7 @@
                 data-val="🧑‍💻"
                 role="radio"
                 aria-checked="true"
-                aria-label="Avatar programmer"
+                aria-label="Programmer"
                 tabindex="0"
                 onclick="selectAvatar(this)"
                 onkeydown="if (event.key === 'Enter') selectAvatar(this);">
@@ -1359,7 +1338,7 @@
                 data-val="👩‍🎓"
                 role="radio"
                 aria-checked="false"
-                aria-label="Avatar mahasiswi"
+                aria-label="Mahasiswi"
                 tabindex="0"
                 onclick="selectAvatar(this)"
                 onkeydown="if (event.key === 'Enter') selectAvatar(this);">
@@ -1370,7 +1349,7 @@
                 data-val="🧑‍🏫"
                 role="radio"
                 aria-checked="false"
-                aria-label="Avatar pengajar"
+                aria-label="Pengajar"
                 tabindex="0"
                 onclick="selectAvatar(this)"
                 onkeydown="if (event.key === 'Enter') selectAvatar(this);">
@@ -1381,7 +1360,7 @@
                 data-val="🦸"
                 role="radio"
                 aria-checked="false"
-                aria-label="Avatar pahlawan"
+                aria-label="Pahlawan"
                 tabindex="0"
                 onclick="selectAvatar(this)"
                 onkeydown="if (event.key === 'Enter') selectAvatar(this);">
@@ -1392,7 +1371,7 @@
                 data-val="🧑‍🔬"
                 role="radio"
                 aria-checked="false"
-                aria-label="Avatar ilmuwan"
+                aria-label="Ilmuwan"
                 tabindex="0"
                 onclick="selectAvatar(this)"
                 onkeydown="if (event.key === 'Enter') selectAvatar(this);">
@@ -1401,13 +1380,17 @@
             </div>
           </div>
 
-          <!-- NIM/NIP + Angkatan -->
           <div class="field-row">
-            <div class="field">
+            <div class="field" id="f2Nim">
               <label for="regNim" id="nimLabel">NIM</label>
               <div class="field-wrap">
                 <i class="fa-solid fa-id-badge" aria-hidden="true"></i>
                 <input type="text" id="regNim" placeholder="2021060001" />
+              </div>
+              <!-- FIX: tambah field error untuk NIM/NIP -->
+              <div class="field-error" id="err2Nim">
+                <i class="fa-solid fa-circle-exclamation" aria-hidden="true"></i
+                ><span></span>
               </div>
             </div>
             <div class="field">
@@ -1424,12 +1407,11 @@
             </div>
           </div>
 
-          <!-- Jurusan -->
-          <div class="field">
+          <div class="field" id="f2Prodi">
             <label for="regProdi">Jurusan / Program Studi</label>
             <div class="field-wrap has-select">
               <i class="fa-solid fa-building-columns" aria-hidden="true"></i>
-              <select id="regProdi" required>
+              <select id="regProdi" required onchange="handleProdiChange(this)">
                 <option value="">— Pilih Prodi —</option>
                 <option>Teknik Informatika</option>
                 <option>Sistem Informasi</option>
@@ -1438,13 +1420,27 @@
                 <option>Manajemen</option>
                 <option>Akuntansi</option>
                 <option>Psikologi</option>
-                <option>Lainnya</option>
+                <!-- FIX: value "Lainnya" akan memunculkan input teks -->
+                <option value="Lainnya">Lainnya</option>
               </select>
+            </div>
+            <!-- FIX: input teks muncul saat "Lainnya" dipilih -->
+            <div class="prodi-other-wrap" id="prodiOtherWrap">
+              <div class="field-wrap" style="margin-top: 0">
+                <i class="fa-solid fa-pen" aria-hidden="true"></i>
+                <input
+                  type="text"
+                  id="regProdiOther"
+                  placeholder="Tulis nama prodi..." />
+              </div>
+            </div>
+            <div class="field-error" id="err2Prodi">
+              <i class="fa-solid fa-circle-exclamation" aria-hidden="true"></i
+              ><span></span>
             </div>
           </div>
 
-          <!-- Kampus -->
-          <div class="field">
+          <div class="field" id="f2Kampus">
             <label for="regKampus">Nama Universitas / Institusi</label>
             <div class="field-wrap">
               <i class="fa-solid fa-building" aria-hidden="true"></i>
@@ -1454,9 +1450,12 @@
                 placeholder="Universitas Balikpapan"
                 required />
             </div>
+            <div class="field-error" id="err2Kampus">
+              <i class="fa-solid fa-circle-exclamation" aria-hidden="true"></i
+              ><span></span>
+            </div>
           </div>
 
-          <!-- Target belajar -->
           <div class="field">
             <label for="regTarget">Target Jam Belajar / Minggu</label>
             <div class="field-wrap has-select">
@@ -1476,16 +1475,16 @@
               class="btn-social"
               onclick="prevStep(2)"
               style="flex: 0 0 auto; width: auto; padding: 13px 20px">
-              <i class="fa-solid fa-arrow-left" aria-hidden="true"></i>
-              <span>Kembali</span>
+              <i class="fa-solid fa-arrow-left" aria-hidden="true"></i
+              ><span>Kembali</span>
             </button>
             <button
               class="btn-primary"
               id="btnNext2"
               onclick="nextStep(2)"
               style="flex: 1">
-              <span>Buat Akun</span>
-              <i class="fa-solid fa-check" aria-hidden="true"></i>
+              <span>Buat Akun</span
+              ><i class="fa-solid fa-check" aria-hidden="true"></i>
             </button>
           </div>
         </section>
@@ -1505,34 +1504,31 @@
               Silakan masuk untuk memulai perjalanan belajarmu.
             </p>
           </div>
-
           <div class="summary-box">
             <div class="summary-title">Ringkasan Akun</div>
             <div class="summary-row">
-              <span class="summary-label">Nama</span>
-              <span class="summary-value" id="summName">—</span>
+              <span class="summary-label">Nama</span
+              ><span class="summary-value" id="summName">—</span>
             </div>
             <div class="summary-row">
-              <span class="summary-label">Email</span>
-              <span class="summary-value" id="summEmail">—</span>
+              <span class="summary-label">Email</span
+              ><span class="summary-value" id="summEmail">—</span>
             </div>
             <div class="summary-row">
-              <span class="summary-label">Role</span>
-              <span class="summary-value" id="summRole">—</span>
+              <span class="summary-label">Role</span
+              ><span class="summary-value" id="summRole">—</span>
             </div>
             <div class="summary-row">
-              <span class="summary-label">Prodi</span>
-              <span class="summary-value" id="summProdi">—</span>
+              <span class="summary-label">Prodi</span
+              ><span class="summary-value" id="summProdi">—</span>
             </div>
           </div>
-
           <a href="index.html" style="text-decoration: none">
             <button class="btn-primary" type="button">
               <span>Masuk ke Dashboard</span>
               <i class="fa-solid fa-right-to-bracket" aria-hidden="true"></i>
             </button>
           </a>
-
           <div class="form-footer" style="margin-top: 16px">
             Butuh bantuan? <a href="#">Hubungi support</a>
           </div>
@@ -1540,54 +1536,361 @@
       </main>
     </div>
 
-    <!-- TOAST -->
     <div id="toast-container" aria-live="polite"></div>
 
-    <script>
-      /* ─── THEME & ACCENT ─── */
-      function setTheme(t) {
-        document.documentElement.setAttribute("data-theme", t);
-        const btnDark = document.getElementById("btnDark");
-        const btnLight = document.getElementById("btnLight");
-        btnDark.classList.toggle("active", t === "dark");
-        btnLight.classList.toggle("active", t === "light");
-        btnDark.setAttribute("aria-pressed", t === "dark");
-        btnLight.setAttribute("aria-pressed", t === "light");
-        localStorage.setItem("ep-theme", t);
+    <!-- ═══════════════════════════════════════════════════════════
+         FIREBASE AUTH + DATABASE
+         FIX: SDK versi 10.12.2 (versi stabil, bukan 12.12.1 yang tidak exist)
+         ═══════════════════════════════════════════════════════════ -->
+    <script type="module">
+      import {initializeApp} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+      import {
+        getAuth,
+        onAuthStateChanged,
+        createUserWithEmailAndPassword,
+        signInWithPopup,
+        GoogleAuthProvider,
+        updateProfile,
+      } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+      import {
+        getDatabase,
+        ref,
+        get,
+        set,
+        // FIX: update() digunakan saat profil sudah ada (Google SSO) agar tidak timpa data lama
+        update,
+      } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+
+      const app = initializeApp({
+        apiKey: "AIzaSyBeKz_5Ufj5z40tUdAkgCduNET2RLBArSE",
+        authDomain: "tugas-6946a.firebaseapp.com",
+        databaseURL:
+          "https://tugas-6946a-default-rtdb.asia-southeast1.firebasedatabase.app",
+        projectId: "tugas-6946a",
+        storageBucket: "tugas-6946a.firebasestorage.app",
+        messagingSenderId: "99669041608",
+        appId: "1:99669041608:web:9dcaff1be4cd6fbf38a0fd",
+      });
+
+      const auth = getAuth(app);
+      const database = getDatabase(app);
+      const googleProvider = new GoogleAuthProvider();
+
+      // FIX: Flag untuk mencegah redirect loop dari onAuthStateChanged
+      let isRedirecting = false;
+
+      /* ── FIX: Redirect hanya jika tidak sedang dalam proses daftar ── */
+      onAuthStateChanged(auth, async (user) => {
+        if (user && !isRedirecting) {
+          isRedirecting = true;
+          try {
+            const snap = await get(ref(database, `users/${user.uid}/role`));
+            const role = snap.val();
+            window.location.href =
+              role === "lecturer"
+                ? "dashboard_dosen.html"
+                : "dashboard_mahasiswa.html";
+          } catch {
+            window.location.href = "dashboard_mahasiswa.html";
+          }
+        }
+      });
+
+      /* ── Error Firebase → Bahasa Indonesia ── */
+      function firebaseErrorToMessage(code) {
+        const map = {
+          "auth/email-already-in-use":
+            "Email sudah terdaftar. Silakan masuk atau gunakan email lain.",
+          "auth/invalid-email": "Format email tidak valid.",
+          "auth/weak-password":
+            "Password terlalu lemah. Gunakan minimal 8 karakter.",
+          "auth/operation-not-allowed": "Metode pendaftaran ini dinonaktifkan.",
+          "auth/network-request-failed":
+            "Koneksi internet gagal. Periksa jaringan Anda.",
+          "auth/too-many-requests":
+            "Terlalu banyak percobaan. Coba lagi beberapa saat.",
+          "auth/popup-closed-by-user": "Popup ditutup sebelum selesai.",
+          "auth/popup-blocked":
+            "Popup diblokir browser. Izinkan popup untuk situs ini.",
+          "auth/cancelled-popup-request":
+            "Hanya satu popup yang diperbolehkan sekaligus.",
+          // FIX: tambah error ini yang sebelumnya tidak tercakup
+          "auth/credential-already-in-use":
+            "Akun Google ini sudah terhubung dengan akun lain. Coba masuk langsung.",
+          "auth/account-exists-with-different-credential":
+            "Email ini sudah terdaftar dengan metode lain. Silakan masuk dengan email & password.",
+        };
+        return map[code] || "Terjadi kesalahan. Silakan coba lagi.";
       }
 
+      /* ── Helper: ambil role yang dipilih ── */
+      function getSelectedRole() {
+        return document.querySelector("input[name=role]:checked").value;
+      }
+      function getSelectedRoleLabel() {
+        return getSelectedRole() === "lecturer" ? "Dosen" : "Mahasiswa";
+      }
+
+      /* ── Simpan profil lengkap ke Realtime Database (akun baru via email) ── */
+      function saveNewUserProfile(uid, data) {
+        // FIX: pakai set() hanya untuk user baru (akun baru pasti belum ada di DB)
+        return set(ref(database, `users/${uid}`), {
+          name: data.name,
+          nick: data.nick || data.name.split(" ")[0] || "",
+          role: data.role || "student",
+          avatar: data.avatar || "🧑‍💻",
+          avatarType: "emoji",
+          bio: "",
+          prodi: data.prodi || "",
+          kampus: data.kampus || "",
+          nim: data.nim || "",
+          angkatan: data.angkatan || "",
+          targetJam: data.targetJam || "10",
+          email: data.email,
+          createdAt: Date.now(),
+          notifPrefs: {reminder: true, weekly: true, tips: false},
+        });
+      }
+
+      /* ── FIX: Untuk Google SSO — cek dulu apakah profil sudah ada sebelum menulis ── */
+      async function ensureGoogleProfile(user, role) {
+        const snap = await get(ref(database, `users/${user.uid}`));
+        if (!snap.exists()) {
+          // User baru via Google — buat profil dengan role yang dipilih di form
+          const displayName = user.displayName || "Pengguna";
+          await set(ref(database, `users/${user.uid}`), {
+            name: displayName,
+            nick: displayName.split(" ")[0] || "",
+            role: role, // FIX: role dari radio button, bukan hardcoded "student"
+            avatar: user.photoURL || "🧑‍💻",
+            avatarType: user.photoURL ? "url" : "emoji",
+            bio: "",
+            prodi: "",
+            kampus: "",
+            nim: "",
+            angkatan: "",
+            targetJam: "10",
+            email: user.email,
+            createdAt: Date.now(),
+            notifPrefs: {reminder: true, weekly: true, tips: false},
+          });
+        }
+        // FIX: Jika sudah ada → tidak ditimpa sama sekali (berbeda dari versi asli yang selalu set())
+      }
+
+      /* ═══════════════════════════════════════════
+         EXPOSE ke window
+         ═══════════════════════════════════════════ */
+
+      /* ── REGISTRASI EMAIL + PASSWORD ── */
+      window.doFirebaseRegister = async function () {
+        const name = document.getElementById("regName").value.trim();
+        const email = document.getElementById("regEmail").value.trim();
+        const pass = document.getElementById("regPass").value;
+        const role = getSelectedRole();
+        const avatar = getAvatar();
+        const nim = document.getElementById("regNim").value.trim();
+        const angkatan = document.getElementById("regYear").value.trim();
+        // FIX: ambil nilai prodi yang benar (jika "Lainnya", ambil dari input teks)
+        const prodiSelect = document.getElementById("regProdi").value;
+        const prodi =
+          prodiSelect === "Lainnya"
+            ? document.getElementById("regProdiOther").value.trim() || "Lainnya"
+            : prodiSelect;
+        const kampus = document.getElementById("regKampus").value.trim();
+        const targetJam = document.getElementById("regTarget").value;
+
+        const btn = document.getElementById("btnNext2");
+        btn.disabled = true;
+        btn.innerHTML =
+          '<span class="spinner"></span> <span>Membuat akun...</span>';
+
+        try {
+          isRedirecting = true; // set sebelum createUser agar onAuthStateChanged tidak redirect dulu
+
+          /* 1. Buat akun di Firebase Auth */
+          const cred = await createUserWithEmailAndPassword(auth, email, pass);
+          const user = cred.user;
+
+          /* 2. Update displayName */
+          await updateProfile(user, {displayName: name});
+
+          /* 3. Simpan profil ke DB */
+          await saveNewUserProfile(user.uid, {
+            name,
+            nick: name.split(" ")[0],
+            role,
+            avatar,
+            avatarType: "emoji",
+            email: user.email,
+            nim,
+            angkatan,
+            prodi,
+            kampus,
+            targetJam,
+          });
+
+          /* 4. Tampilkan step sukses */
+          document.getElementById("successName").textContent = name;
+          document.getElementById("successAvatar").textContent = avatar;
+          document.getElementById("summName").textContent = name;
+          document.getElementById("summEmail").textContent = email;
+          document.getElementById("summRole").textContent =
+            getSelectedRoleLabel();
+          document.getElementById("summProdi").textContent = prodi || "—";
+
+          isRedirecting = false; // reset — user akan manual klik "Masuk ke Dashboard"
+          showPage(3);
+          toast("Akun berhasil dibuat!", "ok");
+        } catch (err) {
+          isRedirecting = false;
+          toast(firebaseErrorToMessage(err.code), "error");
+
+          if (err.code === "auth/email-already-in-use") {
+            setTimeout(() => {
+              if (confirm("Email ini sudah terdaftar. Ingin langsung masuk?")) {
+                window.location.href = "index.html";
+              }
+            }, 1500);
+          }
+        } finally {
+          btn.disabled = false;
+          btn.innerHTML =
+            '<span>Buat Akun</span> <i class="fa-solid fa-check" aria-hidden="true"></i>';
+        }
+      };
+
+      /* ── REGISTRASI GOOGLE SSO ── */
+      window.handleGoogleRegister = async function () {
+        const btn = document.getElementById("btnGoogle");
+        const originalHTML = btn.innerHTML;
+        btn.disabled = true;
+        btn.innerHTML =
+          '<span class="spinner"></span> <span>Menghubungkan ke Google...</span>';
+
+        // FIX: Simpan role yang dipilih SEBELUM popup dibuka
+        // (setelah popup, DOM bisa berubah state di beberapa browser)
+        const selectedRole = getSelectedRole();
+        const selectedRoleLabel = getSelectedRoleLabel();
+
+        try {
+          isRedirecting = true;
+          const result = await signInWithPopup(auth, googleProvider);
+          const user = result.user;
+
+          // FIX: ensureGoogleProfile — tidak menimpa data jika user sudah punya profil
+          await ensureGoogleProfile(user, selectedRole);
+
+          const displayName = user.displayName || "Pengguna";
+
+          document.getElementById("successName").textContent = displayName;
+          document.getElementById("successAvatar").textContent = user.photoURL
+            ? "🎉"
+            : "🧑‍💻";
+          document.getElementById("summName").textContent = displayName;
+          document.getElementById("summEmail").textContent = user.email;
+          // FIX: role dari radio button yang disimpan sebelum popup, bukan hardcoded
+          document.getElementById("summRole").textContent = selectedRoleLabel;
+          document.getElementById("summProdi").textContent =
+            "Lengkapi di Pengaturan";
+
+          isRedirecting = false;
+          showPage(3);
+          toast("Akun Google berhasil dibuat!", "ok");
+        } catch (err) {
+          isRedirecting = false;
+
+          if (
+            err.code === "auth/popup-closed-by-user" ||
+            err.code === "auth/cancelled-popup-request"
+          ) {
+            toast("Pendaftaran dibatalkan.", "warn");
+          } else if (
+            err.code === "auth/credential-already-in-use" ||
+            err.code === "auth/account-exists-with-different-credential"
+          ) {
+            toast(firebaseErrorToMessage(err.code), "warn");
+            setTimeout(() => {
+              if (
+                confirm(
+                  "Akun ini sepertinya sudah terdaftar. Ingin langsung masuk?",
+                )
+              ) {
+                window.location.href = "index.html";
+              }
+            }, 1500);
+          } else {
+            toast(firebaseErrorToMessage(err.code), "error");
+          }
+
+          btn.disabled = false;
+          btn.innerHTML = originalHTML;
+        }
+      };
+    </script>
+
+    <!-- ═══ SCRIPT UI ═══ -->
+    <script>
+      /* ── THEME & ACCENT ── */
+      function setTheme(t) {
+        document.documentElement.setAttribute("data-theme", t);
+        document
+          .getElementById("btnDark")
+          .classList.toggle("active", t === "dark");
+        document
+          .getElementById("btnLight")
+          .classList.toggle("active", t === "light");
+        document
+          .getElementById("btnDark")
+          .setAttribute("aria-pressed", t === "dark");
+        document
+          .getElementById("btnLight")
+          .setAttribute("aria-pressed", t === "light");
+        localStorage.setItem("ep-theme", t);
+      }
       function setAccent(a) {
         document.documentElement.setAttribute("data-accent", a);
-        ["Purple", "Blue", "Yellow"].forEach((x) => {
-          const dot = document.getElementById("dot" + x);
-          const isActive = x.toLowerCase() === a;
+        ["Purple", "Blue", "Yellow"].forEach(function (x) {
+          var dot = document.getElementById("dot" + x);
+          var isActive = x.toLowerCase() === a;
           dot.classList.toggle("active", isActive);
           dot.setAttribute("aria-checked", isActive);
         });
         localStorage.setItem("ep-accent", a);
       }
-
       (function () {
-        const t = localStorage.getItem("ep-theme") || "dark";
-        const a = localStorage.getItem("ep-accent") || "purple";
-        setTheme(t);
-        setAccent(a);
+        setTheme(localStorage.getItem("ep-theme") || "dark");
+        setAccent(localStorage.getItem("ep-accent") || "purple");
       })();
 
-      /* ─── TOAST ─── */
-      function toast(msg, type = "ok") {
-        const el = document.createElement("div");
-        el.className = `toast ${type}`;
+      /* ── TOAST ── */
+      function toast(msg, type) {
+        type = type || "ok";
+        var el = document.createElement("div");
+        el.className = "toast " + type;
         el.setAttribute("role", "alert");
         el.textContent = msg;
         document.getElementById("toast-container").appendChild(el);
-        setTimeout(() => {
+        setTimeout(function () {
           el.classList.add("removing");
-          setTimeout(() => el.remove(), 300);
-        }, 3200);
+          setTimeout(function () {
+            el.remove();
+          }, 300);
+        }, 3500);
       }
 
-      /* ─── ROLE SELECT ─── */
+      /* ── FIELD ERRORS ── */
+      function setFieldError(fieldId, errorId, msg) {
+        document.getElementById(fieldId).classList.add("error");
+        document.getElementById(errorId).querySelector("span").textContent =
+          msg;
+      }
+      function clearFieldError(fieldId, errorId) {
+        document.getElementById(fieldId).classList.remove("error");
+        document.getElementById(errorId).querySelector("span").textContent = "";
+      }
+
+      /* ── ROLE SELECT ── */
       function selectRole(input) {
         document
           .getElementById("roleStudent")
@@ -1595,219 +1898,277 @@
         document
           .getElementById("roleLecturer")
           .classList.toggle("selected", input.value === "lecturer");
-        document.getElementById("nimLabel").textContent =
-          input.value === "student" ? "NIM" : "NIP/NIDN";
-        document.getElementById("regNim").placeholder =
-          input.value === "student" ? "2021060001" : "0012345678";
+        // FIX: label NIM/NIP + placeholder berubah sesuai role
+        var isStudent = input.value === "student";
+        document.getElementById("nimLabel").textContent = isStudent
+          ? "NIM"
+          : "NIP / NIDN";
+        document.getElementById("regNim").placeholder = isStudent
+          ? "2021060001"
+          : "0012345678";
       }
 
-      /* ─── AVATAR ─── */
+      /* ── FIX: Handle pilihan "Lainnya" di dropdown prodi ── */
+      function handleProdiChange(select) {
+        var wrap = document.getElementById("prodiOtherWrap");
+        var isLainnya = select.value === "Lainnya";
+        wrap.classList.toggle("visible", isLainnya);
+        if (isLainnya) {
+          document.getElementById("regProdiOther").focus();
+        } else {
+          document.getElementById("regProdiOther").value = "";
+        }
+      }
+
+      /* ── AVATAR ── */
       function selectAvatar(el) {
-        document.querySelectorAll(".avatar-opt").forEach((a) => {
+        document.querySelectorAll(".avatar-opt").forEach(function (a) {
           a.classList.remove("selected");
           a.setAttribute("aria-checked", "false");
         });
         el.classList.add("selected");
         el.setAttribute("aria-checked", "true");
       }
-
       function getAvatar() {
-        const sel = document.querySelector(".avatar-opt.selected");
+        var sel = document.querySelector(".avatar-opt.selected");
         return sel ? sel.dataset.val : "🎓";
       }
 
-      /* ─── TERMS ─── */
-      let termsChecked = false;
+      /* ── TERMS ── */
+      var termsChecked = false;
       function toggleTerms() {
         termsChecked = !termsChecked;
-        const el = document.getElementById("termsCheck");
-        const input = document.getElementById("termsInput");
-        el.classList.toggle("checked", termsChecked);
-        input.checked = termsChecked;
+        document
+          .getElementById("termsCheck")
+          .classList.toggle("checked", termsChecked);
+        document.getElementById("termsInput").checked = termsChecked;
       }
 
-      /* ─── PASSWORD ─── */
+      /* ── PASSWORD TOGGLE ── */
       function togglePass() {
-        const inp = document.getElementById("regPass");
-        const ico = document.getElementById("eyeIcon");
-        const isPassword = inp.type === "password";
-        inp.type = isPassword ? "text" : "password";
-        ico.className = isPassword
+        var inp = document.getElementById("regPass");
+        var ico = document.getElementById("eyeIcon");
+        var isPass = inp.type === "password";
+        inp.type = isPass ? "text" : "password";
+        ico.className = isPass
           ? "fa-solid fa-eye-slash field-icon-right"
           : "fa-solid fa-eye field-icon-right";
         ico.setAttribute(
           "aria-label",
-          isPassword ? "Sembunyikan password" : "Tampilkan password",
+          isPass ? "Sembunyikan password" : "Tampilkan password",
         );
       }
 
+      /* ── PASSWORD STRENGTH ── */
       function checkStrength(val) {
-        const bars = [1, 2, 3, 4].map((i) =>
-          document.getElementById("psBar" + i),
-        );
-        const label = document.getElementById("psLabel");
-
-        bars.forEach((b) => (b.className = "ps-bar"));
-
+        var bars = [1, 2, 3, 4].map(function (i) {
+          return document.getElementById("psBar" + i);
+        });
+        var label = document.getElementById("psLabel");
+        bars.forEach(function (b) {
+          b.className = "ps-bar";
+        });
         if (!val) {
           label.textContent = "—";
           label.style.color = "var(--text3)";
           return;
         }
-
-        let score = 0;
+        var score = 0;
         if (val.length >= 8) score++;
         if (/[A-Z]/.test(val)) score++;
         if (/[0-9]/.test(val)) score++;
         if (/[^A-Za-z0-9]/.test(val)) score++;
-
         if (score === 0) {
           label.textContent = "Kekuatan: Sangat Lemah";
           label.style.color = "#f43f5e";
           bars[0].className = "ps-bar fill-weak";
           return;
         }
-
-        const strengthMap = {
-          1: {class: "fill-weak", label: "Lemah", color: "#f43f5e"},
-          2: {class: "fill-medium", label: "Sedang", color: "#f59e0b"},
-          3: {class: "fill-strong", label: "Kuat", color: "#10b981"},
-          4: {class: "fill-strong", label: "Sangat Kuat", color: "#10b981"},
+        var map = {
+          1: {cls: "fill-weak", label: "Lemah", color: "#f43f5e"},
+          2: {cls: "fill-medium", label: "Sedang", color: "#f59e0b"},
+          3: {cls: "fill-strong", label: "Kuat", color: "#10b981"},
+          4: {cls: "fill-strong", label: "Sangat Kuat", color: "#10b981"},
         };
-
-        const strength = strengthMap[score];
-        for (let i = 0; i < score; i++) {
-          bars[i].className = "ps-bar " + strength.class;
-        }
-        label.textContent = "Kekuatan: " + strength.label;
-        label.style.color = strength.color;
+        var s = map[score];
+        for (var i = 0; i < score; i++) bars[i].className = "ps-bar " + s.cls;
+        label.textContent = "Kekuatan: " + s.label;
+        label.style.color = s.color;
       }
 
-      /* ─── STEPS ─── */
-      let currentStep = 1;
+      /* ── STEPS ── */
+      var currentStep = 1;
 
       function updateProgress(step) {
-        const pct = {1: 33, 2: 66, 3: 100};
-        const progressFill = document.getElementById("progressFill");
-        progressFill.style.width = pct[step] + "%";
-        progressFill.parentElement.setAttribute("aria-valuenow", pct[step]);
+        var pct = {1: 33, 2: 66, 3: 100};
+        var fill = document.getElementById("progressFill");
+        fill.style.width = pct[step] + "%";
+        fill.parentElement.setAttribute("aria-valuenow", pct[step]);
 
-        document.querySelectorAll("#leftSteps .step").forEach((el) => {
-          const s = parseInt(el.dataset.step);
+        document.querySelectorAll("#leftSteps .step").forEach(function (el) {
+          var s = parseInt(el.dataset.step);
           el.classList.remove("active", "done");
-          const stepNum = el.querySelector(".step-num");
-          stepNum.removeAttribute("aria-current");
-
+          var num = el.querySelector(".step-num");
+          num.removeAttribute("aria-current");
           if (s === step) {
             el.classList.add("active");
-            stepNum.setAttribute("aria-current", "step");
+            num.setAttribute("aria-current", "step");
           }
           if (s < step) {
             el.classList.add("done");
-            stepNum.innerHTML =
+            num.innerHTML =
               '<i class="fa-solid fa-check" style="font-size:10px"></i>';
           } else {
-            stepNum.textContent = s;
+            if (s !== step) num.textContent = s;
           }
         });
       }
 
       function showPage(n) {
-        document
-          .querySelectorAll(".step-page")
-          .forEach((p) => p.classList.remove("active"));
+        document.querySelectorAll(".step-page").forEach(function (p) {
+          p.classList.remove("active");
+        });
         document.getElementById("page" + n).classList.add("active");
         currentStep = n;
         updateProgress(n);
-
         document
           .querySelector(".panel-right")
           .scrollIntoView({behavior: "smooth", block: "start"});
       }
 
+      /* ── FIX: Validasi step 1 dengan inline error ── */
+      function validateStep1() {
+        var ok = true;
+        var name = document.getElementById("regName").value.trim();
+        var email = document.getElementById("regEmail").value.trim();
+        var pass = document.getElementById("regPass").value;
+        var pass2 = document.getElementById("regPass2").value;
+
+        // Reset semua error step 1
+        ["f1Name", "f1Email", "f1Pass", "f1Pass2"].forEach(function (id) {
+          document.getElementById(id).classList.remove("error");
+        });
+
+        if (!name) {
+          setFieldError("f1Name", "err1Name", "Nama tidak boleh kosong");
+          ok = false;
+        }
+        if (!email) {
+          setFieldError("f1Email", "err1Email", "Email tidak boleh kosong");
+          ok = false;
+        } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+          setFieldError("f1Email", "err1Email", "Format email tidak valid");
+          ok = false;
+        }
+        if (!pass) {
+          setFieldError("f1Pass", "err1Pass", "Password tidak boleh kosong");
+          ok = false;
+        } else if (pass.length < 8) {
+          setFieldError("f1Pass", "err1Pass", "Password minimal 8 karakter");
+          ok = false;
+        }
+        if (!pass2) {
+          setFieldError(
+            "f1Pass2",
+            "err1Pass2",
+            "Konfirmasi password tidak boleh kosong",
+          );
+          ok = false;
+        } else if (pass !== pass2) {
+          setFieldError(
+            "f1Pass2",
+            "err1Pass2",
+            "Konfirmasi password tidak cocok",
+          );
+          ok = false;
+        }
+        if (!termsChecked) {
+          toast("Setujui Syarat & Ketentuan terlebih dahulu", "warn");
+          ok = false;
+        }
+        return ok;
+      }
+
+      /* ── FIX: Validasi step 2 dengan inline error + validasi NIM/NIP ── */
+      function validateStep2() {
+        var ok = true;
+        var prodiSelect = document.getElementById("regProdi").value;
+        var prodiOther = document.getElementById("regProdiOther").value.trim();
+        var kampus = document.getElementById("regKampus").value.trim();
+        var nim = document.getElementById("regNim").value.trim();
+        var role = document.querySelector("input[name=role]:checked").value;
+
+        // Reset error step 2
+        ["f2Nim", "f2Prodi", "f2Kampus"].forEach(function (id) {
+          document.getElementById(id).classList.remove("error");
+        });
+
+        // FIX: Validasi NIM/NIP — wajib diisi dan format dasar
+        if (!nim) {
+          setFieldError(
+            "f2Nim",
+            "err2Nim",
+            (role === "student" ? "NIM" : "NIP/NIDN") + " tidak boleh kosong",
+          );
+          ok = false;
+        } else if (role === "student" && !/^\d{6,12}$/.test(nim)) {
+          setFieldError(
+            "f2Nim",
+            "err2Nim",
+            "NIM harus berupa angka (6–12 digit)",
+          );
+          ok = false;
+        } else if (role === "lecturer" && !/^\d{10,18}$/.test(nim)) {
+          setFieldError(
+            "f2Nim",
+            "err2Nim",
+            "NIP/NIDN harus berupa angka (10–18 digit)",
+          );
+          ok = false;
+        }
+
+        if (!prodiSelect) {
+          setFieldError("f2Prodi", "err2Prodi", "Pilih program studi");
+          ok = false;
+        } else if (prodiSelect === "Lainnya" && !prodiOther) {
+          // FIX: jika pilih "Lainnya", wajib isi input teks
+          setFieldError("f2Prodi", "err2Prodi", "Tulis nama program studi");
+          ok = false;
+        }
+
+        if (!kampus) {
+          setFieldError(
+            "f2Kampus",
+            "err2Kampus",
+            "Nama universitas tidak boleh kosong",
+          );
+          ok = false;
+        }
+
+        return ok;
+      }
+
       function nextStep(from) {
         if (from === 1) {
-          const name = document.getElementById("regName").value.trim();
-          const email = document.getElementById("regEmail").value.trim();
-          const pass = document.getElementById("regPass").value;
-          const pass2 = document.getElementById("regPass2").value;
-
-          if (!name) {
-            toast("Nama tidak boleh kosong", "error");
-            document.getElementById("regName").focus();
-            return;
-          }
-          if (!email) {
-            toast("Email tidak boleh kosong", "error");
-            document.getElementById("regEmail").focus();
-            return;
-          }
-          if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-            toast("Format email tidak valid", "error");
-            document.getElementById("regEmail").focus();
-            return;
-          }
-          if (pass.length < 8) {
-            toast("Password minimal 8 karakter", "error");
-            document.getElementById("regPass").focus();
-            return;
-          }
-          if (pass !== pass2) {
-            toast("Konfirmasi password tidak cocok", "error");
-            document.getElementById("regPass2").focus();
-            return;
-          }
-          if (!termsChecked) {
-            toast("Setujui Syarat & Ketentuan terlebih dahulu", "warn");
-            return;
-          }
-
+          if (!validateStep1()) return;
           showPage(2);
           return;
         }
-
         if (from === 2) {
-          const prodi = document.getElementById("regProdi").value;
-          const kampus = document.getElementById("regKampus").value.trim();
-
-          if (!prodi) {
-            toast("Pilih program studi", "error");
-            document.getElementById("regProdi").focus();
-            return;
+          if (!validateStep2()) return;
+          // FIX: Guard jika Firebase module belum siap (race condition saat load lambat)
+          if (typeof doFirebaseRegister === "function") {
+            doFirebaseRegister();
+          } else {
+            // Retry sekali setelah 500ms
+            setTimeout(function () {
+              if (typeof doFirebaseRegister === "function") {
+                doFirebaseRegister();
+              } else {
+                toast("Sistem belum siap. Coba lagi.", "error");
+              }
+            }, 500);
           }
-          if (!kampus) {
-            toast("Nama universitas tidak boleh kosong", "error");
-            document.getElementById("regKampus").focus();
-            return;
-          }
-
-          const btn = document.getElementById("btnNext2");
-          btn.disabled = true;
-          btn.innerHTML =
-            '<span class="spinner"></span> <span>Memproses...</span>';
-
-          setTimeout(() => {
-            const name = document.getElementById("regName").value.trim();
-            const email = document.getElementById("regEmail").value.trim();
-            const role = document.querySelector(
-              "input[name=role]:checked",
-            ).value;
-
-            document.getElementById("successName").textContent = name;
-            document.getElementById("successAvatar").textContent = getAvatar();
-            document.getElementById("summName").textContent = name;
-            document.getElementById("summEmail").textContent = email;
-            document.getElementById("summRole").textContent =
-              role === "student" ? "Mahasiswa" : "Dosen";
-            document.getElementById("summProdi").textContent = prodi;
-
-            showPage(3);
-            toast("Akun berhasil dibuat!", "ok");
-
-            btn.disabled = false;
-            btn.innerHTML =
-              '<span>Buat Akun</span> <i class="fa-solid fa-check" aria-hidden="true"></i>';
-          }, 1400);
         }
       }
 
@@ -1815,16 +2176,57 @@
         if (from === 2) showPage(1);
       }
 
-      /* ─── KEYBOARD NAVIGATION ─── */
+      /* ── KEYBOARD NAV role cards ── */
       document.addEventListener("keydown", function (e) {
         if (e.target.classList.contains("role-card") && e.key === "Enter") {
-          const radio = e.target.querySelector('input[type="radio"]');
+          var radio = e.target.querySelector("input[type='radio']");
           if (radio) {
             radio.checked = true;
             selectRole(radio);
           }
         }
       });
+
+      /* ── Clear errors on input ── */
+      ["regName", "regEmail", "regPass", "regPass2"].forEach(function (id) {
+        var el = document.getElementById(id);
+        if (!el) return;
+        el.addEventListener("input", function () {
+          var map = {
+            regName: "f1Name",
+            regEmail: "f1Email",
+            regPass: "f1Pass",
+            regPass2: "f1Pass2",
+          };
+          var errMap = {
+            regName: "err1Name",
+            regEmail: "err1Email",
+            regPass: "err1Pass",
+            regPass2: "err1Pass2",
+          };
+          clearFieldError(map[id], errMap[id]);
+        });
+      });
+      ["regNim", "regKampus"].forEach(function (id) {
+        var el = document.getElementById(id);
+        if (!el) return;
+        el.addEventListener("input", function () {
+          var map = {regNim: "f2Nim", regKampus: "f2Kampus"};
+          var errMap = {regNim: "err2Nim", regKampus: "err2Kampus"};
+          clearFieldError(map[id], errMap[id]);
+        });
+      });
+      document
+        .getElementById("regProdi")
+        .addEventListener("change", function () {
+          clearFieldError("f2Prodi", "err2Prodi");
+        });
+      // FIX: clear error prodi saat user mengetik di input "Lainnya"
+      document
+        .getElementById("regProdiOther")
+        .addEventListener("input", function () {
+          clearFieldError("f2Prodi", "err2Prodi");
+        });
     </script>
   </body>
 </html>
