@@ -1,0 +1,3793 @@
+<!doctype html>
+<html lang="id" data-theme="dark" data-accent="purple">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>EduPattern AI — Dashboard Mahasiswa</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap"
+      rel="stylesheet" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+    <style>
+      :root {
+        --accent-h: 262;
+        --accent-s: 80%;
+        --acc: hsl(var(--accent-h), var(--accent-s), 62%);
+        --acc2: hsl(var(--accent-h), var(--accent-s), 50%);
+        --acc-glow: hsl(var(--accent-h), var(--accent-s), 62%, 0.28);
+        --acc-soft: hsl(var(--accent-h), var(--accent-s), 62%, 0.12);
+        --acc-border: hsl(var(--accent-h), var(--accent-s), 62%, 0.3);
+        --radius: 16px;
+        --radius-sm: 10px;
+        --font-head: "Syne", sans-serif;
+        --font-body: "DM Sans", sans-serif;
+        --trans: 0.22s cubic-bezier(0.4, 0, 0.2, 1);
+        --sidebar-w: 260px;
+      }
+      [data-accent="blue"] {
+        --accent-h: 217;
+        --accent-s: 85%;
+      }
+      [data-accent="green"] {
+        --accent-h: 158;
+        --accent-s: 75%;
+        --acc: hsl(158, 75%, 48%);
+        --acc2: hsl(158, 75%, 38%);
+        --acc-glow: hsl(158, 75%, 48%, 0.28);
+        --acc-soft: hsl(158, 75%, 48%, 0.12);
+        --acc-border: hsl(158, 75%, 48%, 0.3);
+      }
+      [data-theme="dark"] {
+        --bg: #0c0c14;
+        --bg2: #13131f;
+        --bg3: #1a1a2b;
+        --surface: rgba(255, 255, 255, 0.04);
+        --border: rgba(255, 255, 255, 0.08);
+        --border-hi: rgba(255, 255, 255, 0.15);
+        --text: #f0f0f8;
+        --text2: #9090b0;
+        --text3: #50506a;
+        --shadow: 0 20px 60px rgba(0, 0, 0, 0.55);
+        --card-glass: rgba(19, 19, 31, 0.9);
+      }
+      [data-theme="light"] {
+        --bg: #f4f4fb;
+        --bg2: #ffffff;
+        --bg3: #eeeff8;
+        --surface: rgba(0, 0, 0, 0.03);
+        --border: rgba(0, 0, 0, 0.08);
+        --border-hi: rgba(0, 0, 0, 0.18);
+        --text: #111124;
+        --text2: #55556a;
+        --text3: #a0a0b8;
+        --shadow: 0 20px 60px rgba(80, 80, 160, 0.12);
+        --card-glass: rgba(255, 255, 255, 0.92);
+      }
+
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      html {
+        height: 100%;
+        scroll-behavior: smooth;
+      }
+      body {
+        font-family: var(--font-body);
+        background: var(--bg);
+        color: var(--text);
+        min-height: 100vh;
+        display: flex;
+        transition:
+          background var(--trans),
+          color var(--trans);
+        overflow-x: hidden;
+      }
+
+      /* SIDEBAR */
+      .sidebar {
+        width: var(--sidebar-w);
+        min-height: 100vh;
+        background: var(--bg2);
+        border-right: 1px solid var(--border);
+        display: flex;
+        flex-direction: column;
+        position: fixed;
+        left: 0;
+        top: 0;
+        z-index: 200;
+        transition: transform var(--trans);
+      }
+      .sidebar-header {
+        padding: 22px 20px 18px;
+        border-bottom: 1px solid var(--border);
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+      .brand-icon {
+        width: 38px;
+        height: 38px;
+        border-radius: 11px;
+        background: linear-gradient(135deg, var(--acc), #4c1d95);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #fff;
+        font-size: 15px;
+        box-shadow: 0 0 18px var(--acc-glow);
+        flex-shrink: 0;
+      }
+      .brand-name {
+        font-family: var(--font-head);
+        font-size: 17px;
+        font-weight: 800;
+        letter-spacing: -0.3px;
+        background: linear-gradient(to right, var(--text), var(--text2));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+      .brand-sub {
+        font-size: 9px;
+        color: var(--acc);
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        font-weight: 700;
+      }
+      .sidebar-user {
+        padding: 14px 20px;
+        border-bottom: 1px solid var(--border);
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        cursor: pointer;
+        transition: background var(--trans);
+      }
+      .sidebar-user:hover {
+        background: var(--surface);
+      }
+      .avatar {
+        width: 38px;
+        height: 38px;
+        border-radius: 50%;
+        background: var(--acc-soft);
+        border: 2px solid var(--acc-border);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 17px;
+        overflow: hidden;
+        flex-shrink: 0;
+      }
+      .avatar img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+      .user-info h4 {
+        font-size: 13px;
+        font-weight: 700;
+      }
+      .user-info p {
+        font-size: 11px;
+        color: var(--text2);
+        display: flex;
+        align-items: center;
+        gap: 4px;
+      }
+      .xp-badge {
+        background: rgba(245, 158, 11, 0.15);
+        color: #f59e0b;
+        font-size: 9px;
+        padding: 2px 6px;
+        border-radius: 4px;
+        font-weight: 700;
+      }
+      .sidebar-nav {
+        flex: 1;
+        overflow-y: auto;
+        padding: 10px 10px;
+      }
+      .nav-section-label {
+        font-size: 10px;
+        font-weight: 700;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: var(--text3);
+        padding: 10px 10px 5px;
+        margin-top: 6px;
+      }
+      .nav-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 10px 12px;
+        border-radius: var(--radius-sm);
+        cursor: pointer;
+        font-size: 13px;
+        color: var(--text2);
+        transition: all var(--trans);
+        user-select: none;
+        margin-bottom: 2px;
+        position: relative;
+      }
+      .nav-item i {
+        width: 18px;
+        text-align: center;
+        font-size: 13px;
+      }
+      .nav-item:hover {
+        background: var(--surface);
+        color: var(--text);
+      }
+      .nav-item.active {
+        background: var(--acc-soft);
+        color: var(--acc);
+        font-weight: 600;
+      }
+      .nav-item.active::before {
+        content: "";
+        position: absolute;
+        left: 0;
+        top: 22%;
+        height: 56%;
+        width: 3px;
+        background: var(--acc);
+        border-radius: 0 3px 3px 0;
+      }
+      .nav-badge {
+        margin-left: auto;
+        font-size: 10px;
+        font-weight: 700;
+        padding: 2px 6px;
+        border-radius: 20px;
+        background: var(--acc);
+        color: #fff;
+      }
+      .sidebar-footer {
+        padding: 14px 20px;
+        border-top: 1px solid var(--border);
+      }
+
+      /* MAIN */
+      .main {
+        margin-left: var(--sidebar-w);
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
+      }
+
+      /* TOPBAR */
+      .topbar {
+        height: 60px;
+        background: var(--card-glass);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        border-bottom: 1px solid var(--border);
+        display: flex;
+        align-items: center;
+        padding: 0 24px;
+        gap: 14px;
+        position: sticky;
+        top: 0;
+        z-index: 100;
+      }
+      .topbar-title {
+        font-family: var(--font-head);
+        font-size: 17px;
+        font-weight: 700;
+        flex: 1;
+      }
+      .topbar-actions {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .icon-btn {
+        width: 34px;
+        height: 34px;
+        border-radius: 9px;
+        border: 1px solid var(--border);
+        background: transparent;
+        color: var(--text2);
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 13px;
+        transition: all var(--trans);
+      }
+      .icon-btn:hover {
+        border-color: var(--acc);
+        color: var(--acc);
+        background: var(--acc-soft);
+      }
+      .icon-btn.active {
+        background: var(--acc-soft);
+        border-color: var(--acc-border);
+        color: var(--acc);
+      }
+      .accent-dot {
+        width: 14px;
+        height: 14px;
+        border-radius: 50%;
+        cursor: pointer;
+        border: 2px solid transparent;
+        transition: all var(--trans);
+      }
+      .accent-dot:hover,
+      .accent-dot.active {
+        border-color: var(--text);
+        transform: scale(1.3);
+      }
+
+      /* CONTENT */
+      .content {
+        flex: 1;
+        padding: 24px;
+        overflow-y: auto;
+      }
+      .view {
+        display: none;
+        animation: fadeUp 0.3s ease both;
+      }
+      .view.active {
+        display: block;
+      }
+      @keyframes fadeUp {
+        from {
+          opacity: 0;
+          transform: translateY(10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      /* CARDS */
+      .card {
+        background: var(--bg2);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        transition:
+          background var(--trans),
+          border var(--trans);
+      }
+      .card:hover {
+        border-color: var(--acc-border);
+      }
+      .p4 {
+        padding: 16px;
+      }
+      .p5 {
+        padding: 20px;
+      }
+      .p6 {
+        padding: 24px;
+      }
+      .mb4 {
+        margin-bottom: 16px;
+      }
+      .mb6 {
+        margin-bottom: 24px;
+      }
+
+      /* STAT GRID */
+      .stat-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 14px;
+        margin-bottom: 20px;
+      }
+      .stat-card {
+        padding: 18px;
+        border-radius: var(--radius);
+        background: var(--bg2);
+        border: 1px solid var(--border);
+        position: relative;
+        overflow: hidden;
+        transition: all var(--trans);
+      }
+      .stat-card:hover {
+        border-color: var(--acc-border);
+        box-shadow: 0 8px 24px var(--acc-soft);
+        transform: translateY(-1px);
+      }
+      .stat-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 10px;
+        background: var(--acc-soft);
+        border: 1px solid var(--acc-border);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 16px;
+        color: var(--acc);
+        margin-bottom: 12px;
+      }
+      .stat-val {
+        font-family: var(--font-head);
+        font-size: 26px;
+        font-weight: 800;
+        letter-spacing: -0.5px;
+      }
+      .stat-lbl {
+        font-size: 11px;
+        color: var(--text2);
+        margin-top: 3px;
+      }
+      .stat-trend {
+        font-size: 10px;
+        margin-top: 4px;
+        font-weight: 600;
+      }
+      .trend-up {
+        color: #10b981;
+      }
+      .trend-down {
+        color: #f43f5e;
+      }
+      .trend-flat {
+        color: var(--text3);
+      }
+
+      /* DAILY GOAL RING */
+      .daily-goal-card {
+        display: flex;
+        align-items: center;
+        gap: 18px;
+      }
+      .progress-ring {
+        position: relative;
+        width: 76px;
+        height: 76px;
+        flex-shrink: 0;
+      }
+      .progress-ring svg {
+        width: 100%;
+        height: 100%;
+        transform: rotate(-90deg);
+      }
+      .progress-ring circle {
+        fill: none;
+        stroke-width: 6;
+        stroke-linecap: round;
+      }
+      .ring-bg {
+        stroke: var(--bg3);
+      }
+      .ring-val {
+        stroke: var(--acc);
+        stroke-dasharray: 219.9;
+        stroke-dashoffset: 219.9;
+        transition: stroke-dashoffset 1s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+      .ring-text {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        font-size: 16px;
+        font-weight: 800;
+      }
+      .goal-info h4 {
+        font-size: 15px;
+        margin-bottom: 3px;
+        font-weight: 700;
+      }
+      .goal-info p {
+        font-size: 11px;
+        color: var(--text2);
+      }
+      .goal-status {
+        font-size: 11px;
+        color: var(--acc);
+        margin-top: 4px;
+        font-weight: 600;
+      }
+
+      /* AI SCORE CARD */
+      .ai-score-card {
+        background: linear-gradient(135deg, var(--acc-soft), transparent);
+        border: 1px solid var(--acc-border);
+        border-radius: var(--radius);
+        padding: 20px;
+        position: relative;
+        overflow: hidden;
+      }
+      .ai-score-card::before {
+        content: "";
+        position: absolute;
+        top: -40px;
+        right: -40px;
+        width: 120px;
+        height: 120px;
+        border-radius: 50%;
+        background: var(--acc-glow);
+        filter: blur(30px);
+      }
+      .score-circle {
+        width: 64px;
+        height: 64px;
+        border-radius: 50%;
+        background: var(--acc);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: var(--font-head);
+        font-size: 20px;
+        font-weight: 800;
+        color: #fff;
+        box-shadow: 0 0 20px var(--acc-glow);
+        flex-shrink: 0;
+      }
+      .score-info h4 {
+        font-size: 14px;
+        font-weight: 700;
+        margin-bottom: 4px;
+      }
+      .score-info p {
+        font-size: 12px;
+        color: var(--text2);
+        line-height: 1.5;
+      }
+
+      /* CHART */
+      .chart-bar-wrap {
+        display: flex;
+        align-items: flex-end;
+        gap: 6px;
+        height: 130px;
+        padding-top: 16px;
+      }
+      .chart-bar-col {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 4px;
+        height: 100%;
+        justify-content: flex-end;
+      }
+      .chart-bar {
+        width: 100%;
+        border-radius: 5px 5px 0 0;
+        background: var(--acc-soft);
+        border: 1px solid var(--acc-border);
+        transition: all 0.3s ease;
+        cursor: pointer;
+        position: relative;
+      }
+      .chart-bar:hover {
+        background: var(--acc);
+      }
+      .chart-bar-label {
+        font-size: 9px;
+        color: var(--text3);
+      }
+
+      /* TABLE */
+      .data-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 12.5px;
+      }
+      .data-table th {
+        text-align: left;
+        padding: 10px 12px;
+        font-size: 10px;
+        font-weight: 700;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        color: var(--text2);
+        border-bottom: 1px solid var(--border);
+        background: var(--surface);
+      }
+      .data-table td {
+        padding: 10px 12px;
+        border-bottom: 1px solid var(--border);
+        vertical-align: middle;
+      }
+      .data-table tbody tr:hover {
+        background: var(--surface);
+      }
+
+      /* BADGE */
+      .badge {
+        display: inline-block;
+        padding: 3px 9px;
+        border-radius: 20px;
+        font-size: 10px;
+        font-weight: 700;
+      }
+      .badge-green {
+        background: rgba(16, 185, 129, 0.12);
+        color: #10b981;
+      }
+      .badge-red {
+        background: rgba(244, 63, 94, 0.12);
+        color: #f43f5e;
+      }
+      .badge-gold {
+        background: rgba(245, 158, 11, 0.12);
+        color: #f59e0b;
+      }
+      .badge-sky {
+        background: rgba(14, 165, 233, 0.12);
+        color: #0ea5e9;
+      }
+      .badge-purple {
+        background: var(--acc-soft);
+        color: var(--acc);
+      }
+      .badge-orange {
+        background: rgba(249, 115, 22, 0.12);
+        color: #f97316;
+      }
+
+      /* BTN */
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        padding: 9px 16px;
+        border-radius: var(--radius-sm);
+        font-size: 12.5px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all var(--trans);
+        border: none;
+        font-family: var(--font-body);
+      }
+      .btn-primary {
+        background: var(--acc);
+        color: #fff;
+        box-shadow: 0 4px 16px var(--acc-glow);
+      }
+      .btn-primary:hover {
+        background: var(--acc2);
+        transform: translateY(-1px);
+      }
+      .btn-outline {
+        background: transparent;
+        border: 1px solid var(--border);
+        color: var(--text2);
+      }
+      .btn-outline:hover {
+        border-color: var(--acc);
+        color: var(--acc);
+        background: var(--acc-soft);
+      }
+      .btn-danger {
+        background: rgba(244, 63, 94, 0.1);
+        color: #f43f5e;
+        border: 1px solid rgba(244, 63, 94, 0.2);
+      }
+      .btn-danger:hover {
+        background: rgba(244, 63, 94, 0.2);
+      }
+      .btn-sm {
+        padding: 6px 12px;
+        font-size: 11px;
+      }
+      .btn:disabled {
+        opacity: 0.5;
+        pointer-events: none;
+      }
+
+      /* FIELD */
+      .field {
+        margin-bottom: 16px;
+      }
+      .field label {
+        display: block;
+        font-size: 11px;
+        font-weight: 600;
+        color: var(--text2);
+        margin-bottom: 5px;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+      }
+      .field input,
+      .field select,
+      .field textarea {
+        width: 100%;
+        padding: 9px 13px;
+        border-radius: var(--radius-sm);
+        background: var(--bg3);
+        border: 1px solid var(--border);
+        color: var(--text);
+        font-family: var(--font-body);
+        font-size: 13px;
+        outline: none;
+        transition:
+          border var(--trans),
+          background var(--trans);
+      }
+      .field input:focus,
+      .field select:focus,
+      .field textarea:focus {
+        border-color: var(--acc);
+        background: var(--bg2);
+        box-shadow: 0 0 0 3px var(--acc-soft);
+      }
+      .field textarea {
+        resize: vertical;
+        min-height: 80px;
+      }
+
+      /* SETTINGS */
+      .settings-layout {
+        display: grid;
+        grid-template-columns: 220px 1fr;
+        gap: 20px;
+      }
+      .settings-menu-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 10px 13px;
+        border-radius: var(--radius-sm);
+        cursor: pointer;
+        font-size: 13px;
+        color: var(--text2);
+        transition: all var(--trans);
+        margin-bottom: 2px;
+      }
+      .settings-menu-item:hover {
+        background: var(--surface);
+        color: var(--text);
+      }
+      .settings-menu-item.active {
+        background: var(--acc-soft);
+        color: var(--acc);
+        font-weight: 600;
+      }
+      .settings-panel {
+        display: none;
+      }
+      .settings-panel.active {
+        display: block;
+        animation: fadeUp 0.25s ease;
+      }
+
+      /* MODAL */
+      .modal-bg {
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.65);
+        backdrop-filter: blur(6px);
+        z-index: 900;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity var(--trans);
+      }
+      .modal-bg.open {
+        opacity: 1;
+        pointer-events: all;
+      }
+      .modal {
+        background: var(--bg2);
+        border: 1px solid var(--border);
+        border-radius: 20px;
+        width: 100%;
+        max-width: 500px;
+        padding: 26px;
+        transform: translateY(16px) scale(0.97);
+        transition: transform var(--trans);
+        max-height: 90vh;
+        overflow-y: auto;
+      }
+      .modal-bg.open .modal {
+        transform: none;
+      }
+      .modal-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 18px;
+      }
+      .modal-title {
+        font-family: var(--font-head);
+        font-size: 17px;
+        font-weight: 700;
+      }
+
+      /* INSIGHT CARDS */
+      .insight-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+        gap: 16px;
+      }
+      .insight-card {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        padding: 18px;
+        border-radius: var(--radius);
+        transition: all var(--trans);
+      }
+      .insight-card:hover {
+        border-color: var(--acc-border);
+        transform: translateY(-2px);
+      }
+      .insight-icon {
+        font-size: 22px;
+        margin-bottom: 10px;
+        color: var(--acc);
+      }
+      .insight-title {
+        font-weight: 700;
+        font-size: 14px;
+        margin-bottom: 6px;
+      }
+      .insight-text {
+        font-size: 12.5px;
+        color: var(--text2);
+        line-height: 1.6;
+      }
+
+      /* CHATBOT */
+      .chat-container {
+        display: flex;
+        flex-direction: column;
+        height: 500px;
+      }
+      .chat-messages {
+        flex: 1;
+        overflow-y: auto;
+        padding: 16px;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+      .chat-bubble {
+        max-width: 80%;
+        padding: 10px 14px;
+        border-radius: 14px;
+        font-size: 13px;
+        line-height: 1.6;
+        animation: fadeUp 0.2s ease;
+      }
+      .chat-bubble.user {
+        background: var(--acc);
+        color: #fff;
+        align-self: flex-end;
+        border-bottom-right-radius: 4px;
+      }
+      .chat-bubble.ai {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        color: var(--text);
+        align-self: flex-start;
+        border-bottom-left-radius: 4px;
+      }
+      .chat-bubble.ai .ai-label {
+        font-size: 10px;
+        color: var(--acc);
+        font-weight: 700;
+        margin-bottom: 4px;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+      }
+      .chat-input-wrap {
+        display: flex;
+        gap: 10px;
+        padding: 14px 16px;
+        border-top: 1px solid var(--border);
+      }
+      .chat-input {
+        flex: 1;
+        padding: 10px 14px;
+        background: var(--bg3);
+        border: 1px solid var(--border);
+        border-radius: 22px;
+        color: var(--text);
+        font-family: var(--font-body);
+        font-size: 13px;
+        outline: none;
+        transition: border var(--trans);
+      }
+      .chat-input:focus {
+        border-color: var(--acc);
+        box-shadow: 0 0 0 3px var(--acc-soft);
+      }
+      .chat-send {
+        width: 38px;
+        height: 38px;
+        border-radius: 50%;
+        background: var(--acc);
+        border: none;
+        color: #fff;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 14px;
+        transition: all var(--trans);
+        flex-shrink: 0;
+      }
+      .chat-send:hover {
+        background: var(--acc2);
+        transform: scale(1.05);
+      }
+      .chat-typing {
+        display: flex;
+        gap: 4px;
+        align-items: center;
+        padding: 6px 0;
+      }
+      .dot-typing {
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        background: var(--text3);
+        animation: typing 1.2s infinite;
+      }
+      .dot-typing:nth-child(2) {
+        animation-delay: 0.2s;
+      }
+      .dot-typing:nth-child(3) {
+        animation-delay: 0.4s;
+      }
+      @keyframes typing {
+        0%,
+        60%,
+        100% {
+          transform: translateY(0);
+        }
+        30% {
+          transform: translateY(-6px);
+        }
+      }
+
+      /* SCHEDULE */
+      .schedule-grid {
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+        gap: 6px;
+        margin-bottom: 16px;
+      }
+      .schedule-day {
+        text-align: center;
+      }
+      .schedule-day-label {
+        font-size: 10px;
+        color: var(--text3);
+        font-weight: 600;
+        margin-bottom: 4px;
+      }
+      .schedule-slot {
+        height: 28px;
+        border-radius: 6px;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 9px;
+        color: var(--text3);
+        margin-bottom: 3px;
+        cursor: pointer;
+        transition: all var(--trans);
+      }
+      .schedule-slot.filled {
+        background: var(--acc-soft);
+        border-color: var(--acc-border);
+        color: var(--acc);
+        font-weight: 600;
+      }
+      .schedule-slot.high {
+        background: var(--acc);
+        color: #fff;
+        border-color: var(--acc);
+      }
+      .schedule-slot:hover {
+        border-color: var(--acc);
+      }
+
+      /* FEEDBACK */
+      .feedback-card {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 16px;
+        margin-bottom: 12px;
+        transition: all var(--trans);
+      }
+      .feedback-card:hover {
+        border-color: var(--acc-border);
+      }
+      .feedback-header {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 10px;
+      }
+      .feedback-avatar {
+        width: 34px;
+        height: 34px;
+        border-radius: 50%;
+        background: var(--acc-soft);
+        border: 1.5px solid var(--acc-border);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 15px;
+        flex-shrink: 0;
+      }
+      .feedback-name {
+        font-size: 13px;
+        font-weight: 700;
+      }
+      .feedback-time {
+        font-size: 11px;
+        color: var(--text3);
+      }
+      .feedback-text {
+        font-size: 13px;
+        color: var(--text2);
+        line-height: 1.6;
+      }
+      .feedback-unread {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: var(--acc);
+        flex-shrink: 0;
+        margin-left: auto;
+        box-shadow: 0 0 8px var(--acc-glow);
+      }
+
+      /* RISK INDICATOR */
+      .risk-bar {
+        height: 6px;
+        background: var(--bg3);
+        border-radius: 3px;
+        overflow: hidden;
+        margin-top: 6px;
+      }
+      .risk-fill {
+        height: 100%;
+        border-radius: 3px;
+        transition: width 0.8s ease;
+      }
+      .risk-low {
+        background: #10b981;
+      }
+      .risk-medium {
+        background: #f59e0b;
+      }
+      .risk-high {
+        background: #f43f5e;
+      }
+
+      /* BOOK */
+      .book-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+        gap: 16px;
+      }
+
+      /* TOAST */
+      #toast-container {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        z-index: 9999;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+      .toast {
+        padding: 11px 16px;
+        border-radius: var(--radius-sm);
+        font-size: 12.5px;
+        display: flex;
+        align-items: center;
+        gap: 9px;
+        animation: toastIn 0.3s ease both;
+        min-width: 240px;
+      }
+      @keyframes toastIn {
+        from {
+          opacity: 0;
+          transform: translateX(16px);
+        }
+      }
+      .toast.ok {
+        background: rgba(16, 185, 129, 0.15);
+        border: 1px solid rgba(16, 185, 129, 0.3);
+        color: #10b981;
+      }
+      .toast.error {
+        background: rgba(244, 63, 94, 0.15);
+        border: 1px solid rgba(244, 63, 94, 0.3);
+        color: #f43f5e;
+      }
+      .toast.warn {
+        background: rgba(245, 158, 11, 0.15);
+        border: 1px solid rgba(245, 158, 11, 0.3);
+        color: #f59e0b;
+      }
+
+      /* EMPTY */
+      .empty-state {
+        text-align: center;
+        padding: 40px 20px;
+      }
+      .empty-state i {
+        font-size: 30px;
+        color: var(--text3);
+        margin-bottom: 10px;
+        display: block;
+      }
+
+      /* SPINNER */
+      .spin {
+        animation: spinAnim 1s linear infinite;
+      }
+      @keyframes spinAnim {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+
+      /* UTILS */
+      .flex {
+        display: flex;
+      }
+      .items-center {
+        align-items: center;
+      }
+      .justify-between {
+        justify-content: space-between;
+      }
+      .flex-wrap {
+        flex-wrap: wrap;
+      }
+      .gap2 {
+        gap: 8px;
+      }
+      .gap3 {
+        gap: 12px;
+      }
+      .gap4 {
+        gap: 16px;
+      }
+      .font-bold {
+        font-weight: 700;
+      }
+      .text-sm {
+        font-size: 13px;
+      }
+      .text-xs {
+        font-size: 11px;
+      }
+      .text-muted {
+        color: var(--text2);
+      }
+      .grid2 {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+      }
+      .grid3 {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        gap: 14px;
+      }
+      .w-full {
+        width: 100%;
+      }
+
+      /* RESPONSIVE */
+      .menu-toggle {
+        display: none;
+      }
+      .overlay {
+        display: none;
+      }
+      @media (max-width: 768px) {
+        :root {
+          --sidebar-w: 0px;
+        }
+        .sidebar {
+          transform: translateX(-260px);
+          width: 260px;
+        }
+        .sidebar.open {
+          transform: translateX(0);
+        }
+        .main {
+          margin-left: 0;
+        }
+        .menu-toggle {
+          display: flex;
+        }
+        .overlay {
+          display: block;
+          position: fixed;
+          inset: 0;
+          background: rgba(0, 0, 0, 0.5);
+          z-index: 190;
+          opacity: 0;
+          pointer-events: none;
+          transition: opacity var(--trans);
+        }
+        .overlay.open {
+          opacity: 1;
+          pointer-events: all;
+        }
+        .content {
+          padding: 14px;
+        }
+        .settings-layout {
+          grid-template-columns: 1fr;
+        }
+        .stat-grid {
+          grid-template-columns: repeat(2, 1fr);
+        }
+        .grid2,
+        .grid3 {
+          grid-template-columns: 1fr;
+        }
+        .schedule-grid {
+          grid-template-columns: repeat(7, 1fr);
+        }
+      }
+      ::-webkit-scrollbar {
+        width: 5px;
+      }
+      ::-webkit-scrollbar-track {
+        background: transparent;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: var(--border);
+        border-radius: 3px;
+      }
+
+      /* POMODORO TIMER */
+      .pomodoro-ring {
+        position: relative;
+        width: 140px;
+        height: 140px;
+        margin: 0 auto 16px;
+      }
+      .pomodoro-ring svg {
+        width: 100%;
+        height: 100%;
+        transform: rotate(-90deg);
+      }
+      .pomodoro-ring circle {
+        fill: none;
+        stroke-width: 8;
+        stroke-linecap: round;
+      }
+      .pom-bg {
+        stroke: var(--bg3);
+      }
+      .pom-val {
+        stroke: var(--acc);
+        stroke-dasharray: 395;
+        stroke-dashoffset: 0;
+        transition: stroke-dashoffset 1s linear;
+      }
+      .pom-text {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        text-align: center;
+      }
+      .pom-time {
+        font-family: var(--font-head);
+        font-size: 28px;
+        font-weight: 800;
+      }
+      .pom-label {
+        font-size: 10px;
+        color: var(--text2);
+        margin-top: 2px;
+      }
+      .pom-controls {
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+        margin-top: 12px;
+      }
+
+      /* COMPARISON */
+      .compare-bar-wrap {
+        margin-bottom: 12px;
+      }
+      .compare-label {
+        display: flex;
+        justify-content: space-between;
+        font-size: 12px;
+        margin-bottom: 4px;
+      }
+      .compare-bar-bg {
+        height: 8px;
+        background: var(--bg3);
+        border-radius: 4px;
+        overflow: hidden;
+      }
+      .compare-bar-me {
+        height: 100%;
+        border-radius: 4px;
+        background: var(--acc);
+        transition: width 0.8s ease;
+      }
+      .compare-bar-avg {
+        height: 4px;
+        background: var(--text3);
+        border-radius: 2px;
+        margin-top: 2px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="overlay" id="overlay" onclick="closeSidebar()"></div>
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <div class="brand-icon"><i class="fa-solid fa-brain"></i></div>
+        <div>
+          <div class="brand-name">EduPattern</div>
+          <div class="brand-sub">Mahasiswa</div>
+        </div>
+      </div>
+      <div class="sidebar-user" onclick="openSettingsPanel('profile')">
+        <div class="avatar" id="sidebarAvatar">
+          <span id="sidebarAvatarEmoji">🧑‍💻</span>
+        </div>
+        <div class="user-info">
+          <h4 id="sidebarName">Mahasiswa</h4>
+          <p>
+            <span id="sidebarProdi">—</span
+            ><span class="xp-badge" id="sidebarLvl">Lvl 1</span>
+          </p>
+        </div>
+      </div>
+      <nav class="sidebar-nav">
+        <div class="nav-section-label">Utama</div>
+        <div
+          class="nav-item active"
+          data-view="dashboard"
+          onclick="sw('dashboard', this)">
+          <i class="fa-solid fa-house"></i> Dashboard
+        </div>
+        <div
+          class="nav-item"
+          data-view="aktivitas"
+          onclick="sw('aktivitas', this)">
+          <i class="fa-solid fa-clock-rotate-left"></i> Aktivitas
+        </div>
+        <div class="nav-item" data-view="jadwal" onclick="sw('jadwal', this)">
+          <i class="fa-solid fa-calendar-days"></i> Jadwal AI
+        </div>
+        <div
+          class="nav-item"
+          data-view="analisis"
+          onclick="sw('analisis', this)">
+          <i class="fa-solid fa-chart-line"></i> Analisis Pola
+        </div>
+        <div
+          class="nav-item"
+          data-view="prediksi"
+          onclick="sw('prediksi', this)">
+          <i class="fa-solid fa-star"></i> Prediksi Akademik
+        </div>
+        <div
+          class="nav-item"
+          data-view="perpustakaan"
+          onclick="sw('perpustakaan', this)">
+          <i class="fa-solid fa-book-open"></i> Perpustakaan
+          <span class="nav-badge" id="bookBadge">0</span>
+        </div>
+        <div class="nav-item" data-view="chatbot" onclick="sw('chatbot', this)">
+          <i class="fa-solid fa-robot"></i> Asisten AI
+        </div>
+        <div
+          class="nav-item"
+          data-view="feedback"
+          onclick="sw('feedback', this)">
+          <i class="fa-solid fa-comment-dots"></i> Feedback Dosen
+          <span class="nav-badge" id="feedbackBadge" style="display: none"
+            >!</span
+          >
+        </div>
+        <div class="nav-section-label">Lainnya</div>
+        <div class="nav-item" data-view="laporan" onclick="sw('laporan', this)">
+          <i class="fa-solid fa-file-csv"></i> Laporan
+        </div>
+        <div
+          class="nav-item"
+          data-view="settings"
+          onclick="sw('settings', this)">
+          <i class="fa-solid fa-gear"></i> Pengaturan
+        </div>
+      </nav>
+      <div class="sidebar-footer">
+        <div class="nav-item" onclick="handleLogout()" style="color: #f43f5e">
+          <i class="fa-solid fa-right-from-bracket"></i> Keluar
+        </div>
+      </div>
+    </aside>
+
+    <!-- MAIN -->
+    <div class="main">
+      <header class="topbar">
+        <button class="icon-btn menu-toggle" onclick="toggleSidebar()">
+          <i class="fa-solid fa-bars"></i>
+        </button>
+        <div class="topbar-title" id="topbarTitle">Dashboard</div>
+        <div class="topbar-actions">
+          <button
+            class="icon-btn"
+            id="btnPomodoro"
+            onclick="sw('jadwal', document.querySelector('[data-view=jadwal]'))"
+            title="Pomodoro Timer">
+            <i class="fa-solid fa-stopwatch"></i>
+          </button>
+          <button
+            class="icon-btn"
+            id="btnDark"
+            onclick="setTheme('dark')"
+            title="Gelap">
+            <i class="fa-solid fa-moon"></i>
+          </button>
+          <button
+            class="icon-btn"
+            id="btnLight"
+            onclick="setTheme('light')"
+            title="Terang">
+            <i class="fa-solid fa-sun"></i>
+          </button>
+          <div
+            class="accent-dot active"
+            id="dotPurple"
+            style="background: #8b5cf6"
+            onclick="setAccent('purple')"></div>
+          <div
+            class="accent-dot"
+            id="dotBlue"
+            style="background: #3b82f6"
+            onclick="setAccent('blue')"></div>
+          <div
+            class="accent-dot"
+            id="dotGreen"
+            style="background: #10b981"
+            onclick="setAccent('green')"></div>
+        </div>
+      </header>
+
+      <div class="content">
+        <!-- ═══ DASHBOARD ═══ -->
+        <div class="view active" id="view-dashboard">
+          <div class="mb6">
+            <h2
+              style="
+                font-family: var(--font-head);
+                font-size: 22px;
+                font-weight: 800;
+              "
+              id="dashGreet">
+              Halo! 👋
+            </h2>
+            <p style="color: var(--text2); font-size: 13px" id="dashSub">
+              Siap belajar hari ini?
+            </p>
+          </div>
+
+          <div class="stat-grid">
+            <!-- Daily Goal Ring -->
+            <div class="stat-card daily-goal-card">
+              <div class="progress-ring">
+                <svg viewBox="0 0 76 76">
+                  <circle class="ring-bg" cx="38" cy="38" r="35" />
+                  <circle
+                    class="ring-val"
+                    cx="38"
+                    cy="38"
+                    r="35"
+                    id="dailyRing" />
+                </svg>
+                <div class="ring-text" id="dailyText">0%</div>
+              </div>
+              <div class="goal-info">
+                <h4>Target Harian</h4>
+                <p id="dailySubtext">0 / 60 menit</p>
+                <div class="goal-status" id="dailyStatus">Ayo mulai!</div>
+              </div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-icon"><i class="fa-solid fa-fire"></i></div>
+              <div class="stat-val" id="statStreak">0</div>
+              <div class="stat-lbl">Hari Streak</div>
+              <div class="stat-trend trend-flat" id="streakTrend">—</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-icon"><i class="fa-solid fa-clock"></i></div>
+              <div class="stat-val" id="statJam">0j</div>
+              <div class="stat-lbl">Total Belajar</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-icon"><i class="fa-solid fa-bolt"></i></div>
+              <div class="stat-val" id="statXp">0</div>
+              <div class="stat-lbl">Total XP</div>
+            </div>
+          </div>
+
+          <!-- AI Score + Chart -->
+          <div class="grid2 mb4">
+            <div class="card p5">
+              <div class="flex items-center justify-between mb4">
+                <div class="font-bold text-sm">Aktivitas 7 Hari</div>
+                <span class="badge badge-sky">Minggu Ini</span>
+              </div>
+              <div class="chart-bar-wrap" id="weekChart"></div>
+              <div
+                id="weekLabels"
+                style="display: flex; gap: 6px; margin-top: 6px"></div>
+            </div>
+            <div class="card p5">
+              <div class="font-bold text-sm mb4">Skor Performa AI</div>
+              <div class="ai-score-card">
+                <div class="flex items-center gap3 mb4">
+                  <div class="score-circle" id="aiScoreCircle">—</div>
+                  <div class="score-info">
+                    <h4 id="aiScoreLabel">Menghitung...</h4>
+                    <p id="aiScoreDesc">
+                      Catat minimal 3 sesi untuk mendapat skor performa.
+                    </p>
+                  </div>
+                </div>
+                <div id="aiScoreBars"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Risk + Top Materi -->
+          <div class="grid2">
+            <div class="card p5">
+              <div class="font-bold text-sm mb4">Materi Terbanyak</div>
+              <div id="topMateri"></div>
+            </div>
+            <div class="card p5">
+              <div
+                class="font-bold text-sm mb4"
+                style="display: flex; align-items: center; gap: 8px">
+                <i
+                  class="fa-solid fa-triangle-exclamation"
+                  style="color: #f59e0b"></i>
+                Deteksi Pola Buruk
+              </div>
+              <div id="badPatternList"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ═══ AKTIVITAS ═══ -->
+        <div class="view" id="view-aktivitas">
+          <div class="flex items-center justify-between mb6 flex-wrap gap3">
+            <div>
+              <h2
+                style="
+                  font-family: var(--font-head);
+                  font-size: 20px;
+                  font-weight: 800;
+                ">
+                Aktivitas Belajar
+              </h2>
+              <p class="text-sm text-muted">Riwayat semua sesi belajarmu.</p>
+            </div>
+            <button
+              class="btn btn-primary"
+              onclick="openModal('modalActivity')">
+              <i class="fa-solid fa-plus"></i> Tambah Sesi
+            </button>
+          </div>
+          <div class="card" id="aktivitasTable"></div>
+        </div>
+
+        <!-- ═══ JADWAL AI + POMODORO ═══ -->
+        <div class="view" id="view-jadwal">
+          <div class="mb6">
+            <h2
+              style="
+                font-family: var(--font-head);
+                font-size: 20px;
+                font-weight: 800;
+              ">
+              Jadwal Belajar AI
+            </h2>
+            <p class="text-sm text-muted">
+              Rekomendasi jadwal cerdas + Pomodoro Timer.
+            </p>
+          </div>
+          <div class="grid2">
+            <!-- Pomodoro Timer -->
+            <div class="card p6">
+              <div
+                class="font-bold text-sm mb4"
+                style="display: flex; align-items: center; gap: 8px">
+                <i class="fa-solid fa-stopwatch" style="color: var(--acc)"></i>
+                Pomodoro Timer
+              </div>
+              <div class="pomodoro-ring">
+                <svg viewBox="0 0 140 140">
+                  <circle class="pom-bg" cx="70" cy="70" r="63" />
+                  <circle class="pom-val" cx="70" cy="70" r="63" id="pomRing" />
+                </svg>
+                <div class="pom-text">
+                  <div class="pom-time" id="pomTime">25:00</div>
+                  <div class="pom-label" id="pomLabel">Fokus</div>
+                </div>
+              </div>
+              <div class="pom-controls">
+                <button
+                  class="btn btn-outline btn-sm"
+                  onclick="setPomMode('focus')">
+                  🎯 25m
+                </button>
+                <button
+                  class="btn btn-outline btn-sm"
+                  onclick="setPomMode('short')">
+                  ☕ 5m
+                </button>
+                <button
+                  class="btn btn-outline btn-sm"
+                  onclick="setPomMode('long')">
+                  🛌 15m
+                </button>
+              </div>
+              <div class="pom-controls" style="margin-top: 10px">
+                <button
+                  class="btn btn-primary"
+                  id="pomBtn"
+                  onclick="togglePomodoro()">
+                  <i class="fa-solid fa-play"></i> Mulai
+                </button>
+                <button class="btn btn-outline" onclick="resetPomodoro()">
+                  <i class="fa-solid fa-rotate-left"></i> Reset
+                </button>
+              </div>
+              <div
+                id="pomSessions"
+                style="
+                  text-align: center;
+                  margin-top: 12px;
+                  font-size: 12px;
+                  color: var(--text2);
+                ">
+                Sesi selesai:
+                <span id="pomCount" style="color: var(--acc); font-weight: 700"
+                  >0</span
+                >
+              </div>
+            </div>
+
+            <!-- AI Jadwal Rekomendasi -->
+            <div class="card p5">
+              <div
+                class="font-bold text-sm mb4"
+                style="display: flex; align-items: center; gap: 8px">
+                <i
+                  class="fa-solid fa-wand-magic-sparkles"
+                  style="color: var(--acc)"></i>
+                Rekomendasi Jadwal AI
+              </div>
+              <div
+                id="scheduleLoading"
+                style="text-align: center; padding: 20px">
+                <i
+                  class="fa-solid fa-circle-notch spin"
+                  style="color: var(--acc); font-size: 20px"></i>
+                <p class="text-xs text-muted" style="margin-top: 8px">
+                  AI menyusun jadwal...
+                </p>
+              </div>
+              <div id="scheduleResult" style="display: none"></div>
+              <div
+                style="
+                  margin-top: 14px;
+                  padding-top: 14px;
+                  border-top: 1px solid var(--border);
+                ">
+                <div class="font-bold text-xs text-muted mb4">MINGGU INI</div>
+                <div class="schedule-grid" id="weekSchedule"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ═══ ANALISIS POLA ═══ -->
+        <div class="view" id="view-analisis">
+          <div class="mb6">
+            <h2
+              style="
+                font-family: var(--font-head);
+                font-size: 20px;
+                font-weight: 800;
+              ">
+              Analisis Pola Belajar AI
+            </h2>
+            <p class="text-sm text-muted">
+              Wawasan mendalam tentang kebiasaan belajarmu.
+            </p>
+          </div>
+          <div id="analisisLoading" style="text-align: center; padding: 40px">
+            <i
+              class="fa-solid fa-circle-notch spin"
+              style="font-size: 28px; color: var(--acc)"></i>
+            <p class="text-muted" style="margin-top: 12px">
+              Menganalisis pola...
+            </p>
+          </div>
+          <div id="analisisResult" style="display: none">
+            <!-- Insight Cards -->
+            <div class="insight-grid mb4" id="insightGrid"></div>
+            <!-- Komparasi -->
+            <div class="card p5 mb4">
+              <div
+                class="font-bold text-sm mb4"
+                style="display: flex; align-items: center; gap: 8px">
+                <i
+                  class="fa-solid fa-scale-balanced"
+                  style="color: var(--acc)"></i>
+                Komparasi vs Rata-rata
+              </div>
+              <div id="compareGrid"></div>
+            </div>
+            <!-- Deteksi Pola Buruk Detail -->
+            <div class="card p5">
+              <div
+                class="font-bold text-sm mb4"
+                style="display: flex; align-items: center; gap: 8px">
+                <i
+                  class="fa-solid fa-circle-exclamation"
+                  style="color: #f59e0b"></i>
+                Laporan Pola Tidak Konsisten
+              </div>
+              <div id="badPatternDetail"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ═══ PREDIKSI AKADEMIK ═══ -->
+        <div class="view" id="view-prediksi">
+          <div class="mb6">
+            <h2
+              style="
+                font-family: var(--font-head);
+                font-size: 20px;
+                font-weight: 800;
+              ">
+              Prediksi Performa Akademik
+            </h2>
+            <p class="text-sm text-muted">
+              Skor AI berdasarkan pola belajar, konsistensi, dan durasi.
+            </p>
+          </div>
+          <div id="prediksiLoading" style="text-align: center; padding: 40px">
+            <i
+              class="fa-solid fa-circle-notch spin"
+              style="font-size: 28px; color: var(--acc)"></i>
+          </div>
+          <div id="prediksiResult" style="display: none">
+            <!-- Score utama -->
+            <div
+              class="card p6 mb4"
+              style="
+                text-align: center;
+                background: linear-gradient(
+                  135deg,
+                  var(--acc-soft),
+                  transparent
+                );
+              ">
+              <div
+                style="
+                  font-size: 11px;
+                  color: var(--text2);
+                  letter-spacing: 0.1em;
+                  text-transform: uppercase;
+                  margin-bottom: 12px;
+                ">
+                Skor Performa Akademik AI
+              </div>
+              <div
+                style="
+                  font-family: var(--font-head);
+                  font-size: 72px;
+                  font-weight: 800;
+                  color: var(--acc);
+                  line-height: 1;
+                "
+                id="bigScore">
+                —
+              </div>
+              <div
+                style="font-size: 14px; color: var(--text2); margin-top: 8px"
+                id="bigScoreLabel">
+                —
+              </div>
+              <div
+                style="
+                  margin-top: 20px;
+                  display: flex;
+                  justify-content: center;
+                  gap: 24px;
+                ">
+                <div>
+                  <div
+                    style="
+                      font-size: 22px;
+                      font-weight: 800;
+                      color: var(--text);
+                    "
+                    id="predGPA">
+                    —
+                  </div>
+                  <div class="text-xs text-muted">Prediksi IPK</div>
+                </div>
+                <div>
+                  <div
+                    style="
+                      font-size: 22px;
+                      font-weight: 800;
+                      color: var(--text);
+                    "
+                    id="predRank">
+                    —
+                  </div>
+                  <div class="text-xs text-muted">Estimasi Peringkat</div>
+                </div>
+                <div>
+                  <div
+                    style="
+                      font-size: 22px;
+                      font-weight: 800;
+                      color: var(--text);
+                    "
+                    id="predRisk">
+                    —
+                  </div>
+                  <div class="text-xs text-muted">Risiko DO</div>
+                </div>
+              </div>
+            </div>
+            <!-- Breakdown -->
+            <div class="grid3 mb4" id="scoreBreakdown"></div>
+            <!-- Rekomendasi -->
+            <div class="card p5">
+              <div class="font-bold text-sm mb4">
+                <i
+                  class="fa-solid fa-lightbulb"
+                  style="color: var(--acc); margin-right: 6px"></i
+                >Rekomendasi Peningkatan
+              </div>
+              <div id="predRecs"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ═══ PERPUSTAKAAN ═══ -->
+        <div class="view" id="view-perpustakaan">
+          <div class="flex items-center justify-between mb4">
+            <div>
+              <h2
+                style="
+                  font-family: var(--font-head);
+                  font-size: 20px;
+                  font-weight: 800;
+                ">
+                Perpustakaan
+              </h2>
+              <p class="text-sm text-muted">
+                Tracking buku dan progres bacaan.
+              </p>
+            </div>
+            <button class="btn btn-primary" onclick="openModal('modalBook')">
+              <i class="fa-solid fa-plus"></i> Buku Baru
+            </button>
+          </div>
+          <div class="book-grid" id="bookGrid"></div>
+        </div>
+
+        <!-- ═══ CHATBOT AI ═══ -->
+        <div class="view" id="view-chatbot">
+          <div class="mb6">
+            <h2
+              style="
+                font-family: var(--font-head);
+                font-size: 20px;
+                font-weight: 800;
+              ">
+              Asisten Belajar AI
+            </h2>
+            <p class="text-sm text-muted">
+              Tanya apa saja seputar belajar, akademik, atau analisis pola
+              belajarmu.
+            </p>
+          </div>
+          <div class="card" style="overflow: hidden">
+            <div class="chat-messages" id="chatMessages">
+              <div class="chat-bubble ai">
+                <div class="ai-label">
+                  <i class="fa-solid fa-robot"></i> EduPattern AI
+                </div>
+                Halo! Saya asisten belajar AI kamu. Tanyakan apa saja — tips
+                belajar, cara meningkatkan konsentrasi, analisis pola belajarmu,
+                atau pertanyaan akademik lainnya! 🎓
+              </div>
+            </div>
+            <div class="chat-input-wrap">
+              <input
+                class="chat-input"
+                id="chatInput"
+                placeholder="Ketik pertanyaanmu..."
+                onkeydown="
+                  if (event.key === 'Enter' && !event.shiftKey) {
+                    event.preventDefault();
+                    sendChat();
+                  }
+                " />
+              <button class="chat-send" onclick="sendChat()">
+                <i class="fa-solid fa-paper-plane"></i>
+              </button>
+            </div>
+          </div>
+          <div
+            style="display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px">
+            <button
+              class="btn btn-outline btn-sm"
+              onclick="
+                quickChat('Bagaimana cara meningkatkan konsentrasi belajar?')
+              ">
+              💡 Tips Konsentrasi
+            </button>
+            <button
+              class="btn btn-outline btn-sm"
+              onclick="quickChat('Analisis pola belajarku dan berikan saran.')">
+              📊 Analisis Pola Saya
+            </button>
+            <button
+              class="btn btn-outline btn-sm"
+              onclick="quickChat('Teknik belajar apa yang paling efektif?')">
+              🎯 Teknik Belajar
+            </button>
+            <button
+              class="btn btn-outline btn-sm"
+              onclick="quickChat('Bagaimana cara menghindari prokrastinasi?')">
+              ⏰ Anti Prokrastinasi
+            </button>
+          </div>
+        </div>
+
+        <!-- ═══ FEEDBACK DOSEN ═══ -->
+        <div class="view" id="view-feedback">
+          <div class="mb6">
+            <h2
+              style="
+                font-family: var(--font-head);
+                font-size: 20px;
+                font-weight: 800;
+              ">
+              Feedback dari Dosen
+            </h2>
+            <p class="text-sm text-muted">
+              Komentar dan catatan dari dosen pembimbingmu.
+            </p>
+          </div>
+          <div id="feedbackList"></div>
+        </div>
+
+        <!-- ═══ LAPORAN ═══ -->
+        <div class="view" id="view-laporan">
+          <div class="mb6">
+            <h2
+              style="
+                font-family: var(--font-head);
+                font-size: 20px;
+                font-weight: 800;
+              ">
+              Laporan & Export
+            </h2>
+            <p class="text-sm text-muted">
+              Unduh data untuk keperluan pribadi.
+            </p>
+          </div>
+          <div class="grid2">
+            <div class="card p5">
+              <div class="flex items-center gap3 mb4">
+                <div
+                  style="
+                    width: 46px;
+                    height: 46px;
+                    background: var(--acc-soft);
+                    border-radius: 10px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    color: var(--acc);
+                    font-size: 20px;
+                  ">
+                  <i class="fa-solid fa-file-csv"></i>
+                </div>
+                <div style="flex: 1">
+                  <div class="font-bold">Export CSV</div>
+                  <div class="text-xs text-muted">
+                    Riwayat aktivitas belajar
+                  </div>
+                </div>
+                <button class="btn btn-outline btn-sm" onclick="exportCSV()">
+                  <i class="fa-solid fa-download"></i>
+                </button>
+              </div>
+            </div>
+            <div class="card p5">
+              <div class="flex items-center gap3 mb4">
+                <div
+                  style="
+                    width: 46px;
+                    height: 46px;
+                    background: rgba(16, 185, 129, 0.12);
+                    border-radius: 10px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    color: #10b981;
+                    font-size: 20px;
+                  ">
+                  <i class="fa-solid fa-chart-pie"></i>
+                </div>
+                <div style="flex: 1">
+                  <div class="font-bold">Ringkasan Bulanan</div>
+                  <div class="text-xs text-muted">
+                    Statistik belajar bulan ini
+                  </div>
+                </div>
+                <button
+                  class="btn btn-outline btn-sm"
+                  onclick="showMonthlySummary()">
+                  <i class="fa-solid fa-eye"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+          <div class="card p5" style="margin-top: 16px">
+            <div class="font-bold text-sm mb4">Statistik Keseluruhan</div>
+            <div id="overallStats"></div>
+          </div>
+        </div>
+
+        <!-- ═══ SETTINGS ═══ -->
+        <div class="view" id="view-settings">
+          <div class="mb6">
+            <h2
+              style="
+                font-family: var(--font-head);
+                font-size: 20px;
+                font-weight: 800;
+              ">
+              Pengaturan
+            </h2>
+          </div>
+          <div class="settings-layout">
+            <div class="card p4">
+              <div
+                class="settings-menu-item active"
+                data-panel="profile"
+                onclick="switchPanel('profile', this)">
+                <i class="fa-solid fa-user"></i> Profil
+              </div>
+              <div
+                class="settings-menu-item"
+                data-panel="target"
+                onclick="switchPanel('target', this)">
+                <i class="fa-solid fa-bullseye"></i> Target
+              </div>
+              <div
+                class="settings-menu-item"
+                data-panel="appearance"
+                onclick="switchPanel('appearance', this)">
+                <i class="fa-solid fa-palette"></i> Tampilan
+              </div>
+            </div>
+            <div>
+              <div class="settings-panel active card p6" id="panel-profile">
+                <h3 class="font-bold mb4" style="margin-bottom: 16px">
+                  Edit Profil
+                </h3>
+                <div class="field">
+                  <label>Nama</label><input type="text" id="settingName" />
+                </div>
+                <div class="field">
+                  <label>Target Harian (Menit)</label
+                  ><input type="number" id="settingGoal" min="5" max="480" />
+                </div>
+                <button class="btn btn-primary" onclick="saveSettings()">
+                  Simpan
+                </button>
+              </div>
+              <div class="settings-panel card p6" id="panel-target">
+                <h3 class="font-bold" style="margin-bottom: 16px">
+                  Target Belajar
+                </h3>
+                <div class="field">
+                  <label>Menit per Hari</label>
+                  <input
+                    type="range"
+                    id="goalRange"
+                    min="15"
+                    max="240"
+                    step="15"
+                    value="60"
+                    oninput="
+                      document.getElementById('goalVal').textContent =
+                        this.value + ' menit'
+                    " />
+                  <div
+                    style="
+                      text-align: center;
+                      font-weight: 700;
+                      color: var(--acc);
+                      margin-top: 6px;
+                    "
+                    id="goalVal">
+                    60 menit
+                  </div>
+                </div>
+                <button class="btn btn-primary" onclick="saveGoalRange()">
+                  Simpan Target
+                </button>
+              </div>
+              <div class="settings-panel card p6" id="panel-appearance">
+                <h3 class="font-bold" style="margin-bottom: 16px">Tampilan</h3>
+                <div style="display: flex; gap: 10px; margin-bottom: 14px">
+                  <button class="btn btn-outline" onclick="setTheme('dark')">
+                    🌙 Gelap
+                  </button>
+                  <button class="btn btn-outline" onclick="setTheme('light')">
+                    ☀️ Terang
+                  </button>
+                </div>
+                <div style="display: flex; gap: 10px">
+                  <button class="btn btn-outline" onclick="setAccent('purple')">
+                    🟣 Ungu
+                  </button>
+                  <button class="btn btn-outline" onclick="setAccent('blue')">
+                    🔵 Biru
+                  </button>
+                  <button class="btn btn-outline" onclick="setAccent('green')">
+                    🟢 Hijau
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- /content -->
+    </div>
+    <!-- /main -->
+
+    <!-- MODAL: AKTIVITAS -->
+    <div class="modal-bg" id="modalActivity">
+      <div class="modal">
+        <div class="modal-header">
+          <div class="modal-title">Catat Sesi Belajar</div>
+          <button class="icon-btn" onclick="closeModal('modalActivity')">
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+        </div>
+        <div class="field">
+          <label>Mata Kuliah / Materi</label
+          ><input type="text" id="actMateri" placeholder="Contoh: Kalkulus" />
+        </div>
+        <div class="grid2">
+          <div class="field">
+            <label for="actDate">Tanggal</label
+            ><input type="date" id="actDate" />
+          </div>
+          <div class="field">
+            <label>Durasi (Menit)</label
+            ><input type="number" id="actDurasi" placeholder="60" min="1" />
+          </div>
+        </div>
+        <div class="field">
+          <label for="actMetode">Metode</label>
+          <select id="actMetode">
+            <option value="Membaca">Membaca</option>
+            <option value="Video">Video</option>
+            <option value="Latihan">Latihan Soal</option>
+            <option value="Diskusi">Diskusi</option>
+            <option value="Praktik">Praktikum</option>
+            <option value="Menulis">Merangkum/Menulis</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Catatan</label
+          ><textarea
+            id="actCatatan"
+            placeholder="Topik yang dipelajari..."></textarea>
+        </div>
+        <div style="display: flex; gap: 10px">
+          <button class="btn btn-primary" onclick="saveActivity()">
+            Simpan
+          </button>
+          <button class="btn btn-outline" onclick="closeModal('modalActivity')">
+            Batal
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- MODAL: BUKU -->
+    <div class="modal-bg" id="modalBook">
+      <div class="modal">
+        <div class="modal-header">
+          <div class="modal-title">Tambah Buku</div>
+          <button
+            type="button"
+            class="icon-btn"
+            aria-label="Tutup"
+            onclick="closeModal('modalBook')">
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+        </div>
+        <div class="field">
+          <label for="bookTitle">Judul</label
+          ><input type="text" id="bookTitle" />
+        </div>
+        <div class="grid2">
+          <div class="field">
+            <label>Total Halaman</label
+            ><input type="number" id="bookPages" min="1" />
+          </div>
+          <div class="field">
+            <label>Kategori</label
+            ><input type="text" id="bookCat" placeholder="Akademik" />
+          </div>
+        </div>
+        <div style="display: flex; gap: 10px">
+          <button class="btn btn-primary" onclick="saveBook()">Simpan</button>
+          <button class="btn btn-outline" onclick="closeModal('modalBook')">
+            Batal
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- MODAL: UPDATE HALAMAN BUKU -->
+    <div class="modal-bg" id="modalBookPage">
+      <div class="modal" style="max-width: 360px">
+        <div class="modal-header">
+          <div class="modal-title">Update Halaman</div>
+          <button
+            type="button"
+            class="icon-btn"
+            aria-label="Close"
+            onclick="closeModal('modalBookPage')">
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+        </div>
+        <p
+          class="text-sm text-muted mb4"
+          id="bookPageDesc"
+          style="margin-bottom: 14px">
+          —
+        </p>
+        <div class="field">
+          <label for="bookPageInput">Halaman Sekarang</label>
+          <input type="number" id="bookPageInput" min="0" />
+        </div>
+        <div style="display: flex; gap: 10px">
+          <button class="btn btn-primary" onclick="confirmBookPage()">
+            Update
+          </button>
+          <button class="btn btn-outline" onclick="closeModal('modalBookPage')">
+            Batal
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- MODAL: MONTHLY SUMMARY -->
+    <div class="modal-bg" id="modalMonthly">
+      <div class="modal" style="max-width: 520px">
+        <div class="modal-header">
+          <div class="modal-title">Ringkasan Bulan Ini</div>
+          <button
+            class="icon-btn"
+            type="button"
+            aria-label="Close"
+            onclick="closeModal('modalMonthly')">
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+        </div>
+        <div id="monthlyContent"></div>
+      </div>
+    </div>
+
+    <div id="toast-container"></div>
+
+    <!-- ═══ FIREBASE ═══ -->
+    <script type="module">
+      import {initializeApp} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+      import {
+        getAuth,
+        onAuthStateChanged,
+        signOut,
+      } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+      import {
+        getDatabase,
+        ref,
+        get,
+        update,
+        onValue,
+      } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+
+      const app = initializeApp({
+        apiKey: "AIzaSyBeKz_5Ufj5z40tUdAkgCduNET2RLBArSE",
+        authDomain: "tugas-6946a.firebaseapp.com",
+        databaseURL:
+          "https://tugas-6946a-default-rtdb.asia-southeast1.firebasedatabase.app",
+        projectId: "tugas-6946a",
+        storageBucket: "tugas-6946a.firebasestorage.app",
+        messagingSenderId: "99669041608",
+        appId: "1:99669041608:web:9dcaff1be4cd6fbf38a0fd",
+      });
+      const auth = getAuth(app);
+      const db = getDatabase(app);
+
+      onAuthStateChanged(auth, async (user) => {
+        if (!user) {
+          window.location.href = "index.html";
+          return;
+        }
+        window._uid = user.uid;
+
+        const snap = await get(ref(db, `users/${user.uid}`));
+        const p = snap.exists() ? snap.val() : {};
+
+        // Redirect dosen ke halaman dosen
+        if (p.role === "lecturer") {
+          window.location.href = "dashboard_dosen.html";
+          return;
+        }
+
+        DB.profile.name = p.name || user.displayName || "Mahasiswa";
+        DB.profile.prodi = p.prodi || "—";
+        DB.profile.kampus = p.kampus || "—";
+        DB.profile.nim = p.nim || "—";
+        DB.profile.avatar = p.avatar || "🧑‍💻";
+        DB.profile.avatarType = p.avatarType || "emoji";
+
+        const savedGoal = localStorage.getItem("ep_goal_" + user.uid);
+        DB.profile.goal = savedGoal ? parseInt(savedGoal) : 60;
+
+        const storedActs = localStorage.getItem("ep_acts_" + user.uid);
+        const storedBooks = localStorage.getItem("ep_books_" + user.uid);
+        if (storedActs) DB.activities = JSON.parse(storedActs);
+        if (storedBooks) DB.books = JSON.parse(storedBooks);
+
+        // Listen untuk feedback dari dosen (realtime)
+        onValue(ref(db, `feedback/${user.uid}`), (snap) => {
+          DB.feedbacks = [];
+          if (snap.exists()) {
+            snap.forEach((child) =>
+              DB.feedbacks.push({id: child.key, ...child.val()}),
+            );
+            DB.feedbacks.sort((a, b) => b.createdAt - a.createdAt);
+            const unread = DB.feedbacks.filter((f) => !f.readAt).length;
+            const badge = document.getElementById("feedbackBadge");
+            badge.textContent = unread;
+            badge.style.display = unread > 0 ? "inline" : "none";
+          }
+          renderFeedback();
+        });
+
+        DB.calcStats();
+        applyTheme();
+        renderAll();
+      });
+
+      window.doLogout = async () => {
+        await signOut(auth);
+        window.location.href = "index.html";
+      };
+      window.saveProfileDB = async (name, goal) => {
+        if (!window._uid) return;
+        await update(ref(db, `users/${window._uid}`), {name});
+        localStorage.setItem("ep_goal_" + window._uid, goal);
+      };
+      // Mark feedback as read
+      window.markFeedbackRead = async (fid) => {
+        if (!window._uid) return;
+        await update(ref(db, `feedback/${window._uid}/${fid}`), {
+          readAt: Date.now(),
+        });
+      };
+    </script>
+
+    <!-- ═══ APP LOGIC ═══ -->
+    <script>
+      const DB = {
+        profile: {
+          name: "Mahasiswa",
+          goal: 60,
+          prodi: "—",
+          kampus: "—",
+          nim: "—",
+          avatar: "🧑‍💻",
+          avatarType: "emoji",
+          bookXp: 0,
+        },
+        activities: [],
+        books: [],
+        feedbacks: [],
+
+        save() {
+          const uid = window._uid || "g";
+          localStorage.setItem(
+            "ep_acts_" + uid,
+            JSON.stringify(this.activities),
+          );
+          localStorage.setItem("ep_books_" + uid, JSON.stringify(this.books));
+        },
+
+        addActivity(d) {
+          this.activities.push({
+            ...d,
+            _key: Date.now() + "_" + Math.random().toString(36).substr(2, 4),
+          });
+          this.calcStats();
+          this.save();
+        },
+
+        deleteActivity(k) {
+          this.activities = this.activities.filter((a) => a._key !== k);
+          this.calcStats();
+          this.save();
+        },
+
+        addBook(d) {
+          this.books.push({
+            ...d,
+            _key: Date.now() + "_" + Math.random().toString(36).substr(2, 4),
+          });
+          this.save();
+        },
+
+        updateBook(k, pg) {
+          const b = this.books.find((x) => x._key === k);
+          if (!b) return false;
+          b.currentPage = pg;
+          const done = pg >= b.totalPages && !b.completedAt;
+          if (done) {
+            b.completedAt = Date.now();
+            this.profile.bookXp = (this.profile.bookXp || 0) + 500;
+          }
+          this.save();
+          return done;
+        },
+
+        calcStats() {
+          const totalMin = this.activities.reduce(
+            (s, a) => s + parseInt(a.durasi || 0),
+            0,
+          );
+          this.profile.actXp = totalMin * 10;
+
+          // Streak
+          const dateSet = new Set(this.activities.map((a) => a.tanggal));
+          let streak = 0;
+          for (let i = 0; i < 365; i++) {
+            const d = new Date();
+            d.setDate(d.getDate() - i);
+            const ds = d.toISOString().split("T")[0];
+            if (dateSet.has(ds)) {
+              streak++;
+            } else if (i > 0) break;
+          }
+          this.profile.streak = streak;
+        },
+
+        totalXp() {
+          return (this.profile.actXp || 0) + (this.profile.bookXp || 0);
+        },
+
+        // AI Score (0-100)
+        calcAiScore() {
+          if (this.activities.length < 3) return null;
+          const totalMin = this.activities.reduce(
+            (s, a) => s + parseInt(a.durasi || 0),
+            0,
+          );
+          const avg = totalMin / this.activities.length;
+          const streak = this.profile.streak || 0;
+          const sessions = Math.min(this.activities.length, 30);
+          const days7 = (() => {
+            const s = new Set();
+            for (let i = 0; i < 7; i++) {
+              const d = new Date();
+              d.setDate(d.getDate() - i);
+              s.add(d.toISOString().split("T")[0]);
+            }
+            return this.activities.filter((a) => s.has(a.tanggal)).length;
+          })();
+
+          // Sub-scores (0-100 each)
+          const consistency = Math.min(
+            100,
+            (streak / 7) * 60 + (days7 / 7) * 40,
+          );
+          const duration = Math.min(
+            100,
+            (avg / 60) * 80 + (totalMin > 600 ? 20 : 0),
+          );
+          const frequency = Math.min(100, (sessions / 20) * 100);
+          const variety = (() => {
+            const ms = new Set(this.activities.map((a) => a.metode)).size;
+            return Math.min(100, (ms / 5) * 100);
+          })();
+
+          const score = Math.round(
+            consistency * 0.35 +
+              duration * 0.3 +
+              frequency * 0.25 +
+              variety * 0.1,
+          );
+          return {score, consistency, duration, frequency, variety};
+        },
+
+        // Deteksi pola buruk
+        detectBadPatterns() {
+          const patterns = [];
+          if (this.activities.length < 2) return patterns;
+
+          // 1. Tidak konsisten (streak < 3 padahal sudah > 7 sesi)
+          if (this.activities.length >= 7 && this.profile.streak < 3) {
+            patterns.push({
+              icon: "fa-calendar-xmark",
+              label: "Tidak Konsisten",
+              desc: "Belajar tidak setiap hari. Coba buat jadwal tetap.",
+              severity: "high",
+            });
+          }
+          // 2. Sesi terlalu singkat (avg < 20 menit)
+          const avg =
+            this.activities.reduce((s, a) => s + parseInt(a.durasi || 0), 0) /
+            this.activities.length;
+          if (avg < 20) {
+            patterns.push({
+              icon: "fa-clock",
+              label: "Sesi Terlalu Singkat",
+              desc: `Rata-rata sesi hanya ${Math.round(avg)} menit. Target minimal 25 menit.`,
+              severity: "medium",
+            });
+          }
+          // 3. Hanya satu metode
+          const methods = new Set(this.activities.map((a) => a.metode));
+          if (methods.size === 1 && this.activities.length >= 5) {
+            patterns.push({
+              icon: "fa-repeat",
+              label: "Metode Monoton",
+              desc: `Hanya menggunakan metode "${[...methods][0]}". Coba variasikan.`,
+              severity: "medium",
+            });
+          }
+          // 4. Sesi sangat panjang tanpa jeda (> 120 menit)
+          const long = this.activities.filter(
+            (a) => parseInt(a.durasi || 0) > 120,
+          );
+          if (long.length > 0) {
+            patterns.push({
+              icon: "fa-brain",
+              label: "Sesi Terlalu Panjang",
+              desc: `${long.length} sesi melebihi 120 menit tanpa jeda tercatat. Gunakan Pomodoro.`,
+              severity: "low",
+            });
+          }
+          // 5. Belajar di hari yang sama terus
+          if (this.activities.length >= 7) {
+            const dayCount = {};
+            this.activities.forEach((a) => {
+              const d = new Date(a.tanggal + "T00:00:00").getDay();
+              dayCount[d] = (dayCount[d] || 0) + 1;
+            });
+            const maxDay = Math.max(...Object.values(dayCount));
+            if (maxDay / this.activities.length > 0.5) {
+              const days = [
+                "Minggu",
+                "Senin",
+                "Selasa",
+                "Rabu",
+                "Kamis",
+                "Jumat",
+                "Sabtu",
+              ];
+              const topD = parseInt(
+                Object.keys(dayCount).sort(
+                  (a, b) => dayCount[b] - dayCount[a],
+                )[0],
+              );
+              patterns.push({
+                icon: "fa-calendar-week",
+                label: "Terpusat di Satu Hari",
+                desc: `Lebih dari 50% sesi di hari ${days[topD]}. Distribusikan lebih merata.`,
+                severity: "low",
+              });
+            }
+          }
+          return patterns;
+        },
+      };
+
+      // ═══ POMODORO ═══
+      const POM = {
+        modes: {focus: 25 * 60, short: 5 * 60, long: 15 * 60},
+        mode: "focus",
+        running: false,
+        remaining: 25 * 60,
+        total: 25 * 60,
+        timer: null,
+        sessions: 0,
+
+        tick() {
+          this.remaining--;
+          if (this.remaining <= 0) {
+            clearInterval(this.timer);
+            this.running = false;
+            this.sessions++;
+            document.getElementById("pomCount").textContent = this.sessions;
+            toast(
+              `Sesi ${this.mode === "focus" ? "fokus" : "istirahat"} selesai! 🎉`,
+              "ok",
+            );
+            // Auto log aktivitas jika mode fokus
+            if (this.mode === "focus") {
+              DB.addActivity({
+                materi: "Pomodoro Session",
+                tanggal: new Date().toISOString().split("T")[0],
+                durasi: 25,
+                metode: "Praktik",
+                catatan: "Logged via Pomodoro Timer",
+              });
+              renderAll();
+            }
+            this.reset();
+            return;
+          }
+          this.render();
+        },
+
+        render() {
+          const m = String(Math.floor(this.remaining / 60)).padStart(2, "0");
+          const s = String(this.remaining % 60).padStart(2, "0");
+          document.getElementById("pomTime").textContent = `${m}:${s}`;
+          const pct = 1 - this.remaining / this.total;
+          const circ = 2 * Math.PI * 63; // r=63
+          document.getElementById("pomRing").style.strokeDashoffset =
+            circ * (1 - pct);
+          document.getElementById("pomBtn").innerHTML = this.running
+            ? '<i class="fa-solid fa-pause"></i> Pause'
+            : '<i class="fa-solid fa-play"></i> Lanjut';
+        },
+
+        reset() {
+          clearInterval(this.timer);
+          this.running = false;
+          this.remaining = this.total;
+          this.render();
+          document.getElementById("pomBtn").innerHTML =
+            '<i class="fa-solid fa-play"></i> Mulai';
+        },
+      };
+
+      function togglePomodoro() {
+        if (POM.running) {
+          clearInterval(POM.timer);
+          POM.running = false;
+        } else {
+          POM.running = true;
+          POM.timer = setInterval(() => POM.tick(), 1000);
+        }
+        POM.render();
+      }
+      function resetPomodoro() {
+        POM.reset();
+      }
+      function setPomMode(m) {
+        POM.mode = m;
+        POM.total = POM.modes[m];
+        POM.reset();
+        document.getElementById("pomLabel").textContent =
+          m === "focus"
+            ? "Fokus"
+            : m === "short"
+              ? "Istirahat Pendek"
+              : "Istirahat Panjang";
+      }
+
+      // ═══ AI ANALYSIS GUARD ═══
+      let _analisisDone = false,
+        _prediksiDone = false,
+        _jadwalDone = false;
+
+      // ═══ RENDER ═══
+      function renderAll() {
+        renderDashboard();
+        renderActivities();
+        renderBooks();
+        renderOverallStats();
+        updateSidebar();
+        document.getElementById("dashGreet").textContent =
+          `Halo, ${DB.profile.name}! 👋`;
+        const h = new Date().getHours();
+        document.getElementById("dashSub").textContent =
+          h < 12
+            ? "Selamat pagi! Siap mulai belajar?"
+            : h < 17
+              ? "Selamat siang! Sudah belajar belum hari ini?"
+              : "Selamat malam! Waktu terbaik untuk review materi.";
+      }
+
+      function applyTheme() {
+        const t = localStorage.getItem("ep-theme") || "dark";
+        const a = localStorage.getItem("ep-accent") || "purple";
+        setTheme(t);
+        setAccent(a);
+        document.getElementById("settingName").value = DB.profile.name;
+        document.getElementById("settingGoal").value = DB.profile.goal;
+        document.getElementById("goalRange").value = Math.min(
+          240,
+          DB.profile.goal,
+        );
+        document.getElementById("goalVal").textContent =
+          Math.min(240, DB.profile.goal) + " menit";
+        // Avatar
+        if (
+          DB.profile.avatarType === "url" &&
+          DB.profile.avatar?.startsWith("http")
+        ) {
+          document.getElementById("sidebarAvatar").innerHTML =
+            `<img src="${DB.profile.avatar}" alt="av"/>`;
+        } else {
+          document.getElementById("sidebarAvatarEmoji").textContent =
+            DB.profile.avatar || "🧑‍💻";
+        }
+      }
+
+      function updateSidebar() {
+        document.getElementById("sidebarName").textContent = DB.profile.name;
+        document.getElementById("sidebarProdi").textContent = DB.profile.prodi;
+        const lvl = Math.floor(DB.totalXp() / 1000) + 1;
+        document.getElementById("sidebarLvl").textContent = `Lvl ${lvl}`;
+        document.getElementById("statXp").textContent = DB.totalXp();
+        document.getElementById("statStreak").textContent =
+          DB.profile.streak || 0;
+        // Streak trend
+        const st = DB.profile.streak || 0;
+        const trend = document.getElementById("streakTrend");
+        trend.textContent =
+          st >= 7
+            ? "🔥 Luar biasa!"
+            : st >= 3
+              ? "📈 Bagus!"
+              : st > 0
+                ? "💪 Pertahankan!"
+                : "Belum ada streak";
+        trend.className =
+          "stat-trend " +
+          (st >= 7 ? "trend-up" : st >= 3 ? "trend-up" : "trend-flat");
+      }
+
+      function renderDashboard() {
+        const totalMin = DB.activities.reduce(
+          (s, a) => s + parseInt(a.durasi || 0),
+          0,
+        );
+        document.getElementById("statJam").textContent =
+          (totalMin / 60).toFixed(1) + "j";
+
+        // Ring
+        const goal = parseInt(DB.profile.goal) || 60;
+        const today = new Date().toISOString().split("T")[0];
+        const todayM = DB.activities
+          .filter((a) => a.tanggal === today)
+          .reduce((s, a) => s + parseInt(a.durasi || 0), 0);
+        const pct = Math.min(100, Math.round((todayM / goal) * 100));
+        const circ = 2 * Math.PI * 35;
+        document.getElementById("dailyRing").style.strokeDashoffset =
+          circ - (pct / 100) * circ;
+        document.getElementById("dailyText").textContent = pct + "%";
+        document.getElementById("dailySubtext").textContent =
+          `${todayM} / ${goal} menit`;
+        document.getElementById("dailyStatus").textContent =
+          pct >= 100
+            ? "Target Tercapai! 🎉"
+            : pct >= 50
+              ? "Hampir sampai! 💪"
+              : "Ayo mulai! 🚀";
+
+        renderChart();
+        renderAiScore();
+        renderTopMateri();
+        renderBadPatterns();
+      }
+
+      function renderChart() {
+        const days = [];
+        for (let i = 6; i >= 0; i--) {
+          const d = new Date();
+          d.setDate(d.getDate() - i);
+          days.push(d.toISOString().split("T")[0]);
+        }
+        const data = days.map((day) =>
+          DB.activities
+            .filter((a) => a.tanggal === day)
+            .reduce((s, a) => s + parseInt(a.durasi || 0), 0),
+        );
+        const max = Math.max(...data, 60);
+        const dNames = ["Min", "Sen", "Sel", "Rab", "Kam", "Jum", "Sab"];
+        document.getElementById("weekChart").innerHTML = data
+          .map(
+            (v) =>
+              `<div class="chart-bar-col"><div class="chart-bar" style="height:${Math.max(3, (v / max) * 100)}%" title="${v}m"></div></div>`,
+          )
+          .join("");
+        document.getElementById("weekLabels").innerHTML = days
+          .map(
+            (d) =>
+              `<div style="flex:1;text-align:center;font-size:9px;color:var(--text3)">${dNames[new Date(d + "T00:00:00").getDay()]}</div>`,
+          )
+          .join("");
+      }
+
+      function renderAiScore() {
+        const s = DB.calcAiScore();
+        if (!s) {
+          document.getElementById("aiScoreCircle").textContent = "?";
+          document.getElementById("aiScoreLabel").textContent = "Data Kurang";
+          document.getElementById("aiScoreDesc").textContent =
+            "Catat minimal 3 sesi untuk mendapat skor.";
+          document.getElementById("aiScoreBars").innerHTML = "";
+          return;
+        }
+        const color =
+          s.score >= 80 ? "#10b981" : s.score >= 60 ? "#f59e0b" : "#f43f5e";
+        const label =
+          s.score >= 80
+            ? "Sangat Baik"
+            : s.score >= 60
+              ? "Baik"
+              : s.score >= 40
+                ? "Cukup"
+                : "Perlu Peningkatan";
+        document.getElementById("aiScoreCircle").textContent = s.score;
+        document.getElementById("aiScoreCircle").style.background = color;
+        document.getElementById("aiScoreLabel").textContent = label;
+        document.getElementById("aiScoreDesc").textContent =
+          `Skor berdasarkan konsistensi, durasi, frekuensi, dan variasi metode belajar.`;
+        document.getElementById("aiScoreBars").innerHTML = [
+          {label: "Konsistensi", val: s.consistency},
+          {label: "Durasi", val: s.duration},
+          {label: "Frekuensi", val: s.frequency},
+        ]
+          .map(
+            (x) => `
+    <div class="compare-bar-wrap" style="margin-bottom:8px">
+      <div class="compare-label"><span class="text-xs">${x.label}</span><span class="text-xs font-bold">${Math.round(x.val)}%</span></div>
+      <div class="compare-bar-bg"><div class="compare-bar-me" style="width:${x.val}%;background:${color}"></div></div>
+    </div>`,
+          )
+          .join("");
+      }
+
+      function renderTopMateri() {
+        const cnt = {};
+        DB.activities.forEach((a) => {
+          cnt[a.materi] = (cnt[a.materi] || 0) + parseInt(a.durasi || 0);
+        });
+        const sorted = Object.entries(cnt)
+          .sort((a, b) => b[1] - a[1])
+          .slice(0, 4);
+        const el = document.getElementById("topMateri");
+        if (!sorted.length) {
+          el.innerHTML = '<div class="text-xs text-muted">Belum ada data</div>';
+          return;
+        }
+        el.innerHTML = sorted
+          .map(
+            ([m, d], i) => `
+    <div class="flex items-center justify-between" style="margin-bottom:10px">
+      <div class="flex items-center gap2"><span class="badge ${i === 0 ? "badge-gold" : i === 1 ? "badge-sky" : "badge-purple"}">#${i + 1}</span><span class="text-sm" style="max-width:110px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis">${m}</span></div>
+      <span class="text-xs font-bold">${d}m</span>
+    </div>`,
+          )
+          .join("");
+      }
+
+      function renderBadPatterns() {
+        const pats = DB.detectBadPatterns();
+        const el = document.getElementById("badPatternList");
+        if (!pats.length) {
+          el.innerHTML =
+            '<div class="badge badge-green" style="font-size:12px;padding:8px 12px"><i class="fa-solid fa-check"></i> Pola belajar sehat!</div>';
+          return;
+        }
+        el.innerHTML = pats
+          .slice(0, 2)
+          .map(
+            (p) => `
+    <div class="flex items-center gap2" style="margin-bottom:8px">
+      <span style="color:${p.severity === "high" ? "#f43f5e" : p.severity === "medium" ? "#f59e0b" : "#0ea5e9"};font-size:13px"><i class="fa-solid ${p.icon}"></i></span>
+      <div><div class="text-xs font-bold">${p.label}</div><div class="text-xs text-muted">${p.desc}</div></div>
+    </div>`,
+          )
+          .join("");
+      }
+
+      function renderActivities() {
+        const el = document.getElementById("aktivitasTable");
+        if (!DB.activities.length) {
+          el.innerHTML =
+            '<div class="empty-state"><i class="fa-solid fa-calendar-xmark"></i><p class="text-sm text-muted">Belum ada sesi. Tambah sesi pertamamu!</p></div>';
+          return;
+        }
+        const sorted = [...DB.activities].sort((a, b) =>
+          b.tanggal.localeCompare(a.tanggal),
+        );
+        el.innerHTML = `<div style="overflow-x:auto"><table class="data-table"><thead><tr><th>Tanggal</th><th>Materi</th><th>Metode</th><th>Durasi</th><th>Catatan</th><th>Aksi</th></tr></thead><tbody>
+    ${sorted
+      .map(
+        (a) => `<tr>
+      <td class="text-sm">${a.tanggal}</td>
+      <td class="font-bold text-sm">${a.materi}</td>
+      <td><span class="badge badge-sky">${a.metode}</span></td>
+      <td>${a.durasi}m</td>
+      <td class="text-xs text-muted" style="max-width:120px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis">${a.catatan || "—"}</td>
+      <td><button class="btn btn-danger btn-sm" onclick="deleteActivity('${a._key}')"><i class="fa-solid fa-trash"></i></button></td>
+    </tr>`,
+      )
+      .join("")}
+  </tbody></table></div>`;
+      }
+
+      function renderBooks() {
+        const el = document.getElementById("bookGrid");
+        document.getElementById("bookBadge").textContent = DB.books.length;
+        if (!DB.books.length) {
+          el.innerHTML =
+            '<div class="empty-state" style="grid-column:1/-1"><i class="fa-solid fa-book-open"></i><p class="text-sm text-muted">Perpustakaan kosong.</p></div>';
+          return;
+        }
+        el.innerHTML = DB.books
+          .map((b) => {
+            const pct =
+              b.totalPages > 0
+                ? Math.min(
+                    100,
+                    Math.round((b.currentPage / b.totalPages) * 100),
+                  )
+                : 0;
+            return `<div class="card p4" style="${b.completedAt ? "border-color:rgba(16,185,129,0.4)" : ""}">
+      ${b.completedAt ? '<div class="badge badge-green" style="margin-bottom:8px;font-size:10px">✓ Selesai</div>' : ""}
+      <div class="font-bold text-sm" style="overflow:hidden;white-space:nowrap;text-overflow:ellipsis;margin-bottom:4px" title="${b.title}">${b.title}</div>
+      <div class="text-xs text-muted" style="margin-bottom:10px">${b.category || "Umum"}</div>
+      <div style="margin-bottom:10px">
+        <div style="display:flex;justify-content:space-between;font-size:10px;margin-bottom:3px"><span>Progres</span><span>${pct}%</span></div>
+        <div style="height:4px;background:var(--bg3);border-radius:2px;overflow:hidden"><div style="height:100%;width:${pct}%;background:${b.completedAt ? "#10b981" : "var(--acc)"};transition:width 0.5s ease"></div></div>
+        <div class="text-xs text-muted" style="margin-top:3px;text-align:right">${b.currentPage}/${b.totalPages} hal</div>
+      </div>
+      ${!b.completedAt ? `<button class="btn btn-outline btn-sm w-full" style="width:100%;justify-content:center" onclick="openBookPage('${b._key}')">Update</button>` : ""}
+    </div>`;
+          })
+          .join("");
+      }
+
+      function renderFeedback() {
+        const el = document.getElementById("feedbackList");
+        if (!DB.feedbacks.length) {
+          el.innerHTML =
+            '<div class="empty-state"><i class="fa-solid fa-comment-slash"></i><p class="text-sm text-muted">Belum ada feedback dari dosen.</p></div>';
+          return;
+        }
+        el.innerHTML = DB.feedbacks
+          .map(
+            (f) => `
+    <div class="feedback-card" onclick="markRead('${f.id}',this)" style="cursor:pointer">
+      <div class="feedback-header">
+        <div class="feedback-avatar">👩‍🏫</div>
+        <div style="flex:1">
+          <div class="feedback-name">${f.dosenName || "Dosen"}</div>
+          <div class="feedback-time">${new Date(f.createdAt).toLocaleDateString("id-ID", {day: "numeric", month: "long", year: "numeric"})}</div>
+        </div>
+        ${!f.readAt ? '<div class="feedback-unread" title="Belum dibaca"></div>' : ""}
+      </div>
+      <div class="feedback-text">${f.message}</div>
+      ${f.tag ? `<div style="margin-top:8px"><span class="badge ${f.tag === "bagus" ? "badge-green" : f.tag === "perhatian" ? "badge-gold" : "badge-sky"}">${f.tag}</span></div>` : ""}
+    </div>`,
+          )
+          .join("");
+      }
+
+      function markRead(fid, el) {
+        el.querySelector(".feedback-unread")?.remove();
+        if (typeof markFeedbackRead === "function") markFeedbackRead(fid);
+      }
+
+      function renderOverallStats() {
+        const totalMin = DB.activities.reduce(
+          (s, a) => s + parseInt(a.durasi || 0),
+          0,
+        );
+        const methods = [...new Set(DB.activities.map((a) => a.metode))];
+        const materiCnt = new Set(DB.activities.map((a) => a.materi)).size;
+        document.getElementById("overallStats").innerHTML = `
+    <div class="grid3">
+      ${[
+        ["Total Sesi", DB.activities.length + " sesi", "fa-list"],
+        ["Total Waktu", (totalMin / 60).toFixed(1) + " jam", "fa-clock"],
+        ["Streak Terbaik", (DB.profile.streak || 0) + " hari", "fa-fire"],
+        ["Mata Kuliah", materiCnt + " materi", "fa-book"],
+        ["Metode Berbeda", methods.length + " metode", "fa-shuffle"],
+        ["Total XP", DB.totalXp() + " XP", "fa-bolt"],
+      ]
+        .map(
+          ([l, v, ic]) => `<div class="card p4" style="text-align:center">
+        <i class="fa-solid ${ic}" style="color:var(--acc);font-size:18px;margin-bottom:8px"></i>
+        <div class="font-bold" style="font-size:16px">${v}</div>
+        <div class="text-xs text-muted">${l}</div>
+      </div>`,
+        )
+        .join("")}
+    </div>`;
+      }
+
+      // ═══ AI ANALISIS ═══
+      function runAnalisis() {
+        if (_analisisDone) return;
+        if (DB.activities.length < 3) {
+          document.getElementById("analisisLoading").style.display = "none";
+          document.getElementById("analisisResult").style.display = "block";
+          document.getElementById("insightGrid").innerHTML =
+            '<div class="insight-card" style="grid-column:1/-1"><div class="insight-icon"><i class="fa-solid fa-robot"></i></div><div class="insight-title">Data Belum Cukup</div><div class="insight-text">Catat minimal 3 sesi untuk memulai analisis AI.</div></div>';
+          document.getElementById("compareGrid").innerHTML = "";
+          document.getElementById("badPatternDetail").innerHTML =
+            '<div class="text-xs text-muted">Data belum cukup.</div>';
+          _analisisDone = true;
+          return;
+        }
+        setTimeout(() => {
+          document.getElementById("analisisLoading").style.display = "none";
+          document.getElementById("analisisResult").style.display = "block";
+
+          const totalMin = DB.activities.reduce(
+            (s, a) => s + parseInt(a.durasi || 0),
+            0,
+          );
+          const avg = Math.round(totalMin / DB.activities.length);
+          const methods = {};
+          DB.activities.forEach(
+            (a) => (methods[a.metode] = (methods[a.metode] || 0) + 1),
+          );
+          const topMethod = Object.keys(methods).reduce((a, b) =>
+            methods[a] > methods[b] ? a : b,
+          );
+          const dayCount = {};
+          const dNames = [
+            "Minggu",
+            "Senin",
+            "Selasa",
+            "Rabu",
+            "Kamis",
+            "Jumat",
+            "Sabtu",
+          ];
+          DB.activities.forEach((a) => {
+            const d = new Date(a.tanggal + "T00:00:00").getDay();
+            dayCount[dNames[d]] =
+              (dayCount[dNames[d]] || 0) + parseInt(a.durasi || 0);
+          });
+          const topDay = Object.keys(dayCount).reduce(
+            (a, b) => (dayCount[a] > dayCount[b] ? a : b),
+            "—",
+          );
+          const s = DB.calcAiScore();
+
+          document.getElementById("insightGrid").innerHTML = [
+            {
+              icon: "fa-fire",
+              title: `${DB.activities.length} Sesi Tercatat`,
+              text: `Total ${Math.round((totalMin / 60) * 10) / 10} jam belajar. Streak ${DB.profile.streak || 0} hari berturut-turut.`,
+            },
+            {
+              icon: "fa-graduation-cap",
+              title: `Metode Dominan: ${topMethod}`,
+              text: `Kamu paling sering belajar dengan metode "${topMethod}" (${Math.round((methods[topMethod] / DB.activities.length) * 100)}% sesi). Coba variasikan untuk pemahaman lebih dalam.`,
+            },
+            {
+              icon: "fa-clock",
+              title: `Rata-rata Sesi: ${avg} Menit`,
+              text:
+                avg < 25
+                  ? "Durasi terlalu singkat. Target 25–50 menit per sesi dengan teknik Pomodoro."
+                  : avg <= 90
+                    ? "Durasi ideal! Pertahankan konsistensi ini."
+                    : "Sesi sangat panjang. Pastikan ada jeda setiap 90 menit.",
+            },
+            {
+              icon: "fa-calendar",
+              title: `Hari Paling Produktif: ${topDay}`,
+              text: `Kamu paling produktif di hari ${topDay}. Jadwalkan materi paling sulit di hari dan waktu serupa.`,
+            },
+            {
+              icon: "fa-star",
+              title: `Skor Performa: ${s ? s.score : "—"}/100`,
+              text: s
+                ? `${s.score >= 80 ? "Performa sangat baik! Pertahankan." : s.score >= 60 ? "Performa baik, masih bisa ditingkatkan." : "Perlu peningkatan konsistensi dan durasi belajar."}`
+                : "Catat lebih banyak sesi untuk skor akurat.",
+            },
+            {
+              icon: "fa-lightbulb",
+              title: "Saran Peningkatan",
+              text:
+                s && s.consistency < 60
+                  ? "Fokus pada konsistensi: belajar setiap hari walau hanya 15 menit."
+                  : s && s.variety < 50
+                    ? "Coba metode belajar baru seperti mengajar teman atau membuat mind-map."
+                    : "Pertahankan kebiasaan belajar yang sudah terbentuk!",
+            },
+          ]
+            .map(
+              (i) =>
+                `<div class="insight-card"><div class="insight-icon"><i class="fa-solid ${i.icon}"></i></div><div class="insight-title">${i.title}</div><div class="insight-text">${i.text}</div></div>`,
+            )
+            .join("");
+
+          // Komparasi vs rata-rata nasional (simulated)
+          const avgNasional = {durasi: 45, streak: 3, sesi: 15, metode: 2};
+          document.getElementById("compareGrid").innerHTML = [
+            {
+              label: "Rata-rata Durasi Sesi",
+              me: avg,
+              avg: avgNasional.durasi,
+              unit: "mnt",
+            },
+            {
+              label: "Streak Saat Ini",
+              me: DB.profile.streak || 0,
+              avg: avgNasional.streak,
+              unit: "hr",
+            },
+            {
+              label: "Total Sesi",
+              me: DB.activities.length,
+              avg: avgNasional.sesi,
+              unit: "sesi",
+            },
+            {
+              label: "Variasi Metode",
+              me: Object.keys(methods).length,
+              avg: avgNasional.metode,
+              unit: "metode",
+            },
+          ]
+            .map((x) => {
+              const ratio = Math.min(
+                100,
+                (x.me / Math.max(x.avg * 2, 1)) * 100,
+              );
+              const above = x.me >= x.avg;
+              return `<div class="compare-bar-wrap">
+        <div class="compare-label"><span class="text-xs font-bold">${x.label}</span><div style="display:flex;gap:8px;align-items:center"><span class="badge ${above ? "badge-green" : "badge-red"}">${x.me} ${x.unit}</span><span class="text-xs text-muted">vs rata² ${x.avg} ${x.unit}</span></div></div>
+        <div class="compare-bar-bg"><div class="compare-bar-me" style="width:${ratio}%;background:${above ? "#10b981" : "#f43f5e"}"></div></div>
+        <div class="compare-bar-bg" style="margin-top:3px"><div class="compare-bar-me" style="width:50%;background:var(--text3)"></div></div>
+      </div>`;
+            })
+            .join("");
+
+          // Bad patterns detail
+          const pats = DB.detectBadPatterns();
+          document.getElementById("badPatternDetail").innerHTML = !pats.length
+            ? '<div class="badge badge-green" style="font-size:12px;padding:8px 14px"><i class="fa-solid fa-check" style="margin-right:6px"></i>Tidak ada pola buruk terdeteksi. Bagus!</div>'
+            : pats
+                .map(
+                  (
+                    p,
+                  ) => `<div class="insight-card" style="margin-bottom:10px;border-color:${p.severity === "high" ? "rgba(244,63,94,0.3)" : p.severity === "medium" ? "rgba(245,158,11,0.3)" : "rgba(14,165,233,0.3)"}">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
+            <span style="color:${p.severity === "high" ? "#f43f5e" : p.severity === "medium" ? "#f59e0b" : "#0ea5e9"}"><i class="fa-solid ${p.icon}"></i></span>
+            <span class="font-bold text-sm">${p.label}</span>
+            <span class="badge ${p.severity === "high" ? "badge-red" : p.severity === "medium" ? "badge-gold" : "badge-sky"}" style="margin-left:auto">${p.severity === "high" ? "Tinggi" : p.severity === "medium" ? "Sedang" : "Rendah"}</span>
+          </div>
+          <div class="text-xs text-muted">${p.desc}</div>
+        </div>`,
+                )
+                .join("");
+
+          _analisisDone = true;
+        }, 1000);
+      }
+
+      // ═══ PREDIKSI AKADEMIK ═══
+      function runPrediksi() {
+        if (_prediksiDone) return;
+        if (DB.activities.length < 3) {
+          document.getElementById("prediksiLoading").style.display = "none";
+          document.getElementById("prediksiResult").style.display = "block";
+          document.getElementById("bigScore").textContent = "?";
+          document.getElementById("bigScoreLabel").textContent =
+            "Data belum cukup";
+          _prediksiDone = true;
+          return;
+        }
+        setTimeout(() => {
+          document.getElementById("prediksiLoading").style.display = "none";
+          document.getElementById("prediksiResult").style.display = "block";
+          const s = DB.calcAiScore();
+          if (!s) return;
+
+          document.getElementById("bigScore").textContent = s.score;
+          document.getElementById("bigScore").style.color =
+            s.score >= 80 ? "#10b981" : s.score >= 60 ? "#f59e0b" : "#f43f5e";
+          document.getElementById("bigScoreLabel").textContent =
+            s.score >= 80
+              ? "Performa Sangat Baik — Pertahankan!"
+              : s.score >= 60
+                ? "Performa Baik — Masih Bisa Ditingkatkan"
+                : s.score >= 40
+                  ? "Performa Cukup — Butuh Perhatian"
+                  : "Performa Perlu Peningkatan Segera";
+
+          // Prediksi IPK (simulasi dari skor)
+          const gpa = (2.0 + (s.score / 100) * 2.0).toFixed(2);
+          const rank =
+            s.score >= 80
+              ? "Top 25%"
+              : s.score >= 60
+                ? "25-50%"
+                : s.score >= 40
+                  ? "50-75%"
+                  : "75-100%";
+          const risk =
+            s.score >= 70 ? "Rendah" : s.score >= 50 ? "Sedang" : "Tinggi";
+          document.getElementById("predGPA").textContent = gpa;
+          document.getElementById("predRank").textContent = rank;
+          document.getElementById("predRisk").textContent = risk;
+          document.getElementById("predRisk").style.color =
+            risk === "Rendah"
+              ? "#10b981"
+              : risk === "Sedang"
+                ? "#f59e0b"
+                : "#f43f5e";
+
+          // Breakdown
+          document.getElementById("scoreBreakdown").innerHTML = [
+            {
+              label: "Konsistensi",
+              val: s.consistency,
+              desc: "Keteraturan belajar harian",
+              w: "35%",
+            },
+            {
+              label: "Durasi",
+              val: s.duration,
+              desc: "Rata-rata waktu per sesi",
+              w: "30%",
+            },
+            {
+              label: "Frekuensi",
+              val: s.frequency,
+              desc: "Jumlah sesi keseluruhan",
+              w: "25%",
+            },
+            {
+              label: "Variasi",
+              val: s.variety,
+              desc: "Keberagaman metode belajar",
+              w: "10%",
+            },
+          ]
+            .map(
+              (x) => `<div class="card p4">
+      <div class="text-xs text-muted" style="margin-bottom:6px">${x.label} <span style="float:right;color:var(--text3)">(bobot ${x.w})</span></div>
+      <div style="font-family:var(--font-head);font-size:24px;font-weight:800;color:${x.val >= 70 ? "#10b981" : x.val >= 45 ? "#f59e0b" : "#f43f5e"}">${Math.round(x.val)}</div>
+      <div class="risk-bar"><div class="risk-fill ${x.val >= 70 ? "risk-low" : x.val >= 45 ? "risk-medium" : "risk-high"}" style="width:${x.val}%"></div></div>
+      <div class="text-xs text-muted" style="margin-top:6px">${x.desc}</div>
+    </div>`,
+            )
+            .join("");
+
+          // Rekomendasi
+          const recs = [];
+          if (s.consistency < 60)
+            recs.push({
+              icon: "fa-calendar-check",
+              text: "Buat jadwal belajar harian dan patuhi minimal 6 hari/minggu. Gunakan pengingat alarm.",
+            });
+          if (s.duration < 50)
+            recs.push({
+              icon: "fa-stopwatch",
+              text: `Tingkatkan durasi belajar. Rata-ratamu saat ini perlu ditingkatkan ke minimal 45 menit/sesi.`,
+            });
+          if (s.frequency < 60)
+            recs.push({
+              icon: "fa-plus-circle",
+              text: "Tambah frekuensi sesi belajar. Target minimal 5 sesi per minggu untuk performa optimal.",
+            });
+          if (s.variety < 50)
+            recs.push({
+              icon: "fa-shuffle",
+              text: "Gunakan lebih banyak variasi metode: Pomodoro, diskusi, latihan soal, dan membuat rangkuman.",
+            });
+          if (recs.length === 0)
+            recs.push({
+              icon: "fa-trophy",
+              text: "Pertahankan kebiasaan belajar yang sudah sangat baik! Coba tambah tantangan materi baru.",
+            });
+
+          document.getElementById("predRecs").innerHTML = recs
+            .map(
+              (r) => `
+      <div class="flex items-center gap3" style="margin-bottom:12px;padding:12px;background:var(--surface);border-radius:10px;border:1px solid var(--border)">
+        <i class="fa-solid ${r.icon}" style="color:var(--acc);font-size:16px;flex-shrink:0"></i>
+        <span class="text-sm">${r.text}</span>
+      </div>`,
+            )
+            .join("");
+
+          _prediksiDone = true;
+        }, 900);
+      }
+
+      // ═══ JADWAL AI ═══
+      function runJadwal() {
+        if (_jadwalDone) {
+          renderWeekSchedule();
+          return;
+        }
+        setTimeout(() => {
+          document.getElementById("scheduleLoading").style.display = "none";
+          document.getElementById("scheduleResult").style.display = "block";
+
+          const dNames = [
+            "Minggu",
+            "Senin",
+            "Selasa",
+            "Rabu",
+            "Kamis",
+            "Jumat",
+            "Sabtu",
+          ];
+          const dayCount = {};
+          const timeSlot = {};
+          DB.activities.forEach((a) => {
+            const d = new Date(a.tanggal + "T00:00:00").getDay();
+            dayCount[d] = (dayCount[d] || 0) + parseInt(a.durasi || 0);
+          });
+
+          // Cari 3 hari terbaik
+          const best3 = Object.entries(dayCount)
+            .sort((a, b) => b[1] - a[1])
+            .slice(0, 3)
+            .map((x) => parseInt(x[0]));
+          const slots = ["07.00", "09.00", "14.00", "16.00", "19.00", "21.00"];
+
+          document.getElementById("scheduleResult").innerHTML = `
+      <div class="text-xs text-muted" style="margin-bottom:10px"><i class="fa-solid fa-wand-magic-sparkles" style="color:var(--acc);margin-right:4px"></i>Berdasarkan pola belajarmu, hari terbaik untuk belajar intensif:</div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        ${best3.map((d) => `<span class="badge badge-purple" style="font-size:12px;padding:6px 12px">${dNames[d]}</span>`).join("")}
+      </div>
+      <div style="margin-top:12px;font-size:12px;color:var(--text2)">Slot waktu yang direkomendasikan: <strong style="color:var(--acc)">19.00 – 21.00</strong> (jam malam, lebih fokus berdasarkan pola umum mahasiswa)</div>
+    `;
+
+          renderWeekSchedule(best3);
+          _jadwalDone = true;
+        }, 800);
+      }
+
+      function renderWeekSchedule(highlightDays) {
+        const dLabels = ["M", "S", "S", "R", "K", "J", "S"];
+        const today = new Date().getDay();
+        document.getElementById("weekSchedule").innerHTML = dLabels
+          .map(
+            (d, i) => `
+    <div class="schedule-day">
+      <div class="schedule-day-label" style="color:${i === today ? "var(--acc)" : ""}">${d}</div>
+      ${["Pagi", "Siang", "Malam"]
+        .map(
+          (s, si) => `
+        <div class="schedule-slot ${highlightDays && highlightDays.includes(i) && si === 2 ? "high" : ""}" title="${s}">
+          ${highlightDays && highlightDays.includes(i) && si === 2 ? "★" : ""}
+        </div>`,
+        )
+        .join("")}
+    </div>`,
+          )
+          .join("");
+      }
+
+      // ═══ CHATBOT ═══
+      async function sendChat() {
+        const input = document.getElementById("chatInput");
+        const msg = input.value.trim();
+        if (!msg) return;
+        input.value = "";
+        appendChat(msg, "user");
+
+        // Typing indicator
+        const typingId = appendTyping();
+
+        try {
+          // Konteks aktivitas untuk AI
+          const ctx = DB.activities.length
+            ? `Data belajar mahasiswa: ${DB.activities.length} sesi, streak ${DB.profile.streak || 0} hari, total ${Math.round(DB.activities.reduce((s, a) => s + parseInt(a.durasi || 0), 0) / 60)} jam. Skor AI: ${DB.calcAiScore()?.score || "—"}/100.`
+            : "Mahasiswa belum mencatat aktivitas belajar.";
+
+          const res = await fetch("https://api.anthropic.com/v1/messages", {
+            method: "POST",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify({
+              model: "claude-sonnet-4-20250514",
+              max_tokens: 1000,
+              system: `Kamu adalah EduPattern AI, asisten belajar cerdas untuk mahasiswa Indonesia. Bantu mahasiswa dengan tips belajar, analisis pola belajar, teknik mengingat, manajemen waktu, dan saran akademik. Selalu ramah, singkat (maks 150 kata), dan berikan saran praktis. ${ctx}`,
+              messages: [{role: "user", content: msg}],
+            }),
+          });
+          removeTyping(typingId);
+          const data = await res.json();
+          const reply =
+            data.content?.[0]?.text ||
+            "Maaf, saya tidak bisa menjawab saat ini.";
+          appendChat(reply, "ai");
+        } catch (e) {
+          removeTyping(typingId);
+          // Fallback jika API tidak tersedia
+          appendChat(getFallbackReply(msg), "ai");
+        }
+      }
+
+      function getFallbackReply(msg) {
+        const lower = msg.toLowerCase();
+        if (lower.includes("konsentrasi") || lower.includes("fokus"))
+          return "Untuk meningkatkan konsentrasi: 1) Gunakan teknik Pomodoro (25 menit fokus, 5 menit istirahat). 2) Matikan notifikasi HP. 3) Belajar di tempat yang sama setiap hari agar otak terprogram. 4) Hindari multitasking.";
+        if (lower.includes("prokrasti"))
+          return "Atasi prokrastinasi dengan: 1) Mulai dengan tugas terkecil selama 2 menit saja. 2) Bagi tugas besar menjadi langkah-langkah kecil. 3) Reward diri setelah menyelesaikan sesi belajar. 4) Buat deadline pribadi lebih awal dari deadline asli.";
+        if (lower.includes("teknik") || lower.includes("efektif"))
+          return "Teknik belajar paling efektif: 1) Active Recall — tutup buku, tulis apa yang kamu ingat. 2) Spaced Repetition — review materi di hari 1, 3, 7, 30. 3) Feynman Technique — jelaskan materi seolah mengajar orang lain. 4) Mind mapping untuk materi konseptual.";
+        if (lower.includes("pola") || lower.includes("analisis")) {
+          const s = DB.calcAiScore();
+          return s
+            ? `Berdasarkan datamu: Skor performa ${s.score}/100. Konsistensimu ${s.consistency >= 60 ? "sudah baik" : "perlu ditingkatkan"}. ${s.duration < 50 ? "Coba perpanjang durasi sesi belajarmu." : "Durasi belajarmu sudah ideal."} ${s.variety < 50 ? "Variasikan metode belajarmu." : "Bagus, kamu sudah pakai berbagai metode!"}`
+            : "Catat lebih banyak sesi belajar agar saya bisa menganalisis polamu.";
+        }
+        return "Tips belajar: Konsistensi lebih penting dari durasi. Belajar 30 menit setiap hari lebih efektif dari 5 jam sekali seminggu. Gunakan teknik active recall dan spaced repetition untuk hasil maksimal!";
+      }
+
+      function quickChat(msg) {
+        document.getElementById("chatInput").value = msg;
+        sendChat();
+      }
+
+      function appendChat(msg, role) {
+        const box = document.getElementById("chatMessages");
+        const el = document.createElement("div");
+        el.className = "chat-bubble " + role;
+        if (role === "ai")
+          el.innerHTML = `<div class="ai-label"><i class="fa-solid fa-robot"></i> EduPattern AI</div>${msg.replace(/\n/g, "<br>")}`;
+        else el.textContent = msg;
+        box.appendChild(el);
+        box.scrollTop = box.scrollHeight;
+      }
+
+      function appendTyping() {
+        const id = "typing_" + Date.now();
+        const box = document.getElementById("chatMessages");
+        const el = document.createElement("div");
+        el.id = id;
+        el.className = "chat-bubble ai";
+        el.innerHTML = `<div class="ai-label"><i class="fa-solid fa-robot"></i> EduPattern AI</div><div class="chat-typing"><div class="dot-typing"></div><div class="dot-typing"></div><div class="dot-typing"></div></div>`;
+        box.appendChild(el);
+        box.scrollTop = box.scrollHeight;
+        return id;
+      }
+
+      function removeTyping(id) {
+        document.getElementById(id)?.remove();
+      }
+
+      // ═══ ACTIONS ═══
+      function saveActivity() {
+        const materi = document.getElementById("actMateri").value.trim();
+        const date = document.getElementById("actDate").value;
+        const dur = parseInt(document.getElementById("actDurasi").value);
+        const metode = document.getElementById("actMetode").value;
+        const catatan = document.getElementById("actCatatan").value.trim();
+        if (!materi) return toast("Nama materi tidak boleh kosong", "error");
+        if (!date) return toast("Pilih tanggal", "error");
+        if (!dur || dur < 1) return toast("Durasi harus > 0", "error");
+        DB.addActivity({materi, tanggal: date, durasi: dur, metode, catatan});
+        toast(`Sesi dicatat! +${dur * 10} XP 🎉`, "ok");
+        closeModal("modalActivity");
+        _analisisDone = false;
+        _prediksiDone = false;
+        renderAll();
+      }
+
+      function deleteActivity(k) {
+        if (!confirm("Hapus sesi ini?")) return;
+        DB.deleteActivity(k);
+        toast("Sesi dihapus", "ok");
+        _analisisDone = false;
+        _prediksiDone = false;
+        renderAll();
+      }
+
+      function saveBook() {
+        const t = document.getElementById("bookTitle").value.trim();
+        const p = parseInt(document.getElementById("bookPages").value);
+        const c = document.getElementById("bookCat").value.trim();
+        if (!t) return toast("Judul tidak boleh kosong", "error");
+        if (!p || p < 1) return toast("Halaman harus > 0", "error");
+        DB.addBook({
+          title: t,
+          totalPages: p,
+          category: c || "Umum",
+          currentPage: 0,
+        });
+        toast("Buku ditambahkan!", "ok");
+        closeModal("modalBook");
+        renderBooks();
+      }
+
+      let _curBookKey = null;
+      function openBookPage(k) {
+        const b = DB.books.find((x) => x._key === k);
+        if (!b) return;
+        _curBookKey = k;
+        document.getElementById("bookPageDesc").textContent =
+          `"${b.title}" — total ${b.totalPages} hal`;
+        document.getElementById("bookPageInput").value = b.currentPage;
+        document.getElementById("bookPageInput").max = b.totalPages;
+        openModal("modalBookPage");
+      }
+
+      function confirmBookPage() {
+        const pg = parseInt(document.getElementById("bookPageInput").value);
+        const b = DB.books.find((x) => x._key === _curBookKey);
+        if (!b) return;
+        if (isNaN(pg) || pg < 0) return toast("Halaman tidak valid", "error");
+        if (pg > b.totalPages)
+          return toast(`Maks ${b.totalPages} halaman`, "error");
+        const done = DB.updateBook(_curBookKey, pg);
+        closeModal("modalBookPage");
+        renderBooks();
+        updateSidebar();
+        if (done) toast(`Buku selesai! +500 XP 🎊`, "ok");
+        else toast("Progres diperbarui", "ok");
+        _curBookKey = null;
+      }
+
+      function saveSettings() {
+        const name = document.getElementById("settingName").value.trim();
+        const goal = parseInt(document.getElementById("settingGoal").value);
+        if (!name) return toast("Nama tidak boleh kosong", "error");
+        if (!goal || goal < 5) return toast("Target minimal 5 menit", "error");
+        DB.profile.name = name;
+        DB.profile.goal = goal;
+        if (typeof saveProfileDB === "function") saveProfileDB(name, goal);
+        applyTheme();
+        renderAll();
+        toast("Pengaturan disimpan!", "ok");
+      }
+
+      function saveGoalRange() {
+        const v = parseInt(document.getElementById("goalRange").value);
+        DB.profile.goal = v;
+        document.getElementById("settingGoal").value = v;
+        if (typeof saveProfileDB === "function")
+          saveProfileDB(DB.profile.name, v);
+        renderDashboard();
+        toast(`Target harian: ${v} menit`, "ok");
+      }
+
+      function showMonthlySummary() {
+        const now = new Date();
+        const month = now.getMonth();
+        const year = now.getFullYear();
+        const acts = DB.activities.filter((a) => {
+          const d = new Date(a.tanggal + "T00:00:00");
+          return d.getMonth() === month && d.getFullYear() === year;
+        });
+        const totalMin = acts.reduce((s, a) => s + parseInt(a.durasi || 0), 0);
+        document.getElementById("monthlyContent").innerHTML = `
+    <div class="grid2" style="margin-bottom:16px">
+      <div class="card p4" style="text-align:center"><div style="font-size:24px;font-weight:800;color:var(--acc)">${acts.length}</div><div class="text-xs text-muted">Sesi Bulan Ini</div></div>
+      <div class="card p4" style="text-align:center"><div style="font-size:24px;font-weight:800;color:var(--acc)">${(totalMin / 60).toFixed(1)}j</div><div class="text-xs text-muted">Total Waktu</div></div>
+    </div>
+    <p class="text-xs text-muted">${acts.length === 0 ? "Belum ada aktivitas bulan ini." : "Tetap semangat! Setiap sesi belajar membawa kamu lebih dekat ke tujuan."}</p>`;
+        openModal("modalMonthly");
+      }
+
+      function exportCSV() {
+        if (!DB.activities.length) return toast("Tidak ada data", "error");
+        let csv = "Tanggal,Materi,Metode,Durasi (Menit),Catatan\n";
+        DB.activities.forEach((r) => {
+          csv += `${r.tanggal},"${r.materi}",${r.metode},${r.durasi},"${(r.catatan || "").replace(/"/g, '""')}"\n`;
+        });
+        const a = document.createElement("a");
+        a.href = "data:text/csv;charset=utf-8," + encodeURIComponent(csv);
+        a.download = `edupattern_${new Date().toISOString().split("T")[0]}.csv`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        toast("CSV berhasil diunduh!", "ok");
+      }
+
+      // ═══ UI HELPERS ═══
+      function setTheme(t) {
+        document.documentElement.setAttribute("data-theme", t);
+        localStorage.setItem("ep-theme", t);
+        document
+          .getElementById("btnDark")
+          .classList.toggle("active", t === "dark");
+        document
+          .getElementById("btnLight")
+          .classList.toggle("active", t === "light");
+      }
+      function setAccent(a) {
+        document.documentElement.setAttribute("data-accent", a);
+        localStorage.setItem("ep-accent", a);
+        ["Purple", "Blue", "Green"].forEach((x) =>
+          document
+            .getElementById("dot" + x)
+            .classList.toggle("active", x.toLowerCase() === a),
+        );
+      }
+
+      const viewTitles = {
+        dashboard: "Dashboard",
+        aktivitas: "Aktivitas Belajar",
+        jadwal: "Jadwal AI",
+        analisis: "Analisis Pola",
+        prediksi: "Prediksi Akademik",
+        perpustakaan: "Perpustakaan",
+        chatbot: "Asisten AI",
+        feedback: "Feedback Dosen",
+        laporan: "Laporan",
+        settings: "Pengaturan",
+      };
+
+      function sw(id, el) {
+        document
+          .querySelectorAll(".view")
+          .forEach((v) => v.classList.remove("active"));
+        document.getElementById("view-" + id).classList.add("active");
+        document
+          .querySelectorAll(".nav-item")
+          .forEach((n) => n.classList.remove("active"));
+        if (el) el.classList.add("active");
+        else {
+          const n = document.querySelector(`.nav-item[data-view="${id}"]`);
+          if (n) n.classList.add("active");
+        }
+        document.getElementById("topbarTitle").textContent =
+          viewTitles[id] || id;
+        closeSidebar();
+        if (id === "analisis") runAnalisis();
+        if (id === "prediksi") runPrediksi();
+        if (id === "jadwal") runJadwal();
+        if (id === "laporan") renderOverallStats();
+      }
+
+      function openSettingsPanel(p) {
+        sw("settings", null);
+        setTimeout(
+          () =>
+            switchPanel(
+              p,
+              document.querySelector(`.settings-menu-item[data-panel="${p}"]`),
+            ),
+          50,
+        );
+      }
+      function switchPanel(pid, el) {
+        document
+          .querySelectorAll(".settings-panel")
+          .forEach((p) => p.classList.remove("active"));
+        document.getElementById("panel-" + pid).classList.add("active");
+        document
+          .querySelectorAll(".settings-menu-item")
+          .forEach((i) => i.classList.remove("active"));
+        if (el) el.classList.add("active");
+      }
+
+      function toggleSidebar() {
+        document.getElementById("sidebar").classList.toggle("open");
+        document.getElementById("overlay").classList.toggle("open");
+      }
+      function closeSidebar() {
+        document.getElementById("sidebar").classList.remove("open");
+        document.getElementById("overlay").classList.remove("open");
+      }
+
+      function openModal(id) {
+        if (id === "modalActivity") {
+          ["actMateri", "actDurasi", "actCatatan"].forEach(
+            (i) => (document.getElementById(i).value = ""),
+          );
+          document.getElementById("actDate").value = new Date()
+            .toISOString()
+            .split("T")[0];
+        }
+        if (id === "modalBook") {
+          ["bookTitle", "bookPages", "bookCat"].forEach(
+            (i) => (document.getElementById(i).value = ""),
+          );
+        }
+        document.getElementById(id).classList.add("open");
+      }
+      function closeModal(id) {
+        document.getElementById(id).classList.remove("open");
+      }
+
+      function toast(msg, type = "ok") {
+        const el = document.createElement("div");
+        el.className = "toast " + type;
+        const ic =
+          type === "ok"
+            ? "fa-check-circle"
+            : type === "warn"
+              ? "fa-triangle-exclamation"
+              : "fa-exclamation-circle";
+        el.innerHTML = `<i class="fa-solid ${ic}"></i> ${msg}`;
+        document.getElementById("toast-container").appendChild(el);
+        setTimeout(() => el.remove(), 3500);
+      }
+
+      function handleLogout() {
+        if (confirm("Keluar dari EduPattern AI?")) {
+          if (typeof doLogout === "function") doLogout();
+          else window.location.href = "index.html";
+        }
+      }
+
+      // Close modal on backdrop click
+      document.querySelectorAll(".modal-bg").forEach((bg) =>
+        bg.addEventListener("click", (e) => {
+          if (e.target === bg) bg.classList.remove("open");
+        }),
+      );
+      // ESC close
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape")
+          document
+            .querySelectorAll(".modal-bg.open")
+            .forEach((m) => m.classList.remove("open"));
+      });
+      // Init pomodoro ring circumference display
+      document.getElementById("pomRing").style.strokeDasharray =
+        2 * Math.PI * 63;
+    </script>
+  </body>
+</html>
