@@ -12,7 +12,6 @@
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
     <style>
-      /* ─── TOKENS ─────────────────────────────────────────── */
       :root {
         --purple-h: 262;
         --purple-s: 80%;
@@ -20,24 +19,19 @@
         --blue-s: 85%;
         --yellow-h: 42;
         --yellow-s: 92%;
-
         --accent-h: var(--purple-h);
         --accent-s: var(--purple-s);
-
         --acc: hsl(var(--accent-h), var(--accent-s), 62%);
         --acc2: hsl(var(--accent-h), var(--accent-s), 50%);
         --acc-glow: hsl(var(--accent-h), var(--accent-s), 62%, 0.28);
         --acc-soft: hsl(var(--accent-h), var(--accent-s), 62%, 0.12);
         --acc-border: hsl(var(--accent-h), var(--accent-s), 62%, 0.35);
-
         --radius: 16px;
         --radius-sm: 10px;
         --font-head: "Syne", sans-serif;
         --font-body: "DM Sans", sans-serif;
         --trans: 0.22s cubic-bezier(0.4, 0, 0.2, 1);
       }
-
-      /* DARK MODE (default) */
       [data-theme="dark"] {
         --bg: #0c0c14;
         --bg2: #13131f;
@@ -51,8 +45,6 @@
         --invert: 0;
         --shadow: 0 24px 64px rgba(0, 0, 0, 0.55);
       }
-
-      /* LIGHT MODE */
       [data-theme="light"] {
         --bg: #f4f4fb;
         --bg2: #ffffff;
@@ -66,8 +58,6 @@
         --invert: 1;
         --shadow: 0 24px 64px rgba(80, 80, 160, 0.12);
       }
-
-      /* ACCENT VARIANTS */
       [data-accent="purple"] {
         --accent-h: var(--purple-h);
         --accent-s: var(--purple-s);
@@ -85,8 +75,6 @@
         --acc-soft: hsl(42, 92%, 54%, 0.12);
         --acc-border: hsl(42, 92%, 54%, 0.35);
       }
-
-      /* ─── RESET ──────────────────────────────────────────── */
       *,
       *::before,
       *::after {
@@ -97,7 +85,6 @@
       html {
         height: 100%;
       }
-
       body {
         min-height: 100vh;
         background: var(--bg);
@@ -111,8 +98,6 @@
         display: flex;
         align-items: stretch;
       }
-
-      /* ─── BG BLOBS ───────────────────────────────────────── */
       .bg-blob {
         position: fixed;
         pointer-events: none;
@@ -142,8 +127,6 @@
         top: 50%;
         left: 40%;
       }
-
-      /* ─── LAYOUT ─────────────────────────────────────────── */
       .page {
         display: flex;
         width: 100%;
@@ -151,8 +134,6 @@
         position: relative;
         z-index: 1;
       }
-
-      /* LEFT PANEL */
       .panel-left {
         flex: 1;
         display: none;
@@ -169,7 +150,6 @@
           display: flex;
         }
       }
-
       .panel-left::before {
         content: "";
         position: absolute;
@@ -181,7 +161,6 @@
         );
         pointer-events: none;
       }
-
       .brand {
         display: flex;
         align-items: center;
@@ -212,7 +191,6 @@
         text-transform: uppercase;
         font-weight: 600;
       }
-
       .panel-hero {
         position: relative;
         z-index: 1;
@@ -235,7 +213,6 @@
         line-height: 1.7;
         max-width: 320px;
       }
-
       .stats-grid {
         display: grid;
         grid-template-columns: repeat(3, 1fr);
@@ -271,7 +248,6 @@
         letter-spacing: 0.06em;
         font-weight: 600;
       }
-
       .testimonial {
         position: relative;
         z-index: 1;
@@ -321,7 +297,6 @@
         font-size: 11px;
         color: var(--text3);
       }
-
       .panel-footer {
         position: relative;
         z-index: 1;
@@ -335,8 +310,6 @@
       .panel-footer a:hover {
         text-decoration: underline;
       }
-
-      /* RIGHT PANEL */
       .panel-right {
         width: 100%;
         max-width: 480px;
@@ -352,8 +325,6 @@
           padding: 48px 52px;
         }
       }
-
-      /* ─── TOOLBAR ────────────────────────────────────────── */
       .toolbar {
         display: flex;
         justify-content: flex-end;
@@ -428,8 +399,6 @@
       .dot-yellow {
         background: hsl(42, 92%, 54%);
       }
-
-      /* ─── HEADING ────────────────────────────────────────── */
       .form-head {
         margin-bottom: 32px;
       }
@@ -449,8 +418,6 @@
         color: var(--text2);
         line-height: 1.6;
       }
-
-      /* ─── FORM FIELDS ────────────────────────────────────── */
       .field {
         margin-bottom: 18px;
       }
@@ -502,7 +469,6 @@
       .field-wrap input:focus-visible {
         outline: none;
       }
-      .field-wrap input:focus + i,
       .field-wrap:focus-within i {
         color: var(--acc);
       }
@@ -515,7 +481,6 @@
       .field-wrap input.has-right {
         padding-right: 42px;
       }
-
       .field.error .field-wrap input {
         border-color: #f43f5e;
         background: rgba(244, 63, 94, 0.06);
@@ -534,8 +499,6 @@
       .field.error .field-error {
         display: flex;
       }
-
-      /* ─── OPTIONS ROW ────────────────────────────────────── */
       .options-row {
         display: flex;
         align-items: center;
@@ -543,8 +506,6 @@
         margin-bottom: 24px;
         gap: 12px;
       }
-
-      /* ─── CHECKBOX ───────────────────────────────────────── */
       .custom-check {
         width: 18px;
         height: 18px;
@@ -584,7 +545,6 @@
         transform: rotate(-45deg) translateY(-1px);
         display: block;
       }
-
       .remember-label {
         display: flex;
         align-items: center;
@@ -593,7 +553,6 @@
         color: var(--text2);
         cursor: pointer;
       }
-
       .forgot-link {
         font-size: 13px;
         color: var(--acc);
@@ -611,8 +570,6 @@
         outline-offset: 2px;
         border-radius: 3px;
       }
-
-      /* ─── BUTTON ─────────────────────────────────────────── */
       .btn-primary {
         width: 100%;
         padding: 14px 24px;
@@ -653,8 +610,6 @@
         cursor: not-allowed;
         transform: none;
       }
-
-      /* ─── DIVIDER ────────────────────────────────────────── */
       .divider {
         display: flex;
         align-items: center;
@@ -670,8 +625,6 @@
         height: 1px;
         background: var(--border);
       }
-
-      /* ─── SOCIAL BTN ─────────────────────────────────────── */
       .btn-social {
         width: 100%;
         padding: 12px 20px;
@@ -689,7 +642,8 @@
         gap: 10px;
         transition:
           border-color var(--trans),
-          background var(--trans);
+          background var(--trans),
+          opacity var(--trans);
       }
       .btn-social:hover {
         border-color: var(--acc-border);
@@ -699,12 +653,14 @@
         outline: 2px solid var(--acc);
         outline-offset: 2px;
       }
+      .btn-social:disabled {
+        opacity: 0.55;
+        cursor: not-allowed;
+      }
       .btn-social img {
         width: 18px;
         height: 18px;
       }
-
-      /* ─── FOOTER LINK ────────────────────────────────────── */
       .form-footer {
         text-align: center;
         margin-top: 28px;
@@ -724,8 +680,6 @@
         outline-offset: 2px;
         border-radius: 3px;
       }
-
-      /* ─── TOAST ──────────────────────────────────────────── */
       #toast-container {
         position: fixed;
         bottom: 24px;
@@ -745,7 +699,7 @@
         font-size: 13.5px;
         box-shadow: var(--shadow);
         animation: toastIn 0.3s ease;
-        max-width: 320px;
+        max-width: 360px;
       }
       .toast.error {
         border-left-color: #f43f5e;
@@ -779,8 +733,6 @@
           opacity: 0;
         }
       }
-
-      /* ─── SPINNER ────────────────────────────────────────── */
       .spinner {
         width: 16px;
         height: 16px;
@@ -795,8 +747,6 @@
           transform: rotate(360deg);
         }
       }
-
-      /* ─── FADE ANIM ──────────────────────────────────────── */
       .fade-up {
         animation: fadeUp 0.45s ease both;
       }
@@ -811,7 +761,13 @@
         }
       }
 
-      /* ─── FORGOT PASSWORD MODAL ──────────────────────────── */
+      /* ── Cooldown visual on login button ── */
+      .btn-primary.cooldown {
+        background: var(--bg3);
+        box-shadow: none;
+        color: var(--text3);
+      }
+
       .modal-overlay {
         position: fixed;
         inset: 0;
@@ -916,7 +872,6 @@
       .modal-actions .btn-primary {
         flex: 1;
       }
-
       .modal-success {
         text-align: center;
         display: none;
@@ -925,14 +880,10 @@
         display: block;
         animation: fadeUp 0.35s ease both;
       }
-      .modal-form {
-        display: block;
-      }
       .modal-form.hidden {
         display: none;
       }
 
-      /* ─── SCROLLBAR ──────────────────────────────────────── */
       ::-webkit-scrollbar {
         width: 6px;
       }
@@ -946,17 +897,27 @@
       ::-webkit-scrollbar-thumb:hover {
         background: var(--border-hi);
       }
+      .modal-success .btn-primary {
+        max-width: 200px;
+      }
+      .modal-success .modal-icon {
+        margin: 0 auto 18px;
+      }
+      .modal-success .modal-title,
+      .modal-success .modal-desc {
+        text-align: center;
+      }
+      .modal-success .modal-actions {
+        justify-content: center;
+      }
     </style>
   </head>
   <body>
-    <!-- BG -->
     <div class="bg-blob blob-1" aria-hidden="true"></div>
     <div class="bg-blob blob-2" aria-hidden="true"></div>
     <div class="bg-blob blob-3" aria-hidden="true"></div>
 
-    <!-- LAYOUT -->
     <div class="page">
-      <!-- LEFT PANEL -->
       <aside class="panel-left" aria-label="Informasi platform">
         <div class="brand">
           <div class="brand-icon" aria-hidden="true">
@@ -967,7 +928,6 @@
             <div class="brand-sub">AI Learning Platform</div>
           </div>
         </div>
-
         <div class="panel-hero">
           <h2 class="panel-tagline">
             Selamat datang<br />kembali, <em>cerdas.</em>
@@ -976,7 +936,6 @@
             Masuk ke dashboard untuk melihat analisis pola belajar, performa
             akademik, dan rekomendasi AI terbaru.
           </p>
-
           <div class="stats-grid">
             <div class="stat-card">
               <div class="stat-value">2.4k</div>
@@ -991,7 +950,6 @@
               <div class="stat-label">Monitor</div>
             </div>
           </div>
-
           <div class="testimonial">
             <p class="testimonial-quote">
               EduPattern membantu saya mengidentifikasi mahasiswa yang berisiko
@@ -1006,15 +964,12 @@
             </div>
           </div>
         </div>
-
         <div class="panel-footer">
-          © 2024 EduPattern AI — <a href="#">Kebijakan Privasi</a>
+          © 2025 EduPattern AI — <a href="#">Kebijakan Privasi</a>
         </div>
       </aside>
 
-      <!-- RIGHT PANEL -->
-      <main class="panel-right fade-up">
-        <!-- TOOLBAR -->
+      <main class="panel-right fade-up" id="loginPanel">
         <div class="toolbar" role="toolbar" aria-label="Pengaturan tampilan">
           <div class="tb-group" role="radiogroup" aria-label="Tema">
             <button
@@ -1072,15 +1027,12 @@
           </div>
         </div>
 
-        <!-- FORM HEAD -->
         <div class="form-head">
           <h1>Masuk ke <span>Akun</span></h1>
           <p>Masukkan kredensial untuk mengakses dashboard Anda.</p>
         </div>
 
-        <!-- LOGIN FORM -->
         <form id="loginForm" onsubmit="handleLogin(event)" novalidate>
-          <!-- EMAIL -->
           <div class="field" id="fieldEmail">
             <label for="loginEmail">Email</label>
             <div class="field-wrap">
@@ -1093,12 +1045,10 @@
                 required />
             </div>
             <div class="field-error" id="errorEmail">
-              <i class="fa-solid fa-circle-exclamation" aria-hidden="true"></i>
-              <span></span>
+              <i class="fa-solid fa-circle-exclamation" aria-hidden="true"></i
+              ><span></span>
             </div>
           </div>
-
-          <!-- PASSWORD -->
           <div class="field" id="fieldPass">
             <label for="loginPass">Password</label>
             <div class="field-wrap">
@@ -1120,12 +1070,10 @@
                 onkeydown="if (event.key === 'Enter') togglePass();"></i>
             </div>
             <div class="field-error" id="errorPass">
-              <i class="fa-solid fa-circle-exclamation" aria-hidden="true"></i>
-              <span></span>
+              <i class="fa-solid fa-circle-exclamation" aria-hidden="true"></i
+              ><span></span>
             </div>
           </div>
-
-          <!-- OPTIONS ROW -->
           <div class="options-row">
             <label class="remember-label">
               <div
@@ -1140,8 +1088,6 @@
               >Lupa password?</a
             >
           </div>
-
-          <!-- LOGIN BUTTON -->
           <button type="submit" class="btn-primary" id="btnLogin">
             <span>Masuk</span>
             <i
@@ -1150,18 +1096,11 @@
           </button>
         </form>
 
-        <!-- DIVIDER -->
         <div class="divider">atau masuk dengan</div>
-
-        <!-- SOCIAL LOGIN -->
-        <button
-          class="btn-social"
-          onclick="toast('Google SSO belum tersedia di demo', 'warn')">
+        <button class="btn-social" id="btnGoogle" onclick="handleGoogleLogin()">
           <img src="https://www.google.com/favicon.ico" alt="" />
           Lanjutkan dengan Google
         </button>
-
-        <!-- FOOTER -->
         <div class="form-footer">
           Belum punya akun? <a href="register.html">Daftar di sini</a>
         </div>
@@ -1180,18 +1119,13 @@
           aria-label="Tutup">
           <i class="fa-solid fa-xmark"></i>
         </button>
-
-        <!-- Form State -->
         <div class="modal-form" id="forgotForm">
-          <div class="modal-icon">
-            <i class="fa-solid fa-key"></i>
-          </div>
+          <div class="modal-icon"><i class="fa-solid fa-key"></i></div>
           <h2 class="modal-title">Lupa Password?</h2>
           <p class="modal-desc">
             Masukkan email yang terdaftar. Kami akan mengirimkan tautan untuk
             mereset password Anda.
           </p>
-
           <div class="field" id="fieldForgotEmail">
             <label for="forgotEmail">Email</label>
             <div class="field-wrap">
@@ -1203,43 +1137,38 @@
                 autocomplete="email" />
             </div>
             <div class="field-error" id="errorForgotEmail">
-              <i class="fa-solid fa-circle-exclamation" aria-hidden="true"></i>
-              <span></span>
+              <i class="fa-solid fa-circle-exclamation" aria-hidden="true"></i
+              ><span></span>
             </div>
           </div>
-
           <div class="modal-actions">
             <button class="btn-social" onclick="closeForgotModal()">
-              <i class="fa-solid fa-arrow-left" aria-hidden="true"></i>
-              <span>Batal</span>
+              <i class="fa-solid fa-arrow-left" aria-hidden="true"></i
+              ><span>Batal</span>
             </button>
             <button
               class="btn-primary"
               id="btnSendReset"
               onclick="sendResetLink()">
-              <span>Kirim Tautan</span>
-              <i class="fa-solid fa-paper-plane" aria-hidden="true"></i>
+              <span>Kirim Tautan</span
+              ><i class="fa-solid fa-paper-plane" aria-hidden="true"></i>
             </button>
           </div>
         </div>
-
-        <!-- Success State -->
         <div class="modal-success" id="forgotSuccess">
-          <div class="modal-icon" style="margin: 0 auto 18px">
+          <div class="modal-icon modal-icon-center">
             <i class="fa-solid fa-check"></i>
           </div>
-          <h2 class="modal-title" style="text-align: center">
-            Email Terkirim!
-          </h2>
-          <p class="modal-desc" style="text-align: center">
+          <h2 class="modal-title modal-title-center">Email Terkirim!</h2>
+          <p class="modal-desc modal-desc-center">
             Kami telah mengirimkan tautan reset password ke email Anda. Silakan
             cek inbox atau folder spam.
           </p>
-          <div class="modal-actions" style="justify-content: center">
+          <div class="modal-actions">
             <button
+              type="button"
               class="btn-primary"
-              onclick="closeForgotModal()"
-              style="max-width: 200px">
+              onclick="closeForgotModal()">
               <span>Kembali ke Login</span>
             </button>
           </div>
@@ -1247,108 +1176,160 @@
       </div>
     </div>
 
-    <!-- TOAST -->
     <div id="toast-container" aria-live="polite"></div>
 
-    <script>
-      /* ─── THEME & ACCENT ─── */
-      function setTheme(t) {
-        document.documentElement.setAttribute("data-theme", t);
-        const btnDark = document.getElementById("btnDark");
-        const btnLight = document.getElementById("btnLight");
-        btnDark.classList.toggle("active", t === "dark");
-        btnLight.classList.toggle("active", t === "light");
-        btnDark.setAttribute("aria-pressed", t === "dark");
-        btnLight.setAttribute("aria-pressed", t === "light");
-        localStorage.setItem("ep-theme", t);
-      }
+    <!-- ═══════════════════════════════════════════════════════════
+         FIREBASE AUTH + DATABASE + GOOGLE SSO
+         FIX: Versi SDK diubah ke 10.12.2 (versi stabil terbaru)
+         ═══════════════════════════════════════════════════════════ -->
+    <script type="module">
+      import {initializeApp} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+      import {
+        getAuth,
+        onAuthStateChanged,
+        signInWithEmailAndPassword,
+        signInWithPopup,
+        GoogleAuthProvider,
+        sendPasswordResetEmail,
+        setPersistence,
+        browserLocalPersistence,
+        browserSessionPersistence,
+        fetchSignInMethodsForEmail, // FIX: untuk handle account-exists-with-different-credential
+      } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+      import {
+        getDatabase,
+        ref,
+        get,
+        update, // FIX: pakai update() bukan set() agar data lama tidak ditimpa
+      } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 
-      function setAccent(a) {
-        document.documentElement.setAttribute("data-accent", a);
-        ["Purple", "Blue", "Yellow"].forEach((x) => {
-          const dot = document.getElementById("dot" + x);
-          const isActive = x.toLowerCase() === a;
-          dot.classList.toggle("active", isActive);
-          dot.setAttribute("aria-checked", isActive);
-        });
-        localStorage.setItem("ep-accent", a);
-      }
-
-      (function () {
-        const t = localStorage.getItem("ep-theme") || "dark";
-        const a = localStorage.getItem("ep-accent") || "purple";
-        setTheme(t);
-        setAccent(a);
-      })();
-
-      /* ─── TOAST ─── */
-      function toast(msg, type = "ok") {
-        const el = document.createElement("div");
-        el.className = `toast ${type}`;
-        el.setAttribute("role", "alert");
-        el.textContent = msg;
-        document.getElementById("toast-container").appendChild(el);
-        setTimeout(() => {
-          el.classList.add("removing");
-          setTimeout(() => el.remove(), 300);
-        }, 3200);
-      }
-
-      /* ─── REMEMBER ME ─── */
-      let rememberChecked = false;
-      function toggleRemember() {
-        rememberChecked = !rememberChecked;
-        const el = document.getElementById("rememberCheck");
-        const input = document.getElementById("rememberInput");
-        el.classList.toggle("checked", rememberChecked);
-        input.checked = rememberChecked;
-      }
-
-      /* ─── PASSWORD TOGGLE ─── */
-      function togglePass() {
-        const inp = document.getElementById("loginPass");
-        const ico = document.getElementById("eyeIcon");
-        const isPassword = inp.type === "password";
-        inp.type = isPassword ? "text" : "password";
-        ico.className = isPassword
-          ? "fa-solid fa-eye-slash field-icon-right"
-          : "fa-solid fa-eye field-icon-right";
-        ico.setAttribute(
-          "aria-label",
-          isPassword ? "Sembunyikan password" : "Tampilkan password",
-        );
-      }
-
-      /* ─── FIELD ERRORS ─── */
-      function setFieldError(fieldId, errorId, message) {
-        const field = document.getElementById(fieldId);
-        const error = document.getElementById(errorId);
-        field.classList.add("error");
-        error.querySelector("span").textContent = message;
-      }
-
-      function clearFieldError(fieldId, errorId) {
-        const field = document.getElementById(fieldId);
-        const error = document.getElementById(errorId);
-        field.classList.remove("error");
-        error.querySelector("span").textContent = "";
-      }
-
-      function clearAllErrors() {
-        clearFieldError("fieldEmail", "errorEmail");
-        clearFieldError("fieldPass", "errorPass");
-      }
-
-      document.getElementById("loginEmail").addEventListener("input", () => {
-        clearFieldError("fieldEmail", "errorEmail");
-      });
-      document.getElementById("loginPass").addEventListener("input", () => {
-        clearFieldError("fieldPass", "errorPass");
+      const app = initializeApp({
+        apiKey: "AIzaSyBeKz_5Ufj5z40tUdAkgCduNET2RLBArSE",
+        authDomain: "tugas-6946a.firebaseapp.com",
+        databaseURL:
+          "https://tugas-6946a-default-rtdb.asia-southeast1.firebasedatabase.app",
+        projectId: "tugas-6946a",
+        storageBucket: "tugas-6946a.firebasestorage.app",
+        messagingSenderId: "99669041608",
+        appId: "1:99669041608:web:9dcaff1be4cd6fbf38a0fd",
       });
 
-      /* ─── LOGIN HANDLER ─── */
-      function handleLogin(e) {
+      const auth = getAuth(app);
+      const database = getDatabase(app);
+      const googleProvider = new GoogleAuthProvider();
+
+      // FIX: Guard flag agar onAuthStateChanged tidak redirect saat sedang proses login
+      let isRedirecting = false;
+
+      /* ── FIX: Redirect hanya jika tidak sedang dalam proses login/register ── */
+      onAuthStateChanged(auth, async (user) => {
+        if (user && !isRedirecting) {
+          isRedirecting = true;
+          // Cek role user di database untuk redirect ke dashboard yang tepat
+          try {
+            const snap = await get(ref(database, `users/${user.uid}/role`));
+            const role = snap.val();
+            window.location.href =
+              role === "lecturer"
+                ? "dashboard_dosen.html"
+                : "dashboard_mahasiswa.html";
+          } catch {
+            window.location.href = "dashboard_mahasiswa.html";
+          }
+        }
+      });
+
+      /* ── Pesan error Firebase → Bahasa Indonesia ── */
+      function firebaseErrorToMessage(code) {
+        const map = {
+          "auth/user-not-found":
+            "Email tidak terdaftar. Silakan daftar terlebih dahulu.",
+          "auth/wrong-password":
+            "Password salah. Periksa kembali password Anda.",
+          "auth/invalid-email": "Format email tidak valid.",
+          "auth/invalid-credential":
+            "Email atau password tidak sesuai. Periksa kembali.",
+          "auth/too-many-requests":
+            "Terlalu banyak percobaan. Akun sementara dikunci. Coba lagi beberapa menit.",
+          "auth/user-disabled":
+            "Akun ini telah dinonaktifkan. Hubungi administrator.",
+          "auth/network-request-failed":
+            "Koneksi internet gagal. Periksa jaringan Anda.",
+          "auth/popup-closed-by-user": "Login dibatalkan.",
+          "auth/popup-blocked":
+            "Popup diblokir browser. Izinkan popup untuk situs ini.",
+          "auth/cancelled-popup-request":
+            "Hanya satu popup login yang diizinkan sekaligus.",
+          // FIX: tambah error yang sebelumnya tidak ter-handle
+          "auth/account-exists-with-different-credential":
+            "Email ini sudah terdaftar dengan metode login lain (email/password). Silakan masuk menggunakan email & password.",
+          "auth/email-already-in-use":
+            "Email ini sudah terdaftar. Silakan masuk.",
+        };
+        return map[code] || "Terjadi kesalahan. Silakan coba lagi.";
+      }
+
+      /* ── Pastikan profil user ada di DB, tanpa menimpa data yang sudah ada ── */
+      async function ensureUserProfile(user) {
+        const snap = await get(ref(database, `users/${user.uid}`));
+        if (!snap.exists()) {
+          // Profil belum ada → buat baru dengan data minimal dari Google
+          const displayName = user.displayName || "Pengguna";
+          await update(ref(database, `users/${user.uid}`), {
+            name: displayName,
+            nick: displayName.split(" ")[0] || "",
+            role: "student",
+            avatar: user.photoURL || "🧑‍💻",
+            avatarType: user.photoURL ? "url" : "emoji",
+            bio: "",
+            prodi: "",
+            kampus: "",
+            nim: "",
+            angkatan: "",
+            targetJam: "10",
+            email: user.email,
+            createdAt: Date.now(),
+            notifPrefs: {reminder: true, weekly: true, tips: false},
+          });
+        }
+        // Jika sudah ada → tidak ditimpa (update() hanya mengubah field yang dikirim)
+      }
+
+      /* ── FIX: Cooldown state untuk mencegah spam klik tombol login ── */
+      let loginCooldown = false;
+      let cooldownTimer = null;
+
+      function startCooldown(seconds) {
+        const btn = document.getElementById("btnLogin");
+        loginCooldown = true;
+        let remaining = seconds;
+
+        function tick() {
+          btn.disabled = true;
+          btn.classList.add("cooldown");
+          btn.innerHTML = `<span>Tunggu ${remaining}s...</span>`;
+          if (remaining <= 0) {
+            loginCooldown = false;
+            btn.disabled = false;
+            btn.classList.remove("cooldown");
+            btn.innerHTML =
+              '<span>Masuk</span> <i class="fa-solid fa-arrow-right-to-bracket" aria-hidden="true"></i>';
+            return;
+          }
+          remaining--;
+          cooldownTimer = setTimeout(tick, 1000);
+        }
+        tick();
+      }
+
+      /* ═══════════════════════════════════════════
+         EXPOSE ke window
+         ═══════════════════════════════════════════ */
+
+      /* ── LOGIN EMAIL + PASSWORD ── */
+      window.handleLogin = async function (e) {
         e.preventDefault();
+        if (loginCooldown) return;
         clearAllErrors();
 
         const email = document.getElementById("loginEmail").value.trim();
@@ -1362,7 +1343,7 @@
           setFieldError("fieldEmail", "errorEmail", "Format email tidak valid");
           hasError = true;
         }
-
+        // FIX: Konsisten dengan syarat register (min 8 karakter), bukan 6
         if (!pass) {
           setFieldError(
             "fieldPass",
@@ -1378,7 +1359,6 @@
           );
           hasError = true;
         }
-
         if (hasError) return;
 
         const btn = document.getElementById("btnLogin");
@@ -1386,50 +1366,146 @@
         btn.innerHTML =
           '<span class="spinner"></span> <span>Memverifikasi...</span>';
 
-        setTimeout(() => {
+        try {
+          // FIX: Terapkan persistence sesuai pilihan "Ingat Saya" SEBELUM login
+          const persistence = window._rememberMe
+            ? browserLocalPersistence
+            : browserSessionPersistence;
+          await setPersistence(auth, persistence);
+
+          isRedirecting = true; // set flag SEBELUM signIn agar onAuthStateChanged tidak double-redirect
+          const cred = await signInWithEmailAndPassword(auth, email, pass);
+          await ensureUserProfile(cred.user);
+
           toast("Login berhasil! Mengalihkan ke dashboard...", "ok");
           btn.innerHTML =
             '<i class="fa-solid fa-check" aria-hidden="true"></i> <span>Berhasil!</span>';
 
+          // Ambil role untuk redirect yang tepat
+          let targetDashboard = "dashboard_mahasiswa.html";
+          try {
+            const snap = await get(
+              ref(database, `users/${cred.user.uid}/role`),
+            );
+            if (snap.val() === "lecturer")
+              targetDashboard = "dashboard_dosen.html";
+          } catch {
+            /* fallback ke mahasiswa */
+          }
+
           setTimeout(() => {
-            window.location.href = "edupattern.html";
+            window.location.href = targetDashboard;
           }, 1200);
-        }, 1800);
-      }
+        } catch (err) {
+          isRedirecting = false; // reset flag jika gagal
 
-      /* ─── FORGOT PASSWORD MODAL ─── */
-      function openForgotModal(e) {
-        if (e) e.preventDefault();
-        const modal = document.getElementById("forgotModal");
-        modal.classList.add("active");
+          // FIX: Pesan generik untuk mencegah user enumeration attack
+          // (tidak membedakan "email tidak ada" vs "password salah" secara eksplisit)
+          if (
+            err.code === "auth/user-not-found" ||
+            err.code === "auth/wrong-password" ||
+            err.code === "auth/invalid-credential"
+          ) {
+            const genericMsg = "Email atau password tidak sesuai.";
+            toast(genericMsg, "error");
+            setFieldError("fieldEmail", "errorEmail", genericMsg);
+          } else if (err.code === "auth/too-many-requests") {
+            toast(firebaseErrorToMessage(err.code), "error");
+            startCooldown(30); // FIX: cooldown 30 detik jika terlalu banyak percobaan
+            return; // jangan restore button, cooldown yang urus
+          } else if (
+            err.code === "auth/account-exists-with-different-credential"
+          ) {
+            // FIX: handle error ini secara eksplisit
+            toast(firebaseErrorToMessage(err.code), "error");
+            setFieldError(
+              "fieldEmail",
+              "errorEmail",
+              "Gunakan metode login yang berbeda untuk email ini.",
+            );
+          } else {
+            toast(firebaseErrorToMessage(err.code), "error");
+          }
 
-        document.getElementById("forgotForm").classList.remove("hidden");
-        document.getElementById("forgotSuccess").classList.remove("active");
-        document.getElementById("forgotEmail").value = "";
-        clearFieldError("fieldForgotEmail", "errorForgotEmail");
-
-        setTimeout(() => {
-          document.getElementById("forgotEmail").focus();
-        }, 300);
-
-        document.body.style.overflow = "hidden";
-      }
-
-      function closeForgotModal() {
-        const modal = document.getElementById("forgotModal");
-        modal.classList.remove("active");
-        document.body.style.overflow = "";
-      }
-
-      function closeForgotModalOutside(e) {
-        if (e.target === e.currentTarget) {
-          closeForgotModal();
+          btn.disabled = false;
+          btn.innerHTML =
+            '<span>Masuk</span> <i class="fa-solid fa-arrow-right-to-bracket" aria-hidden="true"></i>';
         }
-      }
+      };
 
-      function sendResetLink() {
+      /* ── LOGIN GOOGLE SSO ── */
+      window.handleGoogleLogin = async function () {
+        const btn = document.getElementById("btnGoogle");
+        const originalHTML = btn.innerHTML;
+        btn.disabled = true;
+        btn.innerHTML =
+          '<span class="spinner"></span> <span>Menghubungkan ke Google...</span>';
+
+        try {
+          isRedirecting = true; // set flag SEBELUM popup agar tidak double-redirect
+          const result = await signInWithPopup(auth, googleProvider);
+          await ensureUserProfile(result.user);
+
+          toast("Login Google berhasil! Mengalihkan...", "ok");
+          btn.innerHTML =
+            '<i class="fa-solid fa-check"></i> <span>Berhasil!</span>';
+
+          let targetDashboard = "dashboard_mahasiswa.html";
+          try {
+            const snap = await get(
+              ref(database, `users/${result.user.uid}/role`),
+            );
+            if (snap.val() === "lecturer")
+              targetDashboard = "dashboard_dosen.html";
+          } catch {
+            /* fallback */
+          }
+
+          setTimeout(() => {
+            window.location.href = targetDashboard;
+          }, 1000);
+        } catch (err) {
+          isRedirecting = false;
+
+          if (
+            err.code === "auth/popup-closed-by-user" ||
+            err.code === "auth/cancelled-popup-request"
+          ) {
+            toast("Login dibatalkan.", "warn");
+          } else if (
+            err.code === "auth/account-exists-with-different-credential"
+          ) {
+            // FIX: Handle kasus email sudah terdaftar dengan email/password
+            toast(firebaseErrorToMessage(err.code), "error");
+            // Coba ambil metode login yang terdaftar untuk bantu user
+            try {
+              const email = err.customData?.email;
+              if (email) {
+                const methods = await fetchSignInMethodsForEmail(auth, email);
+                if (methods.includes("password")) {
+                  setTimeout(() => {
+                    toast(
+                      "Tip: Coba masuk dengan email & password, lalu hubungkan akun Google di Pengaturan.",
+                      "warn",
+                    );
+                  }, 1500);
+                }
+              }
+            } catch (_) {
+              /* abaikan jika gagal fetch methods */
+            }
+          } else {
+            toast(firebaseErrorToMessage(err.code), "error");
+          }
+
+          btn.disabled = false;
+          btn.innerHTML = originalHTML;
+        }
+      };
+
+      /* ── LUPA PASSWORD ── */
+      window.sendResetLink = async function () {
         const email = document.getElementById("forgotEmail").value.trim();
-
         clearFieldError("fieldForgotEmail", "errorForgotEmail");
 
         if (!email) {
@@ -1440,7 +1516,6 @@
           );
           return;
         }
-
         if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
           setFieldError(
             "fieldForgotEmail",
@@ -1455,26 +1530,188 @@
         btn.innerHTML =
           '<span class="spinner"></span> <span>Mengirim...</span>';
 
-        setTimeout(() => {
+        try {
+          await sendPasswordResetEmail(auth, email);
           document.getElementById("forgotForm").classList.add("hidden");
           document.getElementById("forgotSuccess").classList.add("active");
-          toast("Tautan reset telah dikirim!", "ok");
-
+          toast("Tautan reset telah dikirim ke email Anda!", "ok");
+        } catch (err) {
+          // FIX: handle auth/invalid-email secara inline, bukan hanya toast
+          if (err.code === "auth/user-not-found") {
+            // FIX: Untuk keamanan, tidak konfirmasi apakah email terdaftar atau tidak
+            // Tetap tampilkan success state (mencegah user enumeration)
+            document.getElementById("forgotForm").classList.add("hidden");
+            document.getElementById("forgotSuccess").classList.add("active");
+          } else if (err.code === "auth/invalid-email") {
+            setFieldError(
+              "fieldForgotEmail",
+              "errorForgotEmail",
+              "Format email tidak valid",
+            );
+          } else {
+            toast(
+              "Gagal mengirim: " + firebaseErrorToMessage(err.code),
+              "error",
+            );
+          }
+        } finally {
+          // FIX: Selalu reset button agar tidak tertinggal disabled jika modal ditutup
           btn.disabled = false;
           btn.innerHTML =
             '<span>Kirim Tautan</span> <i class="fa-solid fa-paper-plane" aria-hidden="true"></i>';
-        }, 1500);
+        }
+      };
+    </script>
+
+    <!-- ═══ SCRIPT UI ═══ -->
+    <script>
+      /* ── THEME & ACCENT ── */
+      function setTheme(t) {
+        document.documentElement.setAttribute("data-theme", t);
+        document
+          .getElementById("btnDark")
+          .classList.toggle("active", t === "dark");
+        document
+          .getElementById("btnLight")
+          .classList.toggle("active", t === "light");
+        document
+          .getElementById("btnDark")
+          .setAttribute("aria-pressed", t === "dark");
+        document
+          .getElementById("btnLight")
+          .setAttribute("aria-pressed", t === "light");
+        localStorage.setItem("ep-theme", t);
+      }
+      function setAccent(a) {
+        document.documentElement.setAttribute("data-accent", a);
+        ["Purple", "Blue", "Yellow"].forEach(function (x) {
+          var dot = document.getElementById("dot" + x);
+          var isActive = x.toLowerCase() === a;
+          dot.classList.toggle("active", isActive);
+          dot.setAttribute("aria-checked", isActive);
+        });
+        localStorage.setItem("ep-accent", a);
+      }
+      (function () {
+        setTheme(localStorage.getItem("ep-theme") || "dark");
+        setAccent(localStorage.getItem("ep-accent") || "purple");
+      })();
+
+      /* ── TOAST ── */
+      function toast(msg, type) {
+        type = type || "ok";
+        var el = document.createElement("div");
+        el.className = "toast " + type;
+        el.setAttribute("role", "alert");
+        el.textContent = msg;
+        document.getElementById("toast-container").appendChild(el);
+        setTimeout(function () {
+          el.classList.add("removing");
+          setTimeout(function () {
+            el.remove();
+          }, 300);
+        }, 3500);
       }
 
-      document.getElementById("forgotEmail").addEventListener("input", () => {
-        clearFieldError("fieldForgotEmail", "errorForgotEmail");
-      });
-
-      /* ─── KEYBOARD: ESC to close modal ─── */
-      document.addEventListener("keydown", function (e) {
-        if (e.key === "Escape") {
-          closeForgotModal();
+      /* ── FIX: Remember Me — simpan preferensi ke variabel global agar dibaca Firebase module ── */
+      window._rememberMe = localStorage.getItem("ep-remember") === "true"; // restore dari localStorage
+      (function () {
+        // Restore checkbox state
+        if (window._rememberMe) {
+          document.getElementById("rememberCheck").classList.add("checked");
+          document.getElementById("rememberInput").checked = true;
         }
+      })();
+
+      function toggleRemember() {
+        window._rememberMe = !window._rememberMe;
+        document
+          .getElementById("rememberCheck")
+          .classList.toggle("checked", window._rememberMe);
+        document.getElementById("rememberInput").checked = window._rememberMe;
+        localStorage.setItem("ep-remember", window._rememberMe); // simpan preferensi
+      }
+
+      /* ── PASSWORD TOGGLE ── */
+      function togglePass() {
+        var inp = document.getElementById("loginPass");
+        var ico = document.getElementById("eyeIcon");
+        var isPassword = inp.type === "password";
+        inp.type = isPassword ? "text" : "password";
+        ico.className = isPassword
+          ? "fa-solid fa-eye-slash field-icon-right"
+          : "fa-solid fa-eye field-icon-right";
+        ico.setAttribute(
+          "aria-label",
+          isPassword ? "Sembunyikan password" : "Tampilkan password",
+        );
+      }
+
+      /* ── FIELD ERRORS ── */
+      function setFieldError(fieldId, errorId, message) {
+        document.getElementById(fieldId).classList.add("error");
+        document.getElementById(errorId).querySelector("span").textContent =
+          message;
+      }
+      function clearFieldError(fieldId, errorId) {
+        document.getElementById(fieldId).classList.remove("error");
+        document.getElementById(errorId).querySelector("span").textContent = "";
+      }
+      function clearAllErrors() {
+        clearFieldError("fieldEmail", "errorEmail");
+        clearFieldError("fieldPass", "errorPass");
+      }
+      document
+        .getElementById("loginEmail")
+        .addEventListener("input", function () {
+          clearFieldError("fieldEmail", "errorEmail");
+        });
+      document
+        .getElementById("loginPass")
+        .addEventListener("input", function () {
+          clearFieldError("fieldPass", "errorPass");
+        });
+
+      /* ── FORGOT PASSWORD MODAL ── */
+      function openForgotModal(e) {
+        if (e) e.preventDefault();
+        // FIX: Reset button state setiap kali modal dibuka
+        var resetBtn = document.getElementById("btnSendReset");
+        resetBtn.disabled = false;
+        resetBtn.innerHTML =
+          '<span>Kirim Tautan</span> <i class="fa-solid fa-paper-plane" aria-hidden="true"></i>';
+
+        document.getElementById("forgotModal").classList.add("active");
+        document.getElementById("forgotForm").classList.remove("hidden");
+        document.getElementById("forgotSuccess").classList.remove("active");
+        document.getElementById("forgotEmail").value = "";
+        clearFieldError("fieldForgotEmail", "errorForgotEmail");
+        setTimeout(function () {
+          document.getElementById("forgotEmail").focus();
+        }, 300);
+        document.body.style.overflow = "hidden";
+      }
+      function closeForgotModal() {
+        document.getElementById("forgotModal").classList.remove("active");
+        document.body.style.overflow = "";
+        // FIX: Reset button state saat modal ditutup paksa (ESC / klik luar)
+        var resetBtn = document.getElementById("btnSendReset");
+        resetBtn.disabled = false;
+        resetBtn.innerHTML =
+          '<span>Kirim Tautan</span> <i class="fa-solid fa-paper-plane" aria-hidden="true"></i>';
+      }
+      function closeForgotModalOutside(e) {
+        if (e.target === e.currentTarget) closeForgotModal();
+      }
+      document
+        .getElementById("forgotEmail")
+        .addEventListener("input", function () {
+          clearFieldError("fieldForgotEmail", "errorForgotEmail");
+        });
+
+      /* ── ESC tutup modal ── */
+      document.addEventListener("keydown", function (e) {
+        if (e.key === "Escape") closeForgotModal();
       });
     </script>
   </body>
