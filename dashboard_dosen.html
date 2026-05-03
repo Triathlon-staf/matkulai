@@ -1,0 +1,2782 @@
+<!doctype html>
+<html lang="id" data-theme="dark" data-accent="teal">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>EduPattern AI — Dashboard Dosen</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap"
+      rel="stylesheet" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+    <style>
+      :root {
+        --accent-h: 174;
+        --accent-s: 72%;
+        --acc: hsl(var(--accent-h), var(--accent-s), 45%);
+        --acc2: hsl(var(--accent-h), var(--accent-s), 35%);
+        --acc-glow: hsl(var(--accent-h), var(--accent-s), 45%, 0.25);
+        --acc-soft: hsl(var(--accent-h), var(--accent-s), 45%, 0.12);
+        --acc-border: hsl(var(--accent-h), var(--accent-s), 45%, 0.3);
+        --radius: 16px;
+        --radius-sm: 10px;
+        --font-head: "Syne", sans-serif;
+        --font-body: "DM Sans", sans-serif;
+        --trans: 0.22s cubic-bezier(0.4, 0, 0.2, 1);
+        --sidebar-w: 268px;
+      }
+      [data-accent="blue"] {
+        --accent-h: 217;
+        --accent-s: 85%;
+        --acc: hsl(217, 85%, 60%);
+        --acc2: hsl(217, 85%, 48%);
+        --acc-glow: hsl(217, 85%, 60%, 0.25);
+        --acc-soft: hsl(217, 85%, 60%, 0.12);
+        --acc-border: hsl(217, 85%, 60%, 0.3);
+      }
+      [data-accent="purple"] {
+        --accent-h: 262;
+        --accent-s: 80%;
+        --acc: hsl(262, 80%, 62%);
+        --acc2: hsl(262, 80%, 50%);
+        --acc-glow: hsl(262, 80%, 62%, 0.25);
+        --acc-soft: hsl(262, 80%, 62%, 0.12);
+        --acc-border: hsl(262, 80%, 62%, 0.3);
+      }
+
+      [data-theme="dark"] {
+        --bg: #090e0e;
+        --bg2: #0f1a1a;
+        --bg3: #162222;
+        --surface: rgba(255, 255, 255, 0.04);
+        --border: rgba(255, 255, 255, 0.08);
+        --border-hi: rgba(255, 255, 255, 0.14);
+        --text: #edf5f5;
+        --text2: #7aadad;
+        --text3: #3d6a6a;
+        --shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+        --card-glass: rgba(15, 26, 26, 0.92);
+      }
+      [data-theme="light"] {
+        --bg: #f0f7f7;
+        --bg2: #ffffff;
+        --bg3: #e4f0f0;
+        --surface: rgba(0, 0, 0, 0.03);
+        --border: rgba(0, 0, 0, 0.08);
+        --border-hi: rgba(0, 0, 0, 0.16);
+        --text: #0a1a1a;
+        --text2: #3d7070;
+        --text3: #8ab0b0;
+        --shadow: 0 20px 60px rgba(0, 80, 80, 0.1);
+        --card-glass: rgba(255, 255, 255, 0.94);
+      }
+
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      html {
+        height: 100%;
+        scroll-behavior: smooth;
+      }
+      body {
+        font-family: var(--font-body);
+        background: var(--bg);
+        color: var(--text);
+        min-height: 100vh;
+        display: flex;
+        transition:
+          background var(--trans),
+          color var(--trans);
+        overflow-x: hidden;
+      }
+
+      /* SIDEBAR */
+      .sidebar {
+        width: var(--sidebar-w);
+        min-height: 100vh;
+        background: var(--bg2);
+        border-right: 1px solid var(--border);
+        display: flex;
+        flex-direction: column;
+        position: fixed;
+        left: 0;
+        top: 0;
+        z-index: 200;
+        transition: transform var(--trans);
+      }
+      .sidebar-header {
+        padding: 22px 20px 18px;
+        border-bottom: 1px solid var(--border);
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+      .brand-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 12px;
+        background: linear-gradient(135deg, var(--acc), #0d4444);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #fff;
+        font-size: 16px;
+        box-shadow: 0 0 18px var(--acc-glow);
+        flex-shrink: 0;
+      }
+      .brand-name {
+        font-family: var(--font-head);
+        font-size: 17px;
+        font-weight: 800;
+        letter-spacing: -0.3px;
+        background: linear-gradient(to right, var(--text), var(--text2));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+      .brand-sub {
+        font-size: 9px;
+        color: var(--acc);
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        font-weight: 700;
+      }
+      .sidebar-user {
+        padding: 14px 20px;
+        border-bottom: 1px solid var(--border);
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        cursor: pointer;
+        transition: background var(--trans);
+      }
+      .sidebar-user:hover {
+        background: var(--surface);
+      }
+      .avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: var(--acc-soft);
+        border: 2px solid var(--acc-border);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 18px;
+        overflow: hidden;
+        flex-shrink: 0;
+      }
+      .avatar img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+      .user-info h4 {
+        font-size: 13px;
+        font-weight: 700;
+      }
+      .user-info p {
+        font-size: 11px;
+        color: var(--text2);
+      }
+      .role-chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        background: rgba(20, 184, 166, 0.15);
+        color: var(--acc);
+        font-size: 9px;
+        font-weight: 700;
+        padding: 2px 7px;
+        border-radius: 20px;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+      }
+      .sidebar-nav {
+        flex: 1;
+        overflow-y: auto;
+        padding: 10px;
+      }
+      .nav-label {
+        font-size: 10px;
+        font-weight: 700;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: var(--text3);
+        padding: 10px 10px 5px;
+        margin-top: 6px;
+      }
+      .nav-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 10px 12px;
+        border-radius: var(--radius-sm);
+        cursor: pointer;
+        font-size: 13px;
+        color: var(--text2);
+        transition: all var(--trans);
+        user-select: none;
+        margin-bottom: 2px;
+        position: relative;
+      }
+      .nav-item i {
+        width: 18px;
+        text-align: center;
+        font-size: 13px;
+      }
+      .nav-item:hover {
+        background: var(--surface);
+        color: var(--text);
+      }
+      .nav-item.active {
+        background: var(--acc-soft);
+        color: var(--acc);
+        font-weight: 600;
+      }
+      .nav-item.active::before {
+        content: "";
+        position: absolute;
+        left: 0;
+        top: 22%;
+        height: 56%;
+        width: 3px;
+        background: var(--acc);
+        border-radius: 0 3px 3px 0;
+      }
+      .nav-badge {
+        margin-left: auto;
+        font-size: 10px;
+        font-weight: 700;
+        padding: 2px 6px;
+        border-radius: 20px;
+        background: var(--acc);
+        color: #fff;
+        min-width: 18px;
+        text-align: center;
+      }
+      .nav-badge.warn {
+        background: #f59e0b;
+      }
+      .sidebar-footer {
+        padding: 14px 20px;
+        border-top: 1px solid var(--border);
+      }
+
+      /* MAIN */
+      .main {
+        margin-left: var(--sidebar-w);
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
+      }
+      .topbar {
+        height: 60px;
+        background: var(--card-glass);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        border-bottom: 1px solid var(--border);
+        display: flex;
+        align-items: center;
+        padding: 0 24px;
+        gap: 14px;
+        position: sticky;
+        top: 0;
+        z-index: 100;
+      }
+      .topbar-title {
+        font-family: var(--font-head);
+        font-size: 17px;
+        font-weight: 700;
+        flex: 1;
+      }
+      .topbar-actions {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .icon-btn {
+        width: 34px;
+        height: 34px;
+        border-radius: 9px;
+        border: 1px solid var(--border);
+        background: transparent;
+        color: var(--text2);
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 13px;
+        transition: all var(--trans);
+      }
+      .icon-btn:hover {
+        border-color: var(--acc);
+        color: var(--acc);
+        background: var(--acc-soft);
+      }
+      .icon-btn.active {
+        background: var(--acc-soft);
+        border-color: var(--acc-border);
+        color: var(--acc);
+      }
+      .accent-dot {
+        width: 14px;
+        height: 14px;
+        border-radius: 50%;
+        cursor: pointer;
+        border: 2px solid transparent;
+        transition: all var(--trans);
+      }
+      .accent-dot:hover,
+      .accent-dot.active {
+        border-color: var(--text);
+        transform: scale(1.3);
+      }
+
+      /* CONTENT */
+      .content {
+        flex: 1;
+        padding: 24px;
+        overflow-y: auto;
+      }
+      .view {
+        display: none;
+        animation: fadeUp 0.28s ease both;
+      }
+      .view.active {
+        display: block;
+      }
+      @keyframes fadeUp {
+        from {
+          opacity: 0;
+          transform: translateY(10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      /* CARDS */
+      .card {
+        background: var(--bg2);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        transition:
+          background var(--trans),
+          border var(--trans);
+      }
+      .p4 {
+        padding: 16px;
+      }
+      .p5 {
+        padding: 20px;
+      }
+      .p6 {
+        padding: 24px;
+      }
+      .mb4 {
+        margin-bottom: 16px;
+      }
+      .mb6 {
+        margin-bottom: 24px;
+      }
+
+      /* STAT GRID */
+      .stat-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+        gap: 14px;
+        margin-bottom: 20px;
+      }
+      .stat-card {
+        padding: 18px;
+        border-radius: var(--radius);
+        background: var(--bg2);
+        border: 1px solid var(--border);
+        position: relative;
+        overflow: hidden;
+        transition: all var(--trans);
+      }
+      .stat-card:hover {
+        border-color: var(--acc-border);
+        box-shadow: 0 8px 24px var(--acc-soft);
+        transform: translateY(-1px);
+      }
+      .stat-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 10px;
+        background: var(--acc-soft);
+        border: 1px solid var(--acc-border);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 16px;
+        color: var(--acc);
+        margin-bottom: 12px;
+      }
+      .stat-val {
+        font-family: var(--font-head);
+        font-size: 28px;
+        font-weight: 800;
+        letter-spacing: -0.5px;
+      }
+      .stat-lbl {
+        font-size: 11px;
+        color: var(--text2);
+        margin-top: 3px;
+      }
+
+      /* TABLE */
+      .data-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 12.5px;
+      }
+      .data-table th {
+        text-align: left;
+        padding: 10px 14px;
+        font-size: 10px;
+        font-weight: 700;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        color: var(--text2);
+        border-bottom: 1px solid var(--border);
+        background: var(--surface);
+        white-space: nowrap;
+      }
+      .data-table td {
+        padding: 10px 14px;
+        border-bottom: 1px solid var(--border);
+        vertical-align: middle;
+      }
+      .data-table tbody tr {
+        cursor: pointer;
+        transition: background var(--trans);
+      }
+      .data-table tbody tr:hover {
+        background: var(--surface);
+      }
+
+      /* BADGES */
+      .badge {
+        display: inline-block;
+        padding: 3px 9px;
+        border-radius: 20px;
+        font-size: 10px;
+        font-weight: 700;
+      }
+      .badge-green {
+        background: rgba(16, 185, 129, 0.12);
+        color: #10b981;
+      }
+      .badge-red {
+        background: rgba(244, 63, 94, 0.12);
+        color: #f43f5e;
+      }
+      .badge-gold {
+        background: rgba(245, 158, 11, 0.12);
+        color: #f59e0b;
+      }
+      .badge-sky {
+        background: rgba(14, 165, 233, 0.12);
+        color: #0ea5e9;
+      }
+      .badge-teal {
+        background: var(--acc-soft);
+        color: var(--acc);
+      }
+      .badge-orange {
+        background: rgba(249, 115, 22, 0.12);
+        color: #f97316;
+      }
+      .badge-gray {
+        background: var(--surface);
+        color: var(--text2);
+      }
+
+      /* BTN */
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        padding: 9px 16px;
+        border-radius: var(--radius-sm);
+        font-size: 12.5px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all var(--trans);
+        border: none;
+        font-family: var(--font-body);
+      }
+      .btn-primary {
+        background: var(--acc);
+        color: #fff;
+        box-shadow: 0 4px 16px var(--acc-glow);
+      }
+      .btn-primary:hover {
+        background: var(--acc2);
+        transform: translateY(-1px);
+      }
+      .btn-outline {
+        background: transparent;
+        border: 1px solid var(--border);
+        color: var(--text2);
+      }
+      .btn-outline:hover {
+        border-color: var(--acc);
+        color: var(--acc);
+        background: var(--acc-soft);
+      }
+      .btn-danger {
+        background: rgba(244, 63, 94, 0.1);
+        color: #f43f5e;
+        border: 1px solid rgba(244, 63, 94, 0.2);
+      }
+      .btn-warn {
+        background: rgba(245, 158, 11, 0.1);
+        color: #f59e0b;
+        border: 1px solid rgba(245, 158, 11, 0.2);
+      }
+      .btn-sm {
+        padding: 6px 12px;
+        font-size: 11px;
+      }
+      .btn:disabled {
+        opacity: 0.5;
+        pointer-events: none;
+      }
+
+      /* FIELD */
+      .field {
+        margin-bottom: 15px;
+      }
+      .field label {
+        display: block;
+        font-size: 11px;
+        font-weight: 600;
+        color: var(--text2);
+        margin-bottom: 5px;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+      }
+      .field input,
+      .field select,
+      .field textarea {
+        width: 100%;
+        padding: 9px 13px;
+        border-radius: var(--radius-sm);
+        background: var(--bg3);
+        border: 1px solid var(--border);
+        color: var(--text);
+        font-family: var(--font-body);
+        font-size: 13px;
+        outline: none;
+        transition:
+          border var(--trans),
+          background var(--trans);
+      }
+      .field input:focus,
+      .field select:focus,
+      .field textarea:focus {
+        border-color: var(--acc);
+        background: var(--bg2);
+        box-shadow: 0 0 0 3px var(--acc-soft);
+      }
+      .field textarea {
+        resize: vertical;
+        min-height: 90px;
+      }
+      .field select option {
+        background: var(--bg2);
+      }
+
+      /* SETTINGS */
+      .settings-layout {
+        display: grid;
+        grid-template-columns: 220px 1fr;
+        gap: 20px;
+      }
+      .settings-menu-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 10px 13px;
+        border-radius: var(--radius-sm);
+        cursor: pointer;
+        font-size: 13px;
+        color: var(--text2);
+        transition: all var(--trans);
+        margin-bottom: 2px;
+      }
+      .settings-menu-item:hover {
+        background: var(--surface);
+        color: var(--text);
+      }
+      .settings-menu-item.active {
+        background: var(--acc-soft);
+        color: var(--acc);
+        font-weight: 600;
+      }
+      .settings-panel {
+        display: none;
+      }
+      .settings-panel.active {
+        display: block;
+        animation: fadeUp 0.25s ease;
+      }
+
+      /* MODAL */
+      .modal-bg {
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.65);
+        backdrop-filter: blur(6px);
+        z-index: 900;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity var(--trans);
+      }
+      .modal-bg.open {
+        opacity: 1;
+        pointer-events: all;
+      }
+      .modal {
+        background: var(--bg2);
+        border: 1px solid var(--border);
+        border-radius: 20px;
+        width: 100%;
+        max-width: 520px;
+        padding: 26px;
+        transform: translateY(16px) scale(0.97);
+        transition: transform var(--trans);
+        max-height: 90vh;
+        overflow-y: auto;
+      }
+      .modal-bg.open .modal {
+        transform: none;
+      }
+      .modal-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 18px;
+      }
+      .modal-title {
+        font-family: var(--font-head);
+        font-size: 17px;
+        font-weight: 700;
+      }
+      .modal-wide .modal {
+        max-width: 700px;
+      }
+
+      /* STUDENT CARD */
+      .student-card {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 16px;
+        transition: all var(--trans);
+        cursor: pointer;
+      }
+      .student-card:hover {
+        border-color: var(--acc-border);
+        background: var(--acc-soft);
+        transform: translateY(-2px);
+        box-shadow: 0 8px 24px var(--acc-soft);
+      }
+      .student-avatar {
+        width: 44px;
+        height: 44px;
+        border-radius: 50%;
+        background: var(--acc-soft);
+        border: 2px solid var(--acc-border);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 20px;
+        flex-shrink: 0;
+      }
+      .student-name {
+        font-size: 13.5px;
+        font-weight: 700;
+        margin-bottom: 2px;
+      }
+      .student-meta {
+        font-size: 11px;
+        color: var(--text2);
+      }
+
+      /* RISK INDICATOR */
+      .risk-bar {
+        height: 5px;
+        background: var(--bg3);
+        border-radius: 3px;
+        overflow: hidden;
+        margin-top: 5px;
+      }
+      .risk-fill {
+        height: 100%;
+        border-radius: 3px;
+        transition: width 0.8s ease;
+      }
+      .risk-low {
+        background: #10b981;
+      }
+      .risk-medium {
+        background: #f59e0b;
+      }
+      .risk-high {
+        background: #f43f5e;
+      }
+      .risk-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        flex-shrink: 0;
+      }
+      .risk-dot.low {
+        background: #10b981;
+        box-shadow: 0 0 6px #10b981;
+      }
+      .risk-dot.medium {
+        background: #f59e0b;
+        box-shadow: 0 0 6px #f59e0b;
+      }
+      .risk-dot.high {
+        background: #f43f5e;
+        box-shadow: 0 0 6px #f43f5e;
+        animation: pulse 1.5s infinite;
+      }
+      @keyframes pulse {
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.5;
+        }
+      }
+
+      /* ACTIVITY HEATMAP */
+      .heatmap {
+        display: grid;
+        grid-template-columns: repeat(12, 1fr);
+        gap: 3px;
+        margin-top: 8px;
+      }
+      .heat-cell {
+        height: 14px;
+        border-radius: 3px;
+        background: var(--bg3);
+        transition: all var(--trans);
+      }
+      .heat-cell:hover {
+        transform: scale(1.3);
+      }
+      .heat-1 {
+        background: hsl(var(--accent-h), var(--accent-s), 35%, 0.4);
+      }
+      .heat-2 {
+        background: hsl(var(--accent-h), var(--accent-s), 40%, 0.6);
+      }
+      .heat-3 {
+        background: hsl(var(--accent-h), var(--accent-s), 45%, 0.8);
+      }
+      .heat-4 {
+        background: var(--acc);
+      }
+
+      /* COMPARISON BARS */
+      .comp-bar-wrap {
+        margin-bottom: 10px;
+      }
+      .comp-label {
+        display: flex;
+        justify-content: space-between;
+        font-size: 11px;
+        margin-bottom: 3px;
+      }
+      .comp-bar-bg {
+        height: 7px;
+        background: var(--bg3);
+        border-radius: 4px;
+        overflow: hidden;
+      }
+      .comp-bar-fill {
+        height: 100%;
+        border-radius: 4px;
+        transition: width 0.8s ease;
+      }
+
+      /* CHART BARS */
+      .chart-wrap {
+        display: flex;
+        align-items: flex-end;
+        gap: 5px;
+        height: 120px;
+        padding-top: 12px;
+      }
+      .chart-col {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 4px;
+        height: 100%;
+        justify-content: flex-end;
+      }
+      .chart-bar {
+        width: 100%;
+        border-radius: 5px 5px 0 0;
+        background: var(--acc-soft);
+        border: 1px solid var(--acc-border);
+        transition: all 0.3s ease;
+        cursor: pointer;
+      }
+      .chart-bar:hover {
+        background: var(--acc);
+      }
+
+      /* FEEDBACK HISTORY */
+      .fb-item {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-sm);
+        padding: 14px;
+        margin-bottom: 10px;
+      }
+      .fb-item-header {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 8px;
+      }
+      .fb-student-name {
+        font-size: 13px;
+        font-weight: 700;
+      }
+      .fb-time {
+        font-size: 11px;
+        color: var(--text3);
+        margin-left: auto;
+      }
+      .fb-text {
+        font-size: 12.5px;
+        color: var(--text2);
+        line-height: 1.6;
+      }
+
+      /* SEARCH */
+      .search-wrap {
+        position: relative;
+        margin-bottom: 16px;
+      }
+      .search-wrap i {
+        position: absolute;
+        left: 12px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: var(--text3);
+        font-size: 13px;
+      }
+      .search-input {
+        width: 100%;
+        padding: 9px 13px 9px 36px;
+        background: var(--bg3);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-sm);
+        color: var(--text);
+        font-family: var(--font-body);
+        font-size: 13px;
+        outline: none;
+        transition: border var(--trans);
+      }
+      .search-input:focus {
+        border-color: var(--acc);
+        box-shadow: 0 0 0 3px var(--acc-soft);
+      }
+      .search-input::placeholder {
+        color: var(--text3);
+      }
+
+      /* FILTER TABS */
+      .filter-tabs {
+        display: flex;
+        gap: 6px;
+        margin-bottom: 16px;
+        flex-wrap: wrap;
+      }
+      .filter-tab {
+        padding: 6px 14px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 600;
+        cursor: pointer;
+        border: 1px solid var(--border);
+        background: transparent;
+        color: var(--text2);
+        transition: all var(--trans);
+        font-family: var(--font-body);
+      }
+      .filter-tab:hover {
+        border-color: var(--acc);
+        color: var(--acc);
+      }
+      .filter-tab.active {
+        background: var(--acc);
+        border-color: var(--acc);
+        color: #fff;
+      }
+
+      /* TOAST */
+      #toast-container {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        z-index: 9999;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+      .toast {
+        padding: 11px 16px;
+        border-radius: var(--radius-sm);
+        font-size: 12.5px;
+        display: flex;
+        align-items: center;
+        gap: 9px;
+        animation: toastIn 0.3s ease both;
+        min-width: 240px;
+      }
+      @keyframes toastIn {
+        from {
+          opacity: 0;
+          transform: translateX(16px);
+        }
+      }
+      .toast.ok {
+        background: rgba(16, 185, 129, 0.15);
+        border: 1px solid rgba(16, 185, 129, 0.3);
+        color: #10b981;
+      }
+      .toast.error {
+        background: rgba(244, 63, 94, 0.15);
+        border: 1px solid rgba(244, 63, 94, 0.3);
+        color: #f43f5e;
+      }
+      .toast.warn {
+        background: rgba(245, 158, 11, 0.15);
+        border: 1px solid rgba(245, 158, 11, 0.3);
+        color: #f59e0b;
+      }
+
+      /* EMPTY */
+      .empty-state {
+        text-align: center;
+        padding: 40px 20px;
+      }
+      .empty-state i {
+        font-size: 30px;
+        color: var(--text3);
+        margin-bottom: 10px;
+        display: block;
+      }
+
+      .spin {
+        animation: spinAnim 1s linear infinite;
+      }
+      @keyframes spinAnim {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+
+      /* UTILS */
+      .flex {
+        display: flex;
+      }
+      .items-center {
+        align-items: center;
+      }
+      .justify-between {
+        justify-content: space-between;
+      }
+      .flex-wrap {
+        flex-wrap: wrap;
+      }
+      .gap2 {
+        gap: 8px;
+      }
+      .gap3 {
+        gap: 12px;
+      }
+      .gap4 {
+        gap: 16px;
+      }
+      .font-bold {
+        font-weight: 700;
+      }
+      .text-sm {
+        font-size: 13px;
+      }
+      .text-xs {
+        font-size: 11px;
+      }
+      .text-muted {
+        color: var(--text2);
+      }
+      .grid2 {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+      }
+      .grid3 {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        gap: 14px;
+      }
+      .grid4 {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 12px;
+      }
+      .w-full {
+        width: 100%;
+        display: block;
+      }
+      .student-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+        gap: 14px;
+      }
+
+      /* RESPONSIVE */
+      .menu-toggle {
+        display: none;
+      }
+      .overlay {
+        display: none;
+      }
+      @media (max-width: 900px) {
+        :root {
+          --sidebar-w: 0px;
+        }
+        .sidebar {
+          transform: translateX(-268px);
+          width: 268px;
+        }
+        .sidebar.open {
+          transform: translateX(0);
+        }
+        .main {
+          margin-left: 0;
+        }
+        .menu-toggle {
+          display: flex;
+        }
+        .overlay {
+          display: block;
+          position: fixed;
+          inset: 0;
+          background: rgba(0, 0, 0, 0.5);
+          z-index: 190;
+          opacity: 0;
+          pointer-events: none;
+          transition: opacity var(--trans);
+        }
+        .overlay.open {
+          opacity: 1;
+          pointer-events: all;
+        }
+        .content {
+          padding: 14px;
+        }
+        .settings-layout,
+        .grid2,
+        .grid3,
+        .grid4 {
+          grid-template-columns: 1fr;
+        }
+        .stat-grid {
+          grid-template-columns: repeat(2, 1fr);
+        }
+      }
+      ::-webkit-scrollbar {
+        width: 5px;
+      }
+      ::-webkit-scrollbar-track {
+        background: transparent;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: var(--border);
+        border-radius: 3px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="overlay" id="overlay" onclick="closeSidebar()"></div>
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <div class="brand-icon"><i class="fa-solid fa-brain"></i></div>
+        <div>
+          <div class="brand-name">EduPattern</div>
+          <div class="brand-sub">Dosen Panel</div>
+        </div>
+      </div>
+      <div class="sidebar-user" onclick="sw('settings', null)">
+        <div class="avatar" id="sidebarAvatar">
+          <span id="sidebarAvatarEmoji">👩‍🏫</span>
+        </div>
+        <div class="user-info">
+          <h4 id="sidebarName">Dosen</h4>
+          <p>
+            <span class="role-chip"
+              ><i class="fa-solid fa-chalkboard-user"></i> DOSEN</span
+            >
+          </p>
+        </div>
+      </div>
+      <nav class="sidebar-nav">
+        <div class="nav-label">Monitor</div>
+        <div
+          class="nav-item active"
+          data-view="dashboard"
+          onclick="sw('dashboard', this)">
+          <i class="fa-solid fa-chart-line"></i> Ringkasan Kelas
+        </div>
+        <div
+          class="nav-item"
+          data-view="mahasiswa"
+          onclick="sw('mahasiswa', this)">
+          <i class="fa-solid fa-users"></i> Data Mahasiswa
+          <span class="nav-badge" id="mhsBadge">0</span>
+        </div>
+        <div class="nav-item" data-view="risiko" onclick="sw('risiko', this)">
+          <i class="fa-solid fa-triangle-exclamation"></i> Deteksi Risiko
+          <span class="nav-badge warn" id="riskoBadge">0</span>
+        </div>
+        <div
+          class="nav-item"
+          data-view="aktivitas"
+          onclick="sw('aktivitas', this)">
+          <i class="fa-solid fa-clock-rotate-left"></i> Aktivitas Kelas
+        </div>
+        <div
+          class="nav-item"
+          data-view="komparasi"
+          onclick="sw('komparasi', this)">
+          <i class="fa-solid fa-scale-balanced"></i> Komparasi AI
+        </div>
+        <div class="nav-label">Komunikasi</div>
+        <div
+          class="nav-item"
+          data-view="feedback"
+          onclick="sw('feedback', this)">
+          <i class="fa-solid fa-comment-dots"></i> Beri Feedback
+        </div>
+        <div class="nav-label">Lainnya</div>
+        <div class="nav-item" data-view="laporan" onclick="sw('laporan', this)">
+          <i class="fa-solid fa-file-csv"></i> Laporan & Export
+        </div>
+        <div
+          class="nav-item"
+          data-view="settings"
+          onclick="sw('settings', this)">
+          <i class="fa-solid fa-gear"></i> Pengaturan
+        </div>
+      </nav>
+      <div class="sidebar-footer">
+        <div class="nav-item" onclick="handleLogout()" style="color: #f43f5e">
+          <i class="fa-solid fa-right-from-bracket"></i> Keluar
+        </div>
+      </div>
+    </aside>
+
+    <!-- MAIN -->
+    <div class="main">
+      <header class="topbar">
+        <button class="icon-btn menu-toggle" onclick="toggleSidebar()">
+          <i class="fa-solid fa-bars"></i>
+        </button>
+        <div class="topbar-title" id="topbarTitle">Ringkasan Kelas</div>
+        <div class="topbar-actions">
+          <button
+            class="icon-btn"
+            id="btnDark"
+            onclick="setTheme('dark')"
+            title="Gelap">
+            <i class="fa-solid fa-moon"></i>
+          </button>
+          <button
+            class="icon-btn"
+            id="btnLight"
+            onclick="setTheme('light')"
+            title="Terang">
+            <i class="fa-solid fa-sun"></i>
+          </button>
+          <div
+            class="accent-dot active"
+            id="dotTeal"
+            style="background: #14b8a6"
+            onclick="setAccent('teal')"></div>
+          <div
+            class="accent-dot"
+            id="dotBlue"
+            style="background: #3b82f6"
+            onclick="setAccent('blue')"></div>
+          <div
+            class="accent-dot"
+            id="dotPurple"
+            style="background: #8b5cf6"
+            onclick="setAccent('purple')"></div>
+        </div>
+      </header>
+
+      <div class="content">
+        <!-- ═══ RINGKASAN KELAS ═══ -->
+        <div class="view active" id="view-dashboard">
+          <div class="mb6">
+            <h2
+              style="
+                font-family: var(--font-head);
+                font-size: 22px;
+                font-weight: 800;
+              "
+              id="dashGreet">
+              Selamat Datang! 👋
+            </h2>
+            <p style="color: var(--text2); font-size: 13px">
+              Ringkasan aktivitas dan performa kelas hari ini.
+            </p>
+          </div>
+          <div class="stat-grid">
+            <div class="stat-card">
+              <div class="stat-icon"><i class="fa-solid fa-users"></i></div>
+              <div class="stat-val" id="statTotal">0</div>
+              <div class="stat-lbl">Total Mahasiswa</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-icon">
+                <i class="fa-solid fa-circle-check" style="color: #10b981"></i>
+              </div>
+              <div class="stat-val" style="color: #10b981" id="statAktif">
+                0
+              </div>
+              <div class="stat-lbl">Aktif Belajar (7 Hari)</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-icon">
+                <i
+                  class="fa-solid fa-triangle-exclamation"
+                  style="color: #f43f5e"></i>
+              </div>
+              <div class="stat-val" style="color: #f43f5e" id="statRisiko">
+                0
+              </div>
+              <div class="stat-lbl">Berisiko DO</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-icon"><i class="fa-solid fa-clock"></i></div>
+              <div class="stat-val" id="statRataJam">0j</div>
+              <div class="stat-lbl">Rata-rata Belajar/Minggu</div>
+            </div>
+          </div>
+
+          <div class="grid2 mb4">
+            <!-- Chart aktivitas kelas -->
+            <div class="card p5">
+              <div class="flex items-center justify-between mb4">
+                <div class="font-bold text-sm">Aktivitas Kelas 7 Hari</div>
+                <span class="badge badge-teal">Minggu Ini</span>
+              </div>
+              <div class="chart-wrap" id="classChart"></div>
+              <div
+                id="classChartLabels"
+                style="display: flex; gap: 5px; margin-top: 6px"></div>
+            </div>
+            <!-- Distribusi Skor AI -->
+            <div class="card p5">
+              <div class="font-bold text-sm mb4">
+                Distribusi Skor Performa AI
+              </div>
+              <div id="scoreDistribution"></div>
+            </div>
+          </div>
+
+          <!-- Top & Bottom Performers -->
+          <div class="grid2">
+            <div class="card p5">
+              <div class="font-bold text-sm mb4" style="color: #10b981">
+                <i class="fa-solid fa-trophy" style="margin-right: 6px"></i>Top
+                Performer
+              </div>
+              <div id="topPerformers"></div>
+            </div>
+            <div class="card p5">
+              <div class="font-bold text-sm mb4" style="color: #f43f5e">
+                <i
+                  class="fa-solid fa-circle-exclamation"
+                  style="margin-right: 6px"></i
+                >Perlu Perhatian
+              </div>
+              <div id="bottomPerformers"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ═══ DATA MAHASISWA ═══ -->
+        <div class="view" id="view-mahasiswa">
+          <div class="flex items-center justify-between mb6 flex-wrap gap3">
+            <div>
+              <h2
+                style="
+                  font-family: var(--font-head);
+                  font-size: 20px;
+                  font-weight: 800;
+                ">
+                Data Mahasiswa
+              </h2>
+              <p class="text-sm text-muted">
+                Semua mahasiswa yang terdaftar di kelasmu.
+              </p>
+            </div>
+            <button class="btn btn-primary" onclick="refreshStudents()">
+              <i class="fa-solid fa-rotate"></i> Refresh
+            </button>
+          </div>
+          <div class="search-wrap">
+            <i class="fa-solid fa-search"></i
+            ><input
+              class="search-input"
+              id="studentSearch"
+              placeholder="Cari nama, NIM, atau prodi..."
+              oninput="filterStudents()" />
+          </div>
+          <div class="filter-tabs">
+            <button class="filter-tab active" onclick="setFilter('all', this)">
+              Semua
+            </button>
+            <button class="filter-tab" onclick="setFilter('aktif', this)">
+              Aktif
+            </button>
+            <button class="filter-tab" onclick="setFilter('tidak_aktif', this)">
+              Tidak Aktif
+            </button>
+            <button class="filter-tab" onclick="setFilter('risiko', this)">
+              Berisiko
+            </button>
+          </div>
+          <div id="studentGrid" class="student-grid"></div>
+        </div>
+
+        <!-- ═══ DETEKSI RISIKO ═══ -->
+        <div class="view" id="view-risiko">
+          <div class="mb6">
+            <h2
+              style="
+                font-family: var(--font-head);
+                font-size: 20px;
+                font-weight: 800;
+              ">
+              Deteksi Risiko AI
+            </h2>
+            <p class="text-sm text-muted">
+              Mahasiswa yang terdeteksi berisiko drop out atau tidak aktif.
+            </p>
+          </div>
+          <div id="risikoLoading" style="text-align: center; padding: 40px">
+            <i
+              class="fa-solid fa-circle-notch spin"
+              style="font-size: 26px; color: var(--acc)"></i>
+          </div>
+          <div id="risikoResult" style="display: none">
+            <!-- Alert summary -->
+            <div
+              id="risikoAlert"
+              class="card p5 mb4"
+              style="
+                border-color: rgba(244, 63, 94, 0.3);
+                background: rgba(244, 63, 94, 0.05);
+              "></div>
+            <!-- Risk table -->
+            <div class="card"><div id="risikoTable"></div></div>
+          </div>
+        </div>
+
+        <!-- ═══ AKTIVITAS KELAS ═══ -->
+        <div class="view" id="view-aktivitas">
+          <div class="mb6">
+            <h2
+              style="
+                font-family: var(--font-head);
+                font-size: 20px;
+                font-weight: 800;
+              ">
+              Aktivitas Seluruh Kelas
+            </h2>
+            <p class="text-sm text-muted">
+              Log belajar semua mahasiswa secara kronologis.
+            </p>
+          </div>
+          <div class="card"><div id="allActivityTable"></div></div>
+        </div>
+
+        <!-- ═══ KOMPARASI AI ═══ -->
+        <div class="view" id="view-komparasi">
+          <div class="mb6">
+            <h2
+              style="
+                font-family: var(--font-head);
+                font-size: 20px;
+                font-weight: 800;
+              ">
+              Komparasi & Analisis AI
+            </h2>
+            <p class="text-sm text-muted">
+              Perbandingan performa antar mahasiswa dan tren kelas.
+            </p>
+          </div>
+          <div id="komparasiLoading" style="text-align: center; padding: 40px">
+            <i
+              class="fa-solid fa-circle-notch spin"
+              style="font-size: 26px; color: var(--acc)"></i>
+          </div>
+          <div id="komparasiResult" style="display: none">
+            <div class="grid3 mb4" id="komparasiStats"></div>
+            <div class="card p5 mb4">
+              <div class="font-bold text-sm mb4">
+                <i
+                  class="fa-solid fa-ranking-star"
+                  style="color: var(--acc); margin-right: 6px"></i
+                >Ranking Performa Mahasiswa
+              </div>
+              <div id="rankingTable"></div>
+            </div>
+            <div class="card p5">
+              <div class="font-bold text-sm mb4">
+                <i
+                  class="fa-solid fa-chart-bar"
+                  style="color: var(--acc); margin-right: 6px"></i
+                >Distribusi Metode Belajar Kelas
+              </div>
+              <div id="methodDistrib"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ═══ FEEDBACK ═══ -->
+        <div class="view" id="view-feedback">
+          <div class="mb6">
+            <h2
+              style="
+                font-family: var(--font-head);
+                font-size: 20px;
+                font-weight: 800;
+              ">
+              Beri Feedback ke Mahasiswa
+            </h2>
+            <p class="text-sm text-muted">
+              Kirim komentar dan catatan langsung ke mahasiswamu.
+            </p>
+          </div>
+          <div class="grid2">
+            <!-- Form kirim feedback -->
+            <div class="card p5">
+              <div class="font-bold text-sm mb4">
+                <i
+                  class="fa-solid fa-paper-plane"
+                  style="color: var(--acc); margin-right: 6px"></i
+                >Kirim Feedback Baru
+              </div>
+              <div class="field">
+                <label>Pilih Mahasiswa</label>
+                <select id="fbStudent">
+                  <option value="">— Pilih —</option>
+                </select>
+              </div>
+              <div class="field">
+                <label>Tag</label>
+                <select id="fbTag">
+                  <option value="bagus">👏 Bagus — Pertahankan</option>
+                  <option value="perhatian">⚠️ Perlu Perhatian</option>
+                  <option value="info">💡 Informasi Umum</option>
+                </select>
+              </div>
+              <div class="field">
+                <label>Pesan</label>
+                <textarea
+                  id="fbMessage"
+                  placeholder="Tulis feedback untuk mahasiswa..."></textarea>
+              </div>
+              <button class="btn btn-primary w-full" onclick="sendFeedback()">
+                <i class="fa-solid fa-paper-plane"></i> Kirim Feedback
+              </button>
+            </div>
+            <!-- Riwayat feedback -->
+            <div class="card p5">
+              <div class="font-bold text-sm mb4">
+                <i
+                  class="fa-solid fa-clock-rotate-left"
+                  style="color: var(--acc); margin-right: 6px"></i
+                >Riwayat Feedback Terkirim
+              </div>
+              <div
+                id="sentFeedbackList"
+                style="max-height: 420px; overflow-y: auto"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ═══ LAPORAN ═══ -->
+        <div class="view" id="view-laporan">
+          <div class="mb6">
+            <h2
+              style="
+                font-family: var(--font-head);
+                font-size: 20px;
+                font-weight: 800;
+              ">
+              Laporan & Export
+            </h2>
+            <p class="text-sm text-muted">
+              Unduh data kelas untuk keperluan administrasi.
+            </p>
+          </div>
+          <div class="grid2 mb4">
+            <div class="card p5">
+              <div class="flex items-center gap3 mb4">
+                <div
+                  style="
+                    width: 46px;
+                    height: 46px;
+                    background: var(--acc-soft);
+                    border-radius: 10px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    color: var(--acc);
+                    font-size: 20px;
+                  ">
+                  <i class="fa-solid fa-file-csv"></i>
+                </div>
+                <div style="flex: 1">
+                  <div class="font-bold">Export CSV Mahasiswa</div>
+                  <div class="text-xs text-muted">
+                    Semua data aktivitas mahasiswa
+                  </div>
+                </div>
+                <button class="btn btn-outline btn-sm" onclick="exportCSV()">
+                  <i class="fa-solid fa-download"></i>
+                </button>
+              </div>
+            </div>
+            <div class="card p5">
+              <div class="flex items-center gap3 mb4">
+                <div
+                  style="
+                    width: 46px;
+                    height: 46px;
+                    background: rgba(245, 158, 11, 0.12);
+                    border-radius: 10px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    color: #f59e0b;
+                    font-size: 20px;
+                  ">
+                  <i class="fa-solid fa-triangle-exclamation"></i>
+                </div>
+                <div style="flex: 1">
+                  <div class="font-bold">Export Laporan Risiko</div>
+                  <div class="text-xs text-muted">Mahasiswa berisiko DO</div>
+                </div>
+                <button
+                  class="btn btn-outline btn-sm"
+                  onclick="exportRiskCSV()">
+                  <i class="fa-solid fa-download"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+          <div class="card p5">
+            <div class="font-bold text-sm mb4">Statistik Kelas Keseluruhan</div>
+            <div id="classOverallStats"></div>
+          </div>
+        </div>
+
+        <!-- ═══ SETTINGS ═══ -->
+        <div class="view" id="view-settings">
+          <div class="mb6">
+            <h2
+              style="
+                font-family: var(--font-head);
+                font-size: 20px;
+                font-weight: 800;
+              ">
+              Pengaturan
+            </h2>
+          </div>
+          <div class="settings-layout">
+            <div class="card p4">
+              <div
+                class="settings-menu-item active"
+                data-panel="profile"
+                onclick="switchPanel('profile', this)">
+                <i class="fa-solid fa-user"></i> Profil Dosen
+              </div>
+              <div
+                class="settings-menu-item"
+                data-panel="appearance"
+                onclick="switchPanel('appearance', this)">
+                <i class="fa-solid fa-palette"></i> Tampilan
+              </div>
+            </div>
+            <div>
+              <div class="settings-panel active card p6" id="panel-profile">
+                <h3 class="font-bold" style="margin-bottom: 16px">
+                  Profil Dosen
+                </h3>
+                <div class="field">
+                  <label>Nama</label><input type="text" id="settingName" />
+                </div>
+                <div class="field">
+                  <label>Program Studi / Mata Kuliah</label
+                  ><input type="text" id="settingProdi" />
+                </div>
+                <button class="btn btn-primary" onclick="saveSettings()">
+                  Simpan
+                </button>
+              </div>
+              <div class="settings-panel card p6" id="panel-appearance">
+                <h3 class="font-bold" style="margin-bottom: 16px">Tampilan</h3>
+                <div style="display: flex; gap: 10px; margin-bottom: 14px">
+                  <button class="btn btn-outline" onclick="setTheme('dark')">
+                    🌙 Gelap
+                  </button>
+                  <button class="btn btn-outline" onclick="setTheme('light')">
+                    ☀️ Terang
+                  </button>
+                </div>
+                <div style="display: flex; gap: 10px">
+                  <button class="btn btn-outline" onclick="setAccent('teal')">
+                    🟢 Teal
+                  </button>
+                  <button class="btn btn-outline" onclick="setAccent('blue')">
+                    🔵 Biru
+                  </button>
+                  <button class="btn btn-outline" onclick="setAccent('purple')">
+                    🟣 Ungu
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- /content -->
+    </div>
+    <!-- /main -->
+
+    <!-- MODAL: DETAIL MAHASISWA -->
+    <div class="modal-bg modal-wide" id="modalStudent">
+      <div class="modal">
+        <div class="modal-header">
+          <div class="modal-title" id="studentModalTitle">Detail Mahasiswa</div>
+          <button class="icon-btn" onclick="closeModal('modalStudent')">
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+        </div>
+        <div id="studentModalContent"></div>
+      </div>
+    </div>
+
+    <div id="toast-container"></div>
+
+    <!-- ═══ FIREBASE ═══ -->
+    <script type="module">
+      import {initializeApp} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+      import {
+        getAuth,
+        onAuthStateChanged,
+        signOut,
+      } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+      import {
+        getDatabase,
+        ref,
+        get,
+        set,
+        push,
+        update,
+        onValue,
+      } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+
+      const app = initializeApp({
+        apiKey: "AIzaSyBeKz_5Ufj5z40tUdAkgCduNET2RLBArSE",
+        authDomain: "tugas-6946a.firebaseapp.com",
+        databaseURL:
+          "https://tugas-6946a-default-rtdb.asia-southeast1.firebasedatabase.app",
+        projectId: "tugas-6946a",
+        storageBucket: "tugas-6946a.firebasestorage.app",
+        messagingSenderId: "99669041608",
+        appId: "1:99669041608:web:9dcaff1be4cd6fbf38a0fd",
+      });
+      const auth = getAuth(app);
+      const db = getDatabase(app);
+
+      onAuthStateChanged(auth, async (user) => {
+        if (!user) {
+          window.location.href = "index.html";
+          return;
+        }
+        window._uid = user.uid;
+
+        const snap = await get(ref(db, `users/${user.uid}`));
+        const p = snap.exists() ? snap.val() : {};
+
+        // Redirect mahasiswa ke halaman mahasiswa
+        if (p.role !== "lecturer") {
+          window.location.href = "dashboard_mahasiswa.html";
+          return;
+        }
+
+        DS.profile.name = p.name || user.displayName || "Dosen";
+        DS.profile.prodi = p.prodi || "—";
+        DS.profile.avatar = p.avatar || "👩‍🏫";
+        DS.profile.avatarType = p.avatarType || "emoji";
+
+        // Ambil semua user dengan role "student"
+        const allSnap = await get(ref(db, "users"));
+        if (allSnap.exists()) {
+          allSnap.forEach((child) => {
+            const u = child.val();
+            if (u.role === "student") {
+              DS.students.push({uid: child.key, ...u});
+            }
+          });
+        }
+
+        // Load aktivitas tiap mahasiswa dari localStorage (cross-user jika di browser yang sama)
+        DS.students.forEach((s) => {
+          const acts = localStorage.getItem("ep_acts_" + s.uid);
+          const books = localStorage.getItem("ep_books_" + s.uid);
+          s.activities = acts ? JSON.parse(acts) : [];
+          s.books = books ? JSON.parse(books) : [];
+        });
+
+        // Load feedback yang sudah dikirim dosen ini
+        const fbSnap = await get(ref(db, "feedback"));
+        if (fbSnap.exists()) {
+          fbSnap.forEach((studentNode) => {
+            studentNode.forEach((fbNode) => {
+              const f = fbNode.val();
+              if (f.dosenUid === user.uid) {
+                DS.sentFeedbacks.push({
+                  id: fbNode.key,
+                  studentUid: studentNode.key,
+                  ...f,
+                });
+              }
+            });
+          });
+          DS.sentFeedbacks.sort((a, b) => b.createdAt - a.createdAt);
+        }
+
+        initUI();
+        renderAll();
+      });
+
+      window.doLogout = async () => {
+        await signOut(auth);
+        window.location.href = "index.html";
+      };
+
+      window.saveProfileDB = async (name, prodi) => {
+        if (!window._uid) return;
+        await update(ref(db, `users/${window._uid}`), {name, prodi});
+      };
+
+      // Kirim feedback ke mahasiswa
+      window.doSendFeedback = async (studentUid, message, tag) => {
+        if (!window._uid) return;
+        const snap = await get(ref(db, `users/${window._uid}`));
+        const dosenName = snap.exists() ? snap.val().name || "Dosen" : "Dosen";
+        const newRef = push(ref(db, `feedback/${studentUid}`));
+        const payload = {
+          dosenUid: window._uid,
+          dosenName,
+          message,
+          tag,
+          createdAt: Date.now(),
+          readAt: null,
+        };
+        await set(newRef, payload);
+        DS.sentFeedbacks.unshift({id: newRef.key, studentUid, ...payload});
+        return true;
+      };
+    </script>
+
+    <!-- ═══ APP LOGIC ═══ -->
+    <script>
+      const DS = {
+        profile: {name: "Dosen", prodi: "—", avatar: "👩‍🏫", avatarType: "emoji"},
+        students: [],
+        sentFeedbacks: [],
+        _filter: "all",
+        _search: "",
+      };
+
+      // ═══ AI HELPERS ═══
+      function calcScore(s) {
+        const acts = s.activities || [];
+        if (acts.length < 1) return null;
+        const totalMin = acts.reduce(
+          (sum, a) => sum + parseInt(a.durasi || 0),
+          0,
+        );
+        const avg = totalMin / acts.length;
+        const dateSet = new Set(acts.map((a) => a.tanggal));
+        // streak
+        let streak = 0;
+        for (let i = 0; i < 365; i++) {
+          const d = new Date();
+          d.setDate(d.getDate() - i);
+          const ds = d.toISOString().split("T")[0];
+          if (dateSet.has(ds)) streak++;
+          else if (i > 0) break;
+        }
+        // last 7 days activity
+        const days7 = (() => {
+          const s7 = new Set();
+          for (let i = 0; i < 7; i++) {
+            const d = new Date();
+            d.setDate(d.getDate() - i);
+            s7.add(d.toISOString().split("T")[0]);
+          }
+          return acts.filter((a) => s7.has(a.tanggal)).length;
+        })();
+        const consistency = Math.min(100, (streak / 7) * 60 + (days7 / 7) * 40);
+        const duration = Math.min(
+          100,
+          (avg / 60) * 80 + (totalMin > 600 ? 20 : 0),
+        );
+        const frequency = Math.min(100, (Math.min(acts.length, 30) / 20) * 100);
+        const methods = new Set(acts.map((a) => a.metode)).size;
+        const variety = Math.min(100, (methods / 5) * 100);
+        const score = Math.round(
+          consistency * 0.35 +
+            duration * 0.3 +
+            frequency * 0.25 +
+            variety * 0.1,
+        );
+        return {
+          score,
+          consistency,
+          duration,
+          frequency,
+          variety,
+          streak,
+          totalMin,
+          avg: Math.round(avg),
+          days7,
+        };
+      }
+
+      function getRiskLevel(sc) {
+        if (!sc) return "high";
+        return sc.score >= 70 ? "low" : sc.score >= 45 ? "medium" : "high";
+      }
+
+      function getRiskLabel(level) {
+        return level === "low"
+          ? "Rendah"
+          : level === "medium"
+            ? "Sedang"
+            : "Tinggi";
+      }
+
+      function isActive(s) {
+        const sc = calcScore(s);
+        return sc && sc.days7 > 0;
+      }
+
+      // ═══ INIT ═══
+      function initUI() {
+        // Populate feedback dropdown
+        const sel = document.getElementById("fbStudent");
+        DS.students.forEach((s) => {
+          const opt = document.createElement("option");
+          opt.value = s.uid;
+          opt.textContent = `${s.name} (${s.nim || s.uid.substr(0, 6)})`;
+          sel.appendChild(opt);
+        });
+        // Settings
+        document.getElementById("settingName").value = DS.profile.name;
+        document.getElementById("settingProdi").value = DS.profile.prodi;
+        // Avatar
+        if (
+          DS.profile.avatarType === "url" &&
+          DS.profile.avatar?.startsWith("http")
+        ) {
+          document.getElementById("sidebarAvatar").innerHTML =
+            `<img src="${DS.profile.avatar}" alt="av"/>`;
+        } else {
+          document.getElementById("sidebarAvatarEmoji").textContent =
+            DS.profile.avatar || "👩‍🏫";
+        }
+        document.getElementById("sidebarName").textContent = DS.profile.name;
+        applyTheme();
+      }
+
+      function applyTheme() {
+        setTheme(localStorage.getItem("ep-theme") || "dark");
+        setAccent(localStorage.getItem("ep-accent") || "teal");
+      }
+
+      function renderAll() {
+        renderDashboard();
+        renderStudentGrid();
+        renderAllActivity();
+        renderFeedback();
+        renderClassOverallStats();
+        updateBadges();
+      }
+
+      // ═══ DASHBOARD ═══
+      function renderDashboard() {
+        const total = DS.students.length;
+        const aktif = DS.students.filter((s) => isActive(s)).length;
+        const risiko = DS.students.filter(
+          (s) => getRiskLevel(calcScore(s)) === "high",
+        ).length;
+        const totalMins = DS.students.reduce((sum, s) => {
+          const acts = s.activities || [];
+          const weekActs = (() => {
+            const s7 = new Set();
+            for (let i = 0; i < 7; i++) {
+              const d = new Date();
+              d.setDate(d.getDate() - i);
+              s7.add(d.toISOString().split("T")[0]);
+            }
+            return acts.filter((a) => s7.has(a.tanggal));
+          })();
+          return (
+            sum + weekActs.reduce((s, a) => s + parseInt(a.durasi || 0), 0)
+          );
+        }, 0);
+        const avgJam = total > 0 ? (totalMins / total / 60).toFixed(1) : "0.0";
+
+        document.getElementById("statTotal").textContent = total;
+        document.getElementById("statAktif").textContent = aktif;
+        document.getElementById("statRisiko").textContent = risiko;
+        document.getElementById("statRataJam").textContent = avgJam + "j";
+        document.getElementById("dashGreet").textContent =
+          `Halo, ${DS.profile.name}! 👋`;
+
+        renderClassChart();
+        renderScoreDistribution();
+        renderTopBottom();
+      }
+
+      function renderClassChart() {
+        const days = [];
+        for (let i = 6; i >= 0; i--) {
+          const d = new Date();
+          d.setDate(d.getDate() - i);
+          days.push(d.toISOString().split("T")[0]);
+        }
+        const data = days.map((day) =>
+          DS.students.reduce((sum, s) => {
+            return (
+              sum +
+              (s.activities || [])
+                .filter((a) => a.tanggal === day)
+                .reduce((s, a) => s + parseInt(a.durasi || 0), 0)
+            );
+          }, 0),
+        );
+        const max = Math.max(...data, 60);
+        const dNames = ["Min", "Sen", "Sel", "Rab", "Kam", "Jum", "Sab"];
+        document.getElementById("classChart").innerHTML = data
+          .map(
+            (v) =>
+              `<div class="chart-col"><div class="chart-bar" style="height:${Math.max(3, (v / max) * 100)}%" title="${v}m"></div></div>`,
+          )
+          .join("");
+        document.getElementById("classChartLabels").innerHTML = days
+          .map(
+            (d) =>
+              `<div style="flex:1;text-align:center;font-size:9px;color:var(--text3)">${dNames[new Date(d + "T00:00:00").getDay()]}</div>`,
+          )
+          .join("");
+      }
+
+      function renderScoreDistribution() {
+        const bins = {"80-100": 0, "60-79": 0, "40-59": 0, "0-39": 0};
+        let noData = 0;
+        DS.students.forEach((s) => {
+          const sc = calcScore(s);
+          if (!sc) {
+            noData++;
+            return;
+          }
+          if (sc.score >= 80) bins["80-100"]++;
+          else if (sc.score >= 60) bins["60-79"]++;
+          else if (sc.score >= 40) bins["40-59"]++;
+          else bins["0-39"]++;
+        });
+        const total = DS.students.length || 1;
+        const colors = {
+          "80-100": "#10b981",
+          "60-79": "var(--acc)",
+          "40-59": "#f59e0b",
+          "0-39": "#f43f5e",
+        };
+        const labels = {
+          "80-100": "Sangat Baik",
+          "60-79": "Baik",
+          "40-59": "Cukup",
+          "0-39": "Perlu Bantuan",
+        };
+        document.getElementById("scoreDistribution").innerHTML =
+          Object.entries(bins)
+            .map(
+              ([k, v]) => `
+    <div class="comp-bar-wrap">
+      <div class="comp-label"><span class="text-xs">${labels[k]} (${k})</span><span class="text-xs font-bold">${v} mhs</span></div>
+      <div class="comp-bar-bg"><div class="comp-bar-fill" style="width:${(v / total) * 100}%;background:${colors[k]}"></div></div>
+    </div>`,
+            )
+            .join("") +
+          (noData > 0
+            ? `<div class="text-xs text-muted" style="margin-top:8px"><i class="fa-solid fa-circle-info" style="margin-right:4px"></i>${noData} mahasiswa belum ada data aktivitas.</div>`
+            : "");
+      }
+
+      function renderTopBottom() {
+        const scored = DS.students
+          .map((s) => ({...s, _sc: calcScore(s)}))
+          .filter((s) => s._sc);
+        const sorted = [...scored].sort(
+          (a, b) => (b._sc?.score || 0) - (a._sc?.score || 0),
+        );
+        const top3 = sorted.slice(0, 3);
+        const bot3 = sorted.filter((s) => s._sc?.score < 50).slice(0, 3);
+
+        const renderItem = (s, i, isTop) => `
+    <div class="flex items-center gap2" style="margin-bottom:10px">
+      <span style="font-size:18px">${i === 0 ? (isTop ? "🥇" : "🔴") : i === 1 ? (isTop ? "🥈" : "🟠") : "🥉"}</span>
+      <div style="flex:1">
+        <div class="text-sm font-bold">${s.name}</div>
+        <div class="text-xs text-muted">${s.prodi || "—"} · Skor: ${s._sc?.score || 0}</div>
+        <div class="risk-bar"><div class="risk-fill ${isTop ? "risk-low" : getRiskLevel(s._sc) === "medium" ? "risk-medium" : "risk-high"}" style="width:${s._sc?.score || 0}%"></div></div>
+      </div>
+      <button class="btn btn-outline btn-sm" onclick="openStudentModal('${s.uid}')"><i class="fa-solid fa-eye"></i></button>
+    </div>`;
+
+        document.getElementById("topPerformers").innerHTML = top3.length
+          ? top3.map((s, i) => renderItem(s, i, true)).join("")
+          : '<div class="text-xs text-muted">Belum ada data mahasiswa.</div>';
+        document.getElementById("bottomPerformers").innerHTML = bot3.length
+          ? bot3.map((s, i) => renderItem(s, i, false)).join("")
+          : '<div class="text-xs text-muted badge badge-green" style="padding:8px 12px">Tidak ada mahasiswa berisiko saat ini.</div>';
+      }
+
+      // ═══ DATA MAHASISWA ═══
+      function renderStudentGrid() {
+        const q = DS._search.toLowerCase();
+        let students = DS.students;
+        if (q)
+          students = students.filter(
+            (s) =>
+              (s.name || "").toLowerCase().includes(q) ||
+              (s.nim || "").includes(q) ||
+              (s.prodi || "").toLowerCase().includes(q),
+          );
+        if (DS._filter === "aktif")
+          students = students.filter((s) => isActive(s));
+        if (DS._filter === "tidak_aktif")
+          students = students.filter((s) => !isActive(s));
+        if (DS._filter === "risiko")
+          students = students.filter(
+            (s) => getRiskLevel(calcScore(s)) === "high",
+          );
+
+        const el = document.getElementById("studentGrid");
+        if (!students.length) {
+          el.innerHTML =
+            '<div class="empty-state" style="grid-column:1/-1"><i class="fa-solid fa-users-slash"></i><p class="text-sm text-muted">Tidak ada mahasiswa ditemukan.</p></div>';
+          return;
+        }
+        el.innerHTML = students
+          .map((s) => {
+            const sc = calcScore(s);
+            const risk = getRiskLevel(sc);
+            const active = isActive(s);
+            const acts = (s.activities || []).length;
+            return `<div class="student-card" onclick="openStudentModal('${s.uid}')">
+      <div class="flex items-center gap3 mb4">
+        <div class="student-avatar">${s.avatar || "🧑‍💻"}</div>
+        <div style="flex:1;min-width:0">
+          <div class="student-name" style="overflow:hidden;white-space:nowrap;text-overflow:ellipsis">${s.name || "—"}</div>
+          <div class="student-meta">${s.nim || "—"} · ${s.prodi || "—"}</div>
+        </div>
+        <div class="risk-dot ${risk}" title="Risiko: ${getRiskLabel(risk)}"></div>
+      </div>
+      <div style="display:flex;gap:6px;margin-bottom:10px;flex-wrap:wrap">
+        <span class="badge ${active ? "badge-green" : "badge-red"}">${active ? "Aktif" : "Tidak Aktif"}</span>
+        <span class="badge badge-sky">${acts} sesi</span>
+        ${sc ? `<span class="badge badge-teal">Skor ${sc.score}</span>` : ""}
+      </div>
+      <div class="risk-bar"><div class="risk-fill ${risk === "low" ? "risk-low" : risk === "medium" ? "risk-medium" : "risk-high"}" style="width:${sc ? sc.score : 0}%"></div></div>
+      <div class="text-xs text-muted" style="margin-top:5px;display:flex;justify-content:space-between">
+        <span>${sc ? `Streak ${sc.streak}h` : ""}</span>
+        <span style="color:${risk === "low" ? "#10b981" : risk === "medium" ? "#f59e0b" : "#f43f5e"}">Risiko ${getRiskLabel(risk)}</span>
+      </div>
+    </div>`;
+          })
+          .join("");
+      }
+
+      function filterStudents() {
+        DS._search = document.getElementById("studentSearch").value;
+        renderStudentGrid();
+      }
+      function setFilter(f, el) {
+        DS._filter = f;
+        document
+          .querySelectorAll(".filter-tab")
+          .forEach((t) => t.classList.remove("active"));
+        el.classList.add("active");
+        renderStudentGrid();
+      }
+      function refreshStudents() {
+        toast("Data di-refresh (data diambil dari browser lokal)", "ok");
+        renderStudentGrid();
+      }
+
+      // ═══ STUDENT MODAL ═══
+      function openStudentModal(uid) {
+        const s = DS.students.find((x) => x.uid === uid);
+        if (!s) return;
+        const sc = calcScore(s);
+        const risk = getRiskLevel(sc);
+        const pats = detectBadPatterns(s);
+        const totalMin = (s.activities || []).reduce(
+          (sum, a) => sum + parseInt(a.durasi || 0),
+          0,
+        );
+        const recent5 = [...(s.activities || [])]
+          .sort((a, b) => b.tanggal.localeCompare(a.tanggal))
+          .slice(0, 5);
+
+        document.getElementById("studentModalTitle").textContent =
+          s.name || "—";
+        document.getElementById("studentModalContent").innerHTML = `
+    <div class="flex items-center gap3 mb4">
+      <div class="student-avatar" style="width:52px;height:52px;font-size:24px">${s.avatar || "🧑‍💻"}</div>
+      <div>
+        <div class="font-bold" style="font-size:15px">${s.name || "—"}</div>
+        <div class="text-xs text-muted">${s.prodi || "—"} · ${s.nim || "—"} · ${s.kampus || "—"}</div>
+        <div style="margin-top:4px;display:flex;gap:6px">
+          <span class="badge ${isActive(s) ? "badge-green" : "badge-red"}">${isActive(s) ? "Aktif" : "Tidak Aktif"}</span>
+          <span class="badge ${risk === "low" ? "badge-green" : risk === "medium" ? "badge-gold" : "badge-red"}">Risiko ${getRiskLabel(risk)}</span>
+        </div>
+      </div>
+    </div>
+    <div class="grid3 mb4">
+      <div class="card p4" style="text-align:center"><div style="font-family:var(--font-head);font-size:24px;font-weight:800;color:${sc ? (sc.score >= 70 ? "#10b981" : sc.score >= 45 ? "#f59e0b" : "#f43f5e") : "var(--text3)"}">${sc ? sc.score : "—"}</div><div class="text-xs text-muted">Skor AI</div></div>
+      <div class="card p4" style="text-align:center"><div style="font-family:var(--font-head);font-size:24px;font-weight:800">${(s.activities || []).length}</div><div class="text-xs text-muted">Total Sesi</div></div>
+      <div class="card p4" style="text-align:center"><div style="font-family:var(--font-head);font-size:24px;font-weight:800">${(totalMin / 60).toFixed(1)}j</div><div class="text-xs text-muted">Total Belajar</div></div>
+    </div>
+    ${
+      sc
+        ? `
+    <div class="card p4 mb4">
+      <div class="font-bold text-xs text-muted mb4" style="margin-bottom:10px">BREAKDOWN SKOR</div>
+      ${[
+        {l: "Konsistensi", v: sc.consistency},
+        {l: "Durasi", v: sc.duration},
+        {l: "Frekuensi", v: sc.frequency},
+        {l: "Variasi", v: sc.variety},
+      ]
+        .map(
+          (x) =>
+            `<div class="comp-bar-wrap"><div class="comp-label"><span class="text-xs">${x.l}</span><span class="text-xs font-bold">${Math.round(x.v)}%</span></div><div class="comp-bar-bg"><div class="comp-bar-fill" style="width:${x.v}%;background:${x.v >= 70 ? "#10b981" : x.v >= 45 ? "#f59e0b" : "#f43f5e"}"></div></div></div>`,
+        )
+        .join("")}
+    </div>`
+        : ""
+    }
+    ${
+      pats.length
+        ? `
+    <div class="card p4 mb4" style="border-color:rgba(245,158,11,0.3)">
+      <div class="font-bold text-xs mb4" style="color:#f59e0b;margin-bottom:8px"><i class="fa-solid fa-triangle-exclamation" style="margin-right:4px"></i>Pola Bermasalah Terdeteksi</div>
+      ${pats.map((p) => `<div class="flex items-center gap2" style="margin-bottom:6px"><i class="fa-solid ${p.icon}" style="color:${p.severity === "high" ? "#f43f5e" : "#f59e0b"};font-size:12px;flex-shrink:0"></i><span class="text-xs">${p.desc}</span></div>`).join("")}
+    </div>`
+        : ""
+    }
+    <div class="card p4 mb4">
+      <div class="font-bold text-xs text-muted mb4" style="margin-bottom:10px">5 SESI TERBARU</div>
+      ${
+        recent5.length
+          ? `<table class="data-table"><thead><tr><th>Tanggal</th><th>Materi</th><th>Metode</th><th>Durasi</th></tr></thead><tbody>
+        ${recent5.map((a) => `<tr><td class="text-xs">${a.tanggal}</td><td class="text-xs font-bold">${a.materi}</td><td><span class="badge badge-sky">${a.metode}</span></td><td class="text-xs">${a.durasi}m</td></tr>`).join("")}
+      </tbody></table>`
+          : `<div class="text-xs text-muted">Belum ada aktivitas.</div>`
+      }
+    </div>
+    <button class="btn btn-primary w-full" onclick="closeModal('modalStudent');sw('feedback',document.querySelector('[data-view=feedback]'));document.getElementById('fbStudent').value='${s.uid}'">
+      <i class="fa-solid fa-paper-plane"></i> Kirim Feedback ke ${s.name?.split(" ")[0] || "Mahasiswa"}
+    </button>`;
+        openModal("modalStudent");
+      }
+
+      // ═══ RISIKO ═══
+      let _risikoDone = false;
+      function runRisiko() {
+        if (_risikoDone) return;
+        setTimeout(() => {
+          document.getElementById("risikoLoading").style.display = "none";
+          document.getElementById("risikoResult").style.display = "block";
+          const highRisk = DS.students.filter(
+            (s) => getRiskLevel(calcScore(s)) === "high",
+          );
+          const medRisk = DS.students.filter(
+            (s) => getRiskLevel(calcScore(s)) === "medium",
+          );
+          document.getElementById("risikoAlert").innerHTML = `
+      <div class="flex items-center gap3">
+        <i class="fa-solid fa-triangle-exclamation" style="font-size:24px;color:#f43f5e;flex-shrink:0"></i>
+        <div>
+          <div class="font-bold">${highRisk.length} mahasiswa terdeteksi berisiko tinggi</div>
+          <div class="text-xs text-muted">${medRisk.length} mahasiswa berisiko sedang. Tinjau data mereka dan pertimbangkan untuk menghubungi secara langsung.</div>
+        </div>
+      </div>`;
+          const allRisk = [
+            ...DS.students.map((s) => ({
+              ...s,
+              _sc: calcScore(s),
+              _risk: getRiskLevel(calcScore(s)),
+            })),
+          ].sort((a, b) => {
+            const order = {high: 0, medium: 1, low: 2};
+            return (
+              order[a._risk] - order[b._risk] ||
+              (a._sc?.score || 0) - (b._sc?.score || 0)
+            );
+          });
+          document.getElementById("risikoTable").innerHTML =
+            `<div style="overflow-x:auto"><table class="data-table">
+      <thead><tr><th>Mahasiswa</th><th>NIM</th><th>Prodi</th><th>Skor AI</th><th>Streak</th><th>Terakhir Aktif</th><th>Level Risiko</th><th>Aksi</th></tr></thead>
+      <tbody>${allRisk
+        .map((s) => {
+          const lastAct = s.activities?.length
+            ? [...s.activities].sort((a, b) =>
+                b.tanggal.localeCompare(a.tanggal),
+              )[0].tanggal
+            : "—";
+          const daysSince =
+            lastAct !== "—"
+              ? Math.floor(
+                  (Date.now() - new Date(lastAct + "T00:00:00")) / 86400000,
+                )
+              : "∞";
+          return `<tr>
+          <td><div class="flex items-center gap2"><span style="font-size:16px">${s.avatar || "🧑‍💻"}</span><span class="font-bold text-sm">${s.name}</span></div></td>
+          <td class="text-xs text-muted">${s.nim || "—"}</td>
+          <td class="text-xs">${s.prodi || "—"}</td>
+          <td><span style="font-family:var(--font-head);font-weight:700;color:${s._risk === "low" ? "#10b981" : s._risk === "medium" ? "#f59e0b" : "#f43f5e"}">${s._sc ? s._sc.score : "?"}</span></td>
+          <td class="text-xs">${s._sc ? s._sc.streak + "h" : "—"}</td>
+          <td class="text-xs">${lastAct} ${daysSince !== "∞" ? `(${daysSince}h lalu)` : ""}</td>
+          <td><span class="badge ${s._risk === "low" ? "badge-green" : s._risk === "medium" ? "badge-gold" : "badge-red"}">${getRiskLabel(s._risk)}</span></td>
+          <td>
+            <button class="btn btn-outline btn-sm" style="margin-right:4px" onclick="openStudentModal('${s.uid}')"><i class="fa-solid fa-eye"></i></button>
+            <button class="btn btn-warn btn-sm" onclick="quickFeedback('${s.uid}','${s.name}')"><i class="fa-solid fa-comment"></i></button>
+          </td>
+        </tr>`;
+        })
+        .join("")}
+      </tbody></table></div>`;
+          _risikoDone = true;
+        }, 800);
+      }
+
+      function quickFeedback(uid, name) {
+        sw("feedback", document.querySelector('[data-view="feedback"]'));
+        document.getElementById("fbStudent").value = uid;
+        document.getElementById("fbTag").value = "perhatian";
+        toast(`Mengirim feedback ke ${name}...`, "warn");
+      }
+
+      // ═══ ALL ACTIVITY ═══
+      function renderAllActivity() {
+        const allActs = [];
+        DS.students.forEach((s) => {
+          (s.activities || []).forEach((a) =>
+            allActs.push({
+              ...a,
+              studentName: s.name,
+              studentAvatar: s.avatar || "🧑‍💻",
+            }),
+          );
+        });
+        allActs.sort((a, b) => b.tanggal.localeCompare(a.tanggal));
+        const el = document.getElementById("allActivityTable");
+        if (!allActs.length) {
+          el.innerHTML =
+            '<div class="empty-state"><i class="fa-solid fa-calendar-xmark"></i><p class="text-sm text-muted">Belum ada aktivitas tercatat.</p></div>';
+          return;
+        }
+        el.innerHTML = `<div style="overflow-x:auto"><table class="data-table">
+    <thead><tr><th>Tanggal</th><th>Mahasiswa</th><th>Materi</th><th>Metode</th><th>Durasi</th><th>Catatan</th></tr></thead>
+    <tbody>${allActs
+      .slice(0, 100)
+      .map(
+        (a) => `<tr>
+      <td class="text-xs">${a.tanggal}</td>
+      <td><div class="flex items-center gap2"><span>${a.studentAvatar}</span><span class="font-bold text-xs">${a.studentName}</span></div></td>
+      <td class="text-xs font-bold">${a.materi}</td>
+      <td><span class="badge badge-sky">${a.metode}</span></td>
+      <td class="text-xs">${a.durasi}m</td>
+      <td class="text-xs text-muted" style="max-width:120px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis">${a.catatan || "—"}</td>
+    </tr>`,
+      )
+      .join("")}</tbody></table></div>
+    ${allActs.length > 100 ? `<div class="text-xs text-muted" style="padding:10px 14px">Menampilkan 100 dari ${allActs.length} aktivitas.</div>` : ""}`;
+      }
+
+      // ═══ KOMPARASI AI ═══
+      let _komparasiDone = false;
+      function runKomparasi() {
+        if (_komparasiDone) return;
+        setTimeout(() => {
+          document.getElementById("komparasiLoading").style.display = "none";
+          document.getElementById("komparasiResult").style.display = "block";
+          const scored = DS.students
+            .map((s) => ({...s, _sc: calcScore(s)}))
+            .filter((s) => s._sc);
+          const avg = (f) =>
+            scored.length
+              ? Math.round(
+                  scored.reduce((s, x) => s + (x._sc[f] || 0), 0) /
+                    scored.length,
+                )
+              : 0;
+          const avgScore = avg("score");
+
+          document.getElementById("komparasiStats").innerHTML = [
+            {
+              label: "Rata-rata Skor Kelas",
+              val: avgScore,
+              icon: "fa-star",
+              color: "var(--acc)",
+            },
+            {
+              label: "Rata-rata Streak",
+              val: avg("streak") + "h",
+              icon: "fa-fire",
+              color: "#f59e0b",
+            },
+            {
+              label: "Rata-rata Durasi Sesi",
+              val: avg("avg") + "m",
+              icon: "fa-clock",
+              color: "#0ea5e9",
+            },
+          ]
+            .map(
+              (x) =>
+                `<div class="stat-card"><div class="stat-icon" style="color:${x.color};border-color:${x.color}40;background:${x.color}15"><i class="fa-solid ${x.icon}"></i></div><div class="stat-val">${x.val}</div><div class="stat-lbl">${x.label}</div></div>`,
+            )
+            .join("");
+
+          // Ranking
+          const ranked = [...scored].sort((a, b) => b._sc.score - a._sc.score);
+          document.getElementById("rankingTable").innerHTML =
+            `<div style="overflow-x:auto"><table class="data-table">
+      <thead><tr><th>#</th><th>Mahasiswa</th><th>Skor</th><th>Konsistensi</th><th>Durasi</th><th>Streak</th><th>Status</th></tr></thead>
+      <tbody>${ranked
+        .map(
+          (s, i) => `<tr>
+        <td class="font-bold" style="color:${i === 0 ? "#f59e0b" : i === 1 ? "#9ca3af" : i === 2 ? "#cd7c35" : "var(--text2)"}">${i === 0 ? "🥇" : i === 1 ? "🥈" : i === 2 ? "🥉" : "#" + (i + 1)}</td>
+        <td><div class="flex items-center gap2"><span>${s.avatar || "🧑‍💻"}</span><span class="font-bold text-xs">${s.name}</span></div></td>
+        <td><span style="font-family:var(--font-head);font-weight:800;color:${s._sc.score >= 70 ? "#10b981" : s._sc.score >= 45 ? "#f59e0b" : "#f43f5e"}">${s._sc.score}</span></td>
+        <td class="text-xs">${Math.round(s._sc.consistency)}%</td>
+        <td class="text-xs">${Math.round(s._sc.avg)}m</td>
+        <td class="text-xs">${s._sc.streak}h</td>
+        <td><span class="badge ${s._sc.score > avgScore ? "badge-green" : "badge-red"}">${s._sc.score > avgScore ? "Di Atas Rata²" : "Di Bawah Rata²"}</span></td>
+      </tr>`,
+        )
+        .join("")}</tbody></table></div>`;
+
+          // Method distribution
+          const methodCount = {};
+          DS.students.forEach((s) =>
+            (s.activities || []).forEach((a) => {
+              methodCount[a.metode] = (methodCount[a.metode] || 0) + 1;
+            }),
+          );
+          const totalActs = Object.values(methodCount).reduce(
+            (s, v) => s + v,
+            1,
+          );
+          document.getElementById("methodDistrib").innerHTML = Object.entries(
+            methodCount,
+          )
+            .sort((a, b) => b[1] - a[1])
+            .map(
+              ([m, c]) => `
+      <div class="comp-bar-wrap">
+        <div class="comp-label"><span class="text-xs font-bold">${m}</span><span class="text-xs text-muted">${c} sesi (${Math.round((c / totalActs) * 100)}%)</span></div>
+        <div class="comp-bar-bg"><div class="comp-bar-fill" style="width:${(c / totalActs) * 100}%;background:var(--acc)"></div></div>
+      </div>`,
+            )
+            .join("");
+
+          _komparasiDone = true;
+        }, 900);
+      }
+
+      // ═══ FEEDBACK ═══
+      function renderFeedback() {
+        const el = document.getElementById("sentFeedbackList");
+        if (!DS.sentFeedbacks.length) {
+          el.innerHTML =
+            '<div class="empty-state" style="padding:24px"><i class="fa-solid fa-comment-slash"></i><p class="text-xs text-muted">Belum ada feedback terkirim.</p></div>';
+          return;
+        }
+        el.innerHTML = DS.sentFeedbacks
+          .map((f) => {
+            const s = DS.students.find((x) => x.uid === f.studentUid);
+            return `<div class="fb-item">
+      <div class="fb-item-header">
+        <span style="font-size:16px">${s?.avatar || "🧑‍💻"}</span>
+        <div style="flex:1"><div class="fb-student-name">${s?.name || "Mahasiswa"}</div></div>
+        <span class="fb-time">${new Date(f.createdAt).toLocaleDateString("id-ID", {day: "numeric", month: "short"})}</span>
+      </div>
+      <div class="fb-text">${f.message}</div>
+      ${f.tag ? `<div style="margin-top:6px"><span class="badge ${f.tag === "bagus" ? "badge-green" : f.tag === "perhatian" ? "badge-gold" : "badge-sky"}">${f.tag}</span></div>` : ""}
+    </div>`;
+          })
+          .join("");
+      }
+
+      async function sendFeedback() {
+        const uid = document.getElementById("fbStudent").value;
+        const msg = document.getElementById("fbMessage").value.trim();
+        const tag = document.getElementById("fbTag").value;
+        if (!uid) return toast("Pilih mahasiswa terlebih dahulu", "error");
+        if (!msg) return toast("Pesan tidak boleh kosong", "error");
+
+        const btn = document.querySelector('[onclick="sendFeedback()"]');
+        btn.disabled = true;
+        btn.innerHTML =
+          '<i class="fa-solid fa-circle-notch spin"></i> Mengirim...';
+
+        try {
+          if (typeof doSendFeedback === "function") {
+            await doSendFeedback(uid, msg, tag);
+            document.getElementById("fbMessage").value = "";
+            toast("Feedback berhasil dikirim!", "ok");
+            renderFeedback();
+          } else {
+            toast("Firebase belum siap", "error");
+          }
+        } catch (e) {
+          toast("Gagal mengirim: " + e.message, "error");
+        } finally {
+          btn.disabled = false;
+          btn.innerHTML =
+            '<i class="fa-solid fa-paper-plane"></i> Kirim Feedback';
+        }
+      }
+
+      // ═══ LAPORAN ═══
+      function renderClassOverallStats() {
+        const total = DS.students.length;
+        const allActs = DS.students.flatMap((s) => s.activities || []);
+        const totalMin = allActs.reduce(
+          (s, a) => s + parseInt(a.durasi || 0),
+          0,
+        );
+        const aktif = DS.students.filter((s) => isActive(s)).length;
+        const risiko = DS.students.filter(
+          (s) => getRiskLevel(calcScore(s)) === "high",
+        ).length;
+        const scored = DS.students.map((s) => calcScore(s)).filter(Boolean);
+        const avgScore = scored.length
+          ? Math.round(scored.reduce((s, x) => s + x.score, 0) / scored.length)
+          : 0;
+
+        document.getElementById("classOverallStats").innerHTML = `
+    <div class="grid4">
+      ${[
+        ["Total Mahasiswa", total, "fa-users", "var(--acc)"],
+        ["Total Sesi", allActs.length, "fa-list", "var(--acc)"],
+        [
+          "Total Jam Kelas",
+          (totalMin / 60).toFixed(1) + "j",
+          "fa-clock",
+          "#0ea5e9",
+        ],
+        ["Mahasiswa Aktif", aktif, "fa-circle-check", "#10b981"],
+        ["Berisiko Tinggi", risiko, "fa-triangle-exclamation", "#f43f5e"],
+        ["Rata-rata Skor", avgScore, "fa-star", "#f59e0b"],
+      ]
+        .map(
+          ([l, v, ic, c]) => `<div class="card p4" style="text-align:center">
+        <i class="fa-solid ${ic}" style="color:${c};font-size:20px;margin-bottom:8px"></i>
+        <div class="font-bold" style="font-size:18px">${v}</div>
+        <div class="text-xs text-muted">${l}</div>
+      </div>`,
+        )
+        .join("")}
+    </div>`;
+      }
+
+      function exportCSV() {
+        const allActs = DS.students.flatMap((s) =>
+          (s.activities || []).map((a) => ({
+            ...a,
+            studentName: s.name,
+            nim: s.nim,
+            prodi: s.prodi,
+          })),
+        );
+        if (!allActs.length) return toast("Tidak ada data", "error");
+        let csv = "Mahasiswa,NIM,Prodi,Tanggal,Materi,Metode,Durasi,Catatan\n";
+        allActs.forEach((r) => {
+          csv += `"${r.studentName}","${r.nim || ""}","${r.prodi || ""}",${r.tanggal},"${r.materi}",${r.metode},${r.durasi},"${(r.catatan || "").replace(/"/g, '""')}"\n`;
+        });
+        dlCSV(
+          csv,
+          "edupattern_kelas_" + new Date().toISOString().split("T")[0] + ".csv",
+        );
+        toast("CSV mahasiswa diunduh!", "ok");
+      }
+
+      function exportRiskCSV() {
+        const risiko = DS.students.filter(
+          (s) => getRiskLevel(calcScore(s)) !== "low",
+        );
+        if (!risiko.length)
+          return toast("Tidak ada mahasiswa berisiko", "warn");
+        let csv = "Nama,NIM,Prodi,Skor AI,Streak,Level Risiko,Total Sesi\n";
+        risiko.forEach((s) => {
+          const sc = calcScore(s);
+          csv += `"${s.name}","${s.nim || ""}","${s.prodi || ""}",${sc ? sc.score : "—"},${sc ? sc.streak : "—"},${getRiskLabel(getRiskLevel(sc))},${(s.activities || []).length}\n`;
+        });
+        dlCSV(
+          csv,
+          "edupattern_risiko_" +
+            new Date().toISOString().split("T")[0] +
+            ".csv",
+        );
+        toast("Laporan risiko diunduh!", "ok");
+      }
+
+      function dlCSV(content, filename) {
+        const a = document.createElement("a");
+        a.href = "data:text/csv;charset=utf-8," + encodeURIComponent(content);
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+      }
+
+      // ═══ DETECT BAD PATTERNS (per student) ═══
+      function detectBadPatterns(s) {
+        const acts = s.activities || [];
+        const patterns = [];
+        if (acts.length < 2) return patterns;
+        const sc = calcScore(s);
+        if (sc && sc.streak < 2 && acts.length >= 5)
+          patterns.push({
+            icon: "fa-calendar-xmark",
+            desc: "Tidak konsisten — streak sangat rendah.",
+            severity: "high",
+          });
+        if (sc && sc.avg < 20)
+          patterns.push({
+            icon: "fa-clock",
+            desc: `Rata-rata sesi hanya ${sc.avg} menit.`,
+            severity: "medium",
+          });
+        const methods = new Set(acts.map((a) => a.metode));
+        if (methods.size === 1 && acts.length >= 5)
+          patterns.push({
+            icon: "fa-repeat",
+            desc: `Hanya menggunakan metode "${[...methods][0]}".`,
+            severity: "medium",
+          });
+        const lastAct = [...acts].sort((a, b) =>
+          b.tanggal.localeCompare(a.tanggal),
+        )[0];
+        const daysSince = Math.floor(
+          (Date.now() - new Date(lastAct.tanggal + "T00:00:00")) / 86400000,
+        );
+        if (daysSince > 7)
+          patterns.push({
+            icon: "fa-calendar-minus",
+            desc: `Tidak aktif ${daysSince} hari.`,
+            severity: "high",
+          });
+        return patterns;
+      }
+
+      // ═══ BADGES ═══
+      function updateBadges() {
+        const total = DS.students.length;
+        const risiko = DS.students.filter(
+          (s) => getRiskLevel(calcScore(s)) === "high",
+        ).length;
+        document.getElementById("mhsBadge").textContent = total;
+        document.getElementById("riskoBadge").textContent = risiko;
+        document.getElementById("riskoBadge").style.display =
+          risiko > 0 ? "inline" : "none";
+      }
+
+      // ═══ SETTINGS ═══
+      function saveSettings() {
+        const name = document.getElementById("settingName").value.trim();
+        const prodi = document.getElementById("settingProdi").value.trim();
+        if (!name) return toast("Nama tidak boleh kosong", "error");
+        DS.profile.name = name;
+        DS.profile.prodi = prodi;
+        document.getElementById("sidebarName").textContent = name;
+        document.getElementById("dashGreet").textContent = `Halo, ${name}! 👋`;
+        if (typeof saveProfileDB === "function") saveProfileDB(name, prodi);
+        toast("Pengaturan disimpan!", "ok");
+      }
+
+      // ═══ UI ═══
+      function setTheme(t) {
+        document.documentElement.setAttribute("data-theme", t);
+        localStorage.setItem("ep-theme", t);
+        document
+          .getElementById("btnDark")
+          .classList.toggle("active", t === "dark");
+        document
+          .getElementById("btnLight")
+          .classList.toggle("active", t === "light");
+      }
+      function setAccent(a) {
+        const map = {teal: "teal", blue: "blue", purple: "purple"};
+        document.documentElement.setAttribute("data-accent", map[a] || "teal");
+        localStorage.setItem("ep-accent", a);
+        ["Teal", "Blue", "Purple"].forEach((x) =>
+          document
+            .getElementById("dot" + x)
+            .classList.toggle("active", x.toLowerCase() === a),
+        );
+      }
+
+      const viewTitles = {
+        dashboard: "Ringkasan Kelas",
+        mahasiswa: "Data Mahasiswa",
+        risiko: "Deteksi Risiko AI",
+        aktivitas: "Aktivitas Kelas",
+        komparasi: "Komparasi AI",
+        feedback: "Beri Feedback",
+        laporan: "Laporan & Export",
+        settings: "Pengaturan",
+      };
+
+      function sw(id, el) {
+        document
+          .querySelectorAll(".view")
+          .forEach((v) => v.classList.remove("active"));
+        document.getElementById("view-" + id).classList.add("active");
+        document
+          .querySelectorAll(".nav-item")
+          .forEach((n) => n.classList.remove("active"));
+        if (el) el.classList.add("active");
+        else {
+          const n = document.querySelector(`.nav-item[data-view="${id}"]`);
+          if (n) n.classList.add("active");
+        }
+        document.getElementById("topbarTitle").textContent =
+          viewTitles[id] || id;
+        closeSidebar();
+        if (id === "risiko") runRisiko();
+        if (id === "komparasi") runKomparasi();
+        if (id === "laporan") renderClassOverallStats();
+      }
+
+      function switchPanel(pid, el) {
+        document
+          .querySelectorAll(".settings-panel")
+          .forEach((p) => p.classList.remove("active"));
+        document.getElementById("panel-" + pid).classList.add("active");
+        document
+          .querySelectorAll(".settings-menu-item")
+          .forEach((i) => i.classList.remove("active"));
+        if (el) el.classList.add("active");
+      }
+
+      function toggleSidebar() {
+        document.getElementById("sidebar").classList.toggle("open");
+        document.getElementById("overlay").classList.toggle("open");
+      }
+      function closeSidebar() {
+        document.getElementById("sidebar").classList.remove("open");
+        document.getElementById("overlay").classList.remove("open");
+      }
+
+      function openModal(id) {
+        document.getElementById(id).classList.add("open");
+      }
+      function closeModal(id) {
+        document.getElementById(id).classList.remove("open");
+      }
+
+      function toast(msg, type = "ok") {
+        const el = document.createElement("div");
+        el.className = "toast " + type;
+        const ic =
+          type === "ok"
+            ? "fa-check-circle"
+            : type === "warn"
+              ? "fa-triangle-exclamation"
+              : "fa-exclamation-circle";
+        el.innerHTML = `<i class="fa-solid ${ic}"></i> ${msg}`;
+        document.getElementById("toast-container").appendChild(el);
+        setTimeout(() => el.remove(), 3500);
+      }
+
+      function handleLogout() {
+        if (confirm("Keluar?")) {
+          if (typeof doLogout === "function") doLogout();
+          else window.location.href = "index.html";
+        }
+      }
+
+      document.querySelectorAll(".modal-bg").forEach((bg) =>
+        bg.addEventListener("click", (e) => {
+          if (e.target === bg) bg.classList.remove("open");
+        }),
+      );
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape")
+          document
+            .querySelectorAll(".modal-bg.open")
+            .forEach((m) => m.classList.remove("open"));
+      });
+    </script>
+  </body>
+</html>
