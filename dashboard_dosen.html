@@ -1522,7 +1522,7 @@
                   id="fbMessage"
                   placeholder="Tulis feedback untuk mahasiswa..."></textarea>
               </div>
-              <button class="btn btn-primary w-full" onclick="sendFeedback()">
+              <button id="btnSendFeedback" class="btn btn-primary w-full" onclick="sendFeedback()">
                 <i class="fa-solid fa-paper-plane"></i> Kirim Feedback
               </button>
             </div>
@@ -1842,7 +1842,7 @@
       // ═══ AI HELPERS ═══
       function calcScore(s) {
         const acts = s.activities || [];
-        if (acts.length < 1) return null;
+        if (acts.length < 3) return null; // FIX: konsisten dengan threshold mahasiswa (>=3)
         const totalMin = acts.reduce(
           (sum, a) => sum + parseInt(a.durasi || 0),
           0,
@@ -2483,7 +2483,7 @@
         if (!uid) return toast("Pilih mahasiswa terlebih dahulu", "error");
         if (!msg) return toast("Pesan tidak boleh kosong", "error");
 
-        const btn = document.querySelector('[onclick="sendFeedback()"]');
+        const btn = document.getElementById('btnSendFeedback');
         btn.disabled = true;
         btn.innerHTML =
           '<i class="fa-solid fa-circle-notch spin"></i> Mengirim...';
