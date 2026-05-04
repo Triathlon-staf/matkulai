@@ -2664,6 +2664,10 @@
             );
             // Auto log aktivitas jika mode fokus
             if (this.mode === "focus") {
+              // FIX: Reset flag AI agar analisis diperbarui setelah sesi Pomodoro
+              _analisisDone = false;
+              _prediksiDone = false;
+              _jadwalDone = false;
               DB.addActivity({
                 materi: "Pomodoro Session",
                 tanggal: new Date().toISOString().split("T")[0],
@@ -3428,42 +3432,79 @@
       }
 
       // ═══ CHATBOT ═══
+      // GANTI dengan URL Cloudflare Worker kamu!
+      const CHAT_WORKER_URL = "https://YOUR_WORKER.YOUR_SUBDOMAIN.workers.dev/chat";
+
+      // History percakapan (conversation memory)
+      let _chatHistory = [];
+      const CHAT_MAX_HISTORY = 10; // max pesan yang dikirim ke API
+
       async function sendChat() {
         const input = document.getElementById("chatInput");
+        const sendBtn = document.querySelector(".chat-send");
         const msg = input.value.trim();
         if (!msg) return;
+
+        // FIX: Pastikan view chatbot aktif sebelum manipulasi DOM
+        const chatBox = document.getElementById("chatMessages");
+        if (!chatBox) { console.warn("chatMessages belum ada di DOM"); return; }
+
         input.value = "";
+
+        // FIX: Disable tombol kirim saat loading (mencegah duplikasi pesan)
+        if (sendBtn) sendBtn.disabled = true;
+
+        // Tambah ke history
+        _chatHistory.push({ role: "user", content: msg });
         appendChat(msg, "user");
 
         // Typing indicator
         const typingId = appendTyping();
 
         try {
-          // Konteks aktivitas untuk AI
+          // Konteks aktivitas untuk AI (context injection)
           const ctx = DB.activities.length
-            ? `Data belajar mahasiswa: ${DB.activities.length} sesi, streak ${DB.profile.streak || 0} hari, total ${Math.round(DB.activities.reduce((s, a) => s + parseInt(a.durasi || 0), 0) / 60)} jam. Skor AI: ${DB.calcAiScore()?.score || "—"}/100.`
+            ? `Data belajar mahasiswa: ${DB.activities.length} sesi, streak ${DB.profile.streak || 0} hari, total ${Math.round(DB.activities.reduce((s, a) => s + parseInt(a.durasi || 0), 0) / 60)} jam. Skor AI: ${DB.calcAiScore()?.score || "—"}/100. Nama: ${DB.profile.name}.`
             : "Mahasiswa belum mencatat aktivitas belajar.";
 
-          const res = await fetch("https://api.anthropic.com/v1/messages", {
+          // FIX: Trim history agar tidak melebihi context window
+          const trimmedHistory = _chatHistory.slice(-CHAT_MAX_HISTORY);
+
+          const res = await fetch(CHAT_WORKER_URL, {
             method: "POST",
             headers: {"Content-Type": "application/json"},
             body: JSON.stringify({
-              model: "claude-sonnet-4-20250514",
-              max_tokens: 1000,
-              system: `Kamu adalah EduPattern AI, asisten belajar cerdas untuk mahasiswa Indonesia. Bantu mahasiswa dengan tips belajar, analisis pola belajar, teknik mengingat, manajemen waktu, dan saran akademik. Selalu ramah, singkat (maks 150 kata), dan berikan saran praktis. ${ctx}`,
-              messages: [{role: "user", content: msg}],
+              messages: trimmedHistory,
+              system: `Kamu adalah EduPattern AI, asisten belajar cerdas untuk mahasiswa Indonesia. Bantu dengan tips belajar, analisis pola, teknik mengingat, manajemen waktu, dan saran akademik. Selalu ramah, singkat (maks 150 kata), dan berikan saran praktis. ${ctx}`,
             }),
           });
+
           removeTyping(typingId);
+
+          if (!res.ok) {
+            // FIX: Fallback jika Worker error
+            const reply = getFallbackReply(msg);
+            _chatHistory.push({ role: "assistant", content: reply });
+            appendChat(reply, "ai");
+            return;
+          }
+
           const data = await res.json();
-          const reply =
-            data.content?.[0]?.text ||
-            "Maaf, saya tidak bisa menjawab saat ini.";
+          const reply = data.reply || "Maaf, saya tidak bisa menjawab saat ini.";
+
+          // Simpan reply ke history
+          _chatHistory.push({ role: "assistant", content: reply });
           appendChat(reply, "ai");
+
         } catch (e) {
           removeTyping(typingId);
-          // Fallback jika API tidak tersedia
-          appendChat(getFallbackReply(msg), "ai");
+          // FIX: Rollback history jika request gagal total
+          _chatHistory.pop();
+          const reply = getFallbackReply(msg);
+          appendChat(reply, "ai");
+        } finally {
+          // FIX: Selalu re-enable tombol kirim
+          if (sendBtn) sendBtn.disabled = false;
         }
       }
 
@@ -3485,30 +3526,54 @@
       }
 
       function quickChat(msg) {
-        document.getElementById("chatInput").value = msg;
-        sendChat();
+        // FIX: Pastikan view chatbot aktif dulu agar chatInput ada di DOM
+        const chatNav = document.querySelector(".nav-item[data-view=\"chatbot\"]");
+        sw("chatbot", chatNav);
+        setTimeout(function() {
+          var inp = document.getElementById("chatInput");
+          if (inp) { inp.value = msg; sendChat(); }
+        }, 80);
       }
 
+      // FIX: appendChat dengan XSS protection + scroll yang reliable
       function appendChat(msg, role) {
         const box = document.getElementById("chatMessages");
+        if (!box) return;
         const el = document.createElement("div");
         el.className = "chat-bubble " + role;
-        if (role === "ai")
-          el.innerHTML = `<div class="ai-label"><i class="fa-solid fa-robot"></i> EduPattern AI</div>${msg.replace(/\n/g, "<br>")}`;
-        else el.textContent = msg;
+        if (role === "ai") {
+          // FIX: Sanitasi — buat text node aman, lalu tambahkan label
+          const label = document.createElement("div");
+          label.className = "ai-label";
+          label.innerHTML = '<i class="fa-solid fa-robot"></i> EduPattern AI';
+          el.appendChild(label);
+          // Render teks AI dengan newline → <br>, tapi escape HTML dulu
+          const safe = msg
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/\n/g, "<br>");
+          const textDiv = document.createElement("div");
+          textDiv.innerHTML = safe;
+          el.appendChild(textDiv);
+        } else {
+          el.textContent = msg;
+        }
         box.appendChild(el);
-        box.scrollTop = box.scrollHeight;
+        // FIX: Scroll reliable pakai requestAnimationFrame
+        requestAnimationFrame(function() { box.scrollTop = box.scrollHeight; });
       }
 
       function appendTyping() {
         const id = "typing_" + Date.now();
         const box = document.getElementById("chatMessages");
+        if (!box) return id;
         const el = document.createElement("div");
         el.id = id;
         el.className = "chat-bubble ai";
-        el.innerHTML = `<div class="ai-label"><i class="fa-solid fa-robot"></i> EduPattern AI</div><div class="chat-typing"><div class="dot-typing"></div><div class="dot-typing"></div><div class="dot-typing"></div></div>`;
+        el.innerHTML = '<div class="ai-label"><i class="fa-solid fa-robot"></i> EduPattern AI</div><div class="chat-typing"><div class="dot-typing"></div><div class="dot-typing"></div><div class="dot-typing"></div></div>';
         box.appendChild(el);
-        box.scrollTop = box.scrollHeight;
+        requestAnimationFrame(function() { box.scrollTop = box.scrollHeight; });
         return id;
       }
 
